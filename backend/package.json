@@ -1,0 +1,23 @@
+{
+  "name": "cmov",
+  "description": "Just guys being dudes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/miguelalexbt/cmov.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/miguelalexbt/cmov/issues"
+  },
+  "homepage": "https://github.com/miguelalexbt/cmov/",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.10.9"
+  },
+  "devDependencies": {}
+}
