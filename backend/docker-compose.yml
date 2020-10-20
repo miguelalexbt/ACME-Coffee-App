@@ -2,30 +2,46 @@ version: "3.8"
 services:
   app:
     container_name: express-mongo
-    restart: always
     build: .
-    # env_file: .env
+    restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: MongoDB2019!
+      MONGO_DB: app
+      MONGO_USERNAME: user
+      MONGO_PASSWORD: Porto123*
     ports:
-      - "80:3000"
+      - 80:3000
     volumes:
       - .:/app
       - node_modules:/app/node_modules
-    links:
+    depends_on:
       - mongo
+
   mongo:
     container_name: mongo
     image: mongo:latest
     restart: always
     environment:
+      MONGO_INITDB_DATABASE: app
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: MongoDB2019!
     ports:
-      - "27017:27017"
+      - 27017:27017
     volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
       - mongodata:/data/db
+    logging:
+      driver: "none"
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: MongoDB2019!
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo
     logging:
       driver: "none"
 
