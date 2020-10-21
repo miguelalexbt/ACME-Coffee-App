@@ -19,33 +19,20 @@ const validate = validations => {
       };
 };
 
+// Auth
+
+let authRouter = express.Router()
+
+
+
 // Customer
 
 let customerRouter = express.Router()
 
-// DEBUG
-customerRouter.get('/', (req, res) => {
-    res.send(`
-    <!DOCTYPE html>
-    <html>
-    <body>
-    <form method="post" action="/customer">
-      <label for="name">Name:</label><br>
-      <input type="text" id="name" name="name"><br>
-      <label for="username">Username:</label><br>
-      <input type="text" id="username" name="username"><br>
-      <label for="password">Password:</label><br>
-      <input type="password" id="password" name="password"><br>
-      <input type="submit" value="Submit">
-    </form> 
-    </body>
-    </html>`);
-});
-
-customerRouter.post('/', validate([
-        body('name').exists({ checkNull: true, checkFalsy: true }),
-        body('username').exists({ checkNull: true, checkFalsy: true }),
-        body('password').exists({ checkNull: true, checkFalsy: true })
+customerRouter.put('/', validate([
+        // body('name').exists({ checkNull: true, checkFalsy: true }),
+        // body('username').exists({ checkNull: true, checkFalsy: true }),
+        // body('password').exists({ checkNull: true, checkFalsy: true })
     ]),
     async (req, res) => {
         const body = req.body
@@ -55,11 +42,12 @@ customerRouter.post('/', validate([
             name: body.name,
             username: body.username,
             password: await bcrypt.hash(body.password, 10),
+            certificate: body.certificate
         });
 
         await user.save();
 
-        res.json({ user_id: user._id });
+        res.json(user);
     }
 );
 

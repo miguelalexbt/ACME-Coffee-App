@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import org.feup.cmov.acmeclient.data.UserRepository
-import org.feup.cmov.acmeclient.data.model.User
 
 data class State(
     val name: String = "",
@@ -19,14 +18,22 @@ class SignUpViewModel @ViewModelInject constructor(
     @Assisted savedStateHandle: SavedStateHandle,
     private val userRepository: UserRepository
 ) : ViewModel() {
-    val userId: String? = savedStateHandle["uid"]
-    private val x = userRepository.isLoggedIn
+
+//    val userId: String? = savedStateHandle["uid"]
 
     private val _state = MutableLiveData<State>()
     val state : LiveData<State> = _state
-
-    fun check() {
-        println(x)
-    }
     
+    fun signUp() {
+        userRepository.signUp(
+            "Miguel Teixeira",
+            "miguelalexbt",
+            "123"
+        )
+
+        // Update state
+        // ...
+
+//        return result;
+    }
  }

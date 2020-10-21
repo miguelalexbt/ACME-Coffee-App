@@ -1,18 +1,17 @@
 package org.feup.cmov.acmeclient.data
 
-import android.telecom.Call
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import org.feup.cmov.acmeclient.Utils
 import org.feup.cmov.acmeclient.data.model.User
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 import javax.inject.Inject
 
-//interface WebService {
-//
-//    @GET("/users/{user}")
-//    fun getUser(@Path("user") userId : String): Call<User>
-//}
-
-class UserRepository @Inject constructor() {
+class UserRepository @Inject constructor(
+    private val webService: WebService
+) {
+    
     var user: User? = null
         private set
 
@@ -23,6 +22,30 @@ class UserRepository @Inject constructor() {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
         user = null
+    }
+    
+    fun signUp(name: String, username: String, password: String) {
+
+        val user = User(
+            name = name,
+            username = username,
+            password = password,
+            certificate = Utils.generateCertificate()
+        )
+
+        webService.signUp(user).enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                if (response.isSuccessful) {
+                    user.id = response.body()!!.id
+                }
+
+                println(user.certificate)
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                println(t.toString())
+            }
+        })
     }
 
 //    fun login(username : String, password : String): LiveData<User> {

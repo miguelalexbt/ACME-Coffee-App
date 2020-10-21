@@ -30,8 +30,16 @@ class SignUpActivity : AppCompatActivity() {
         val username = findViewById<EditText>(R.id.username)
         val password = findViewById<EditText>(R.id.password)
         val signUp = findViewById<Button>(R.id.sign_up)
+
+        viewModel.signUp()
+
+        signUp.setOnClickListener {
+//            viewModel.lo
+        }
+
+
         
-        viewModel.check()
+//        viewModel.check()
 
 //        viewModel.user.observe(this@SignUpActivity, Observer {
 //            val result = it ?: return@Observer
