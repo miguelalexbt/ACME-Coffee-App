@@ -20,35 +20,64 @@ const validate = validations => {
 };
 
 // Auth
-
 let authRouter = express.Router()
 
+authRouter.post('/', (req, res) => {
 
+});
 
-// Customer
+authRouter.put('/', async (req, res) => {
+    const body = req.body
 
-let customerRouter = express.Router()
+    const user = new User({
+        _id: uuidv4(),
+        name: body.name,
+        username: body.username,
+        password: await bcrypt.hash(body.password, 10),
+        certificate: body.certificate
+    });
 
-customerRouter.put('/', validate([
-        // body('name').exists({ checkNull: true, checkFalsy: true }),
-        // body('username').exists({ checkNull: true, checkFalsy: true }),
-        // body('password').exists({ checkNull: true, checkFalsy: true })
-    ]),
-    async (req, res) => {
-        const body = req.body
+    await user.save();
 
-        const user = new User({
-            _id: uuidv4(),
-            name: body.name,
-            username: body.username,
-            password: await bcrypt.hash(body.password, 10),
-            certificate: body.certificate
-        });
+    res.json(user);
+});
 
-        await user.save();
+// Items
 
-        res.json(user);
-    }
-);
+let itemRouter = express.Router()
 
-module.exports = { customerRouter: customerRouter };
+itemRouter.get('/', (req, res) => {
+	
+
+})
+
+// // Customer
+
+// let customerRouter = express.Router()
+
+// customerRouter.put('/', validate([
+//         // body('name').exists({ checkNull: true, checkFalsy: true }),
+//         // body('username').exists({ checkNull: true, checkFalsy: true }),
+//         // body('password').exists({ checkNull: true, checkFalsy: true })
+//     ]),
+//     async (req, res) => {
+//         const body = req.body
+
+//         const user = new User({
+//             _id: uuidv4(),
+//             name: body.name,
+//             username: body.username,
+//             password: await bcrypt.hash(body.password, 10),
+//             certificate: body.certificate
+//         });
+
+//         await user.save();
+
+//         res.json(user);
+//     }
+// );
+
+module.exports = { 
+    authRouter: authRouter,
+    // customerRouter: customerRouter
+};

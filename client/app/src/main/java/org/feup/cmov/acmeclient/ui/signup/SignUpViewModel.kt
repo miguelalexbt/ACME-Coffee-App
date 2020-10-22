@@ -2,11 +2,10 @@ package org.feup.cmov.acmeclient.ui.signup
 
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import org.feup.cmov.acmeclient.data.UserRepository
+import androidx.lifecycle.*
+import kotlinx.coroutines.launch
+import org.feup.cmov.acmeclient.data.DataRepository
+import org.feup.cmov.acmeclient.data.model.User
 
 data class State(
     val name: String = "",
@@ -16,7 +15,7 @@ data class State(
 
 class SignUpViewModel @ViewModelInject constructor(
     @Assisted savedStateHandle: SavedStateHandle,
-    private val userRepository: UserRepository
+    private val dataRepository: DataRepository
 ) : ViewModel() {
 
 //    val userId: String? = savedStateHandle["uid"]
@@ -25,15 +24,20 @@ class SignUpViewModel @ViewModelInject constructor(
     val state : LiveData<State> = _state
     
     fun signUp() {
-        userRepository.signUp(
-            "Miguel Teixeira",
-            "miguelalexbt",
-            "123"
-        )
+        viewModelScope.launch {
+            val result = dataRepository.signUp(
+                    "Miguel Teixeira",
+                    "miguelalexbt",
+                    "123"
+                )
 
-        // Update state
-        // ...
-
-//        return result;
+            result
+                .onSuccess {
+                    // Update state (livedata)
+                }
+                .onFailure {
+                    throw it.cause!!
+                }
+        }
     }
  }

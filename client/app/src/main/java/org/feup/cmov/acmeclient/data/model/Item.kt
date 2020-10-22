@@ -3,20 +3,20 @@ package org.feup.cmov.acmeclient.data.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class User(
+data class Item(
     @SerializedName("id")
     @Expose
     var id: String? = null,
+
+    @SerializedName("type")
+    @Expose
+    var type: String,
 
     @SerializedName("name")
     @Expose
     var name: String,
 
-    @SerializedName("username")
+    @SerializedName("price")
     @Expose
-    var username: String,
-
-    @SerializedName("password")
-    @Expose
-    var password: String
+    var price: String
 )

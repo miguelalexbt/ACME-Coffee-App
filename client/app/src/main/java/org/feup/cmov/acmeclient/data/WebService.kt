@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import okhttp3.ResponseBody
+import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.model.User
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -14,13 +15,26 @@ import java.security.cert.Certificate
 
 interface WebService {
 
-//    // Auth
-//    @FormUrlEncoded
-//    @POST("login")
-//    fun signIn(@Field("username") username: String, @Field("password") password: String)
+    // Auth
+    @POST("auth")
+    fun signIn(
+        @Field("username") username: String,
+        @Field("password") password: String
+    ): User
 
-    @PUT("customer")
-    fun signUp(@Body user: User): Call<User>
+    @FormUrlEncoded
+    @PUT("auth")
+    suspend fun signUp(
+        @Field("name") name: String,
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("certificate") certificate: String
+    ) : User
+
+    //Items
+    @GET("items")
+    fun getItems(): List<Item>
+
 }
 
 @Module
