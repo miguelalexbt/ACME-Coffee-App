@@ -19,21 +19,37 @@ const validate = validations => {
       };
 };
 
+const authenticated = (req, res, next) => {
+
+    // CHEcK IF AUTHENTICATED
+}
+
 // Auth
 let authRouter = express.Router()
 
-authRouter.post('/', (req, res) => {
+authRouter.post('/signIn', async (req, res) => {
+    const body = req.body
 
+    console.log(body)
+
+    const user = await User.findOne({ username: body.username }).exec()
+
+    if (user !== null)
+        res.json(user)
+    else
+        res.status(401)
 });
 
-authRouter.put('/', async (req, res) => {
+authRouter.post('/signUp', async (req, res) => {
     const body = req.body
+
+    console.log(body)
 
     const user = new User({
         _id: uuidv4(),
-        name: body.name,
-        username: body.username,
-        password: await bcrypt.hash(body.password, 10),
+        name: body.user.name,
+        username: body.user.username,
+        password: await bcrypt.hash(body.user.password, 10),
         certificate: body.certificate
     });
 
@@ -51,33 +67,6 @@ itemRouter.get('/', (req, res) => {
 
 })
 
-// // Customer
-
-// let customerRouter = express.Router()
-
-// customerRouter.put('/', validate([
-//         // body('name').exists({ checkNull: true, checkFalsy: true }),
-//         // body('username').exists({ checkNull: true, checkFalsy: true }),
-//         // body('password').exists({ checkNull: true, checkFalsy: true })
-//     ]),
-//     async (req, res) => {
-//         const body = req.body
-
-//         const user = new User({
-//             _id: uuidv4(),
-//             name: body.name,
-//             username: body.username,
-//             password: await bcrypt.hash(body.password, 10),
-//             certificate: body.certificate
-//         });
-
-//         await user.save();
-
-//         res.json(user);
-//     }
-// );
-
 module.exports = { 
     authRouter: authRouter,
-    // customerRouter: customerRouter
 };

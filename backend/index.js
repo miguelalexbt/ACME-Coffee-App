@@ -24,8 +24,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/auth', authRouter);
-// app.use('/customer', customerRouter);
+app.use('/', authRouter);
 
 // Listen
 const port = 3000;

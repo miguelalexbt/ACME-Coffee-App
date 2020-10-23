@@ -1,6 +1,8 @@
 package org.feup.cmov.acmeclient.ui.signup
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.viewModels
@@ -15,12 +17,6 @@ import org.feup.cmov.acmeclient.R
 class SignUpActivity : AppCompatActivity() {
 
     private val viewModel : SignUpViewModel by viewModels()
-//        factoryProducer = { SavedStateViewModelFactory(application, this) }
-//    )
-
-//    private val viewModel : SignUpViewModel = ViewModelProvider(
-//        this, SavedStateViewModelFactory(application, this)
-//    )[SignUpViewModel::class.java]
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,20 +27,44 @@ class SignUpActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.password)
         val signUp = findViewById<Button>(R.id.sign_up)
 
-        viewModel.signUp()
+        // Update form state
+//        name.afterTextChanged {
+//            viewModel.updateFormData(
+//                name.text.toString(), username.text.toString(), password.text.toString()
+//            )
+//        }
+//
+//        username.afterTextChanged {
+//            viewModel.updateFormData(
+//                name.text.toString(), username.text.toString(), password.text.toString()
+//            )
+//        }
+//
+//        password.afterTextChanged {
+//            viewModel.updateFormData(
+//                name.text.toString(), username.text.toString(), password.text.toString()
+//            )
+//        }
 
+        // Sign up
         signUp.setOnClickListener {
-//            viewModel.lo
+            viewModel.signUp(
+                name.text.toString(),
+                username.text.toString(),
+                password.text.toString()
+            )
+        }
+    }
+}
+
+fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
+    this.addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(editable: Editable?) {
+            afterTextChanged.invoke(editable.toString())
         }
 
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
-        
-//        viewModel.check()
-
-//        viewModel.user.observe(this@SignUpActivity, Observer {
-//            val result = it ?: return@Observer
-//
-//            finish()
-//        })
-    }
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+    })
 }

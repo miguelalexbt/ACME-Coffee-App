@@ -1,7 +1,9 @@
 package org.feup.cmov.acmeclient
 
+import android.content.Context
 import android.security.KeyPairGeneratorSpec
 import android.util.Base64
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.math.BigInteger
 import java.security.*
 import java.security.cert.Certificate
@@ -9,18 +11,18 @@ import java.util.*
 import javax.security.auth.x500.X500Principal
 
 class Utils {
-
     companion object {
         private const val KEY_STORE = "AndroidKeyStore"
-        private const val ALIAS = "acme"
 
         @Suppress("DEPRECATION")
-        fun generateCertificate(): String {
+        fun generateCertificate(
+            alias: String
+        ): String {
             val ks: KeyStore = KeyStore.getInstance(KEY_STORE).apply {
                 load(null)
             }
 
-            val kpg = KeyPairGenerator.getInstance("RSA", KEY_STORE)
+            val kpg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA", KEY_STORE)
 
             val start = Calendar.getInstance()
             val end = Calendar.getInstance()
@@ -28,7 +30,7 @@ class Utils {
 
             val spec = KeyPairGeneratorSpec
                 .Builder(App.instance)
-                .setAlias(ALIAS)
+                .setAlias(alias)
                 .setSubject(X500Principal("CN=ACME, O=ACME Inc., C=PT"))
                 .setSerialNumber(BigInteger.ONE)
                 .setStartDate(start.time).setEndDate(end.time)
@@ -37,33 +39,33 @@ class Utils {
             kpg.initialize(spec)
             kpg.generateKeyPair()
 
-            val cert = ks.getCertificate(ALIAS)
+            val cert: Certificate = ks.getCertificate(alias)
 
             return encode(cert.encoded)
         }
 
-        fun sign(data: ByteArray): String? {
+        fun sign(username: String, data: ByteArray): String? {
             val ks: KeyStore = KeyStore.getInstance(KEY_STORE).apply {
                 load(null)
             }
 
-            val pk: PrivateKey = ks.getKey(ALIAS, null) as PrivateKey
+            val pk: PrivateKey = ks.getKey(username, null) as PrivateKey
 
-            val signature: ByteArray? = Signature.getInstance("SHA256withRSA").run {
+            val signature = Signature.getInstance("SHA256withRSA").run {
                 initSign(pk)
                 update(data)
                 sign()
             }
 
-            return encode(signature!!)
+            return encode(signature)
         }
 
-        fun verify(data: ByteArray, signature: String): Boolean {
+        fun verify(username: String, data: ByteArray, signature: String): Boolean {
             val ks: KeyStore = KeyStore.getInstance(KEY_STORE).apply {
                 load(null)
             }
 
-            val cert: Certificate? = ks.getCertificate(ALIAS)
+            val cert: Certificate = ks.getCertificate(username)
 
             return Signature.getInstance("SHA256withRSA").run {
                 initVerify(cert)

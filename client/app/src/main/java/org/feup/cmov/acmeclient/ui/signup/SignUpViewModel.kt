@@ -13,31 +13,31 @@ data class State(
     val password: String = ""
 )
 
+data class FormState(
+    val usernameError: String,
+    val passwordError: String
+)
+
 class SignUpViewModel @ViewModelInject constructor(
-    @Assisted savedStateHandle: SavedStateHandle,
+//    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
+    private val _formState = MutableLiveData<FormState>()
+    val formState : LiveData<FormState> = _formState
 
-//    val userId: String? = savedStateHandle["uid"]
-
-    private val _state = MutableLiveData<State>()
-    val state : LiveData<State> = _state
-    
-    fun signUp() {
+    fun signUp(name: String, username: String, password: String) {
         viewModelScope.launch {
             val result = dataRepository.signUp(
-                    "Miguel Teixeira",
-                    "miguelalexbt",
-                    "123"
-                )
+                name, username, password
+            )
 
-            result
-                .onSuccess {
-                    // Update state (livedata)
-                }
-                .onFailure {
-                    throw it.cause!!
-                }
+//            result
+//                .onSuccess {
+//                    // Update state (livedata)
+//                }
+//                .onFailure {
+//                    throw it.cause!!
+//                }
         }
     }
  }

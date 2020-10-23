@@ -1,23 +1,26 @@
 package org.feup.cmov.acmeclient.data
 
+import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import com.google.gson.Gson
+import kotlinx.coroutines.flow.Flow
+import org.feup.cmov.acmeclient.App
 import org.feup.cmov.acmeclient.Utils
+import org.feup.cmov.acmeclient.data.db.UserDao
 import org.feup.cmov.acmeclient.data.model.User
-import retrofit2.Call
-import retrofit2.Callback
+import org.feup.cmov.acmeclient.data.request.SignInRequest
+import org.feup.cmov.acmeclient.data.request.SignUpRequest
 import retrofit2.Response
+import java.io.IOException
+import java.security.KeyStore
+import java.util.concurrent.Executor
 
 import javax.inject.Inject
-import kotlin.Result
 
 class DataRepository @Inject constructor(
-    private val webService: WebService
+    private val webService: WebService,
+    private val userDao: UserDao
 ) {
-    
     var user: User? = null
         private set
 
@@ -25,12 +28,24 @@ class DataRepository @Inject constructor(
         get() = user != null
 
     init {
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
+//        user = loadFromCache()
         user = null
     }
 
-//    fun signIn(username: String, password: String) {
+    suspend fun signIn(username: String, password: String): User {
+
+        val result = kotlin.runCatching {
+            // Call web service
+            webService.signIn(SignInRequest(username, password))
+        }
+
+        result.onSuccess {
+            println("Success! Logged in")
+//            setUser(result.getOrNull()!!)
+        }
+
+        return result.getOrNull()!!
+
 //        webService.signIn(username, password).enqueue(object: Callback<User> {
 //            override fun onResponse(call: Call<User>, response: Response<User>) {
 //                if (response.isSuccessful) {
@@ -42,84 +57,81 @@ class DataRepository @Inject constructor(
 //                println(t.toString())
 //            }
 //        })
-//    }
-
-    fun signOut() {
-
     }
 
-    suspend fun signUp(name: String, username: String, password: String): Result<User> {
+    suspend fun signUp(name: String, username: String, password: String): User {
 
-        val result = runCatching {
+        val result = kotlin.runCatching {
+            val user = User(id="", name=name, username=username, password=password)
 
             // Generate certificate
-            val cert = Utils.generateCertificate()
+            val cert = Utils.generateCertificate(alias=username)
 
             // Call web service
-            webService.signUp(name, username, password, cert)
+           webService.signUp(SignUpRequest(user, cert))
         }
 
         result.onSuccess {
-            // Update state (loggedin user)
+            println("Success! Saving to DB")
+            setUser(result.getOrNull()!!)
         }
 
-        return result
-    }
-    
-//    suspend fun signUp(name: String, username: String, password: String): Result<LiveData<User>> {
-//
-//         val result = MutableLiveData<User>()
-//
-//        // Generate certificate
-//        val cert = Utils.generateCertificate()
-//
-//        webService.signUp(name, username, password, cert).enqueue(object : Callback<User> {
-//            override fun onResponse(call: Call<User>, response: Response<User>) {
-//                if (response.isSuccessful) {
-//                    setUser(response.body()!!)
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<User>, t: Throwable) {
-//                println(t.toString())
-//            }
-//        })
-//    }
+        return result.getOrNull()!!
 
-    private fun setUser(user: User) {
+
+        
+//        val result = runCatching {
+//
+//            val user = User(id="", name=name, username=username, password=password)
+//
+//            // Generate certificate
+//            val cert = Utils.generateCertificate(alias=username)
+//
+//            // Call web service
+//            webService.signUp(SignUpRequest(user, cert))
+//        }
+
+//        result.onSuccess {
+//            setUser(result.getOrNull()!!)
+//        }
+
+//        return result
+    }
+
+    suspend fun getItems() {
+
+    }
+
+
+    private suspend fun setUser(user: User) {
         this.user = user
-
-        // CACHE
+//        saveToCache(user)
+        userDao.save(user)
     }
 
-//    fun login(username : String, password : String): LiveData<User> {
-//        // This isn't an optimal implementation. We'll fix it later.
-//        val data = MutableLiveData<User>()
-//        webservice.getUser(userId).enqueue(object : Callback<User> {
-//            override fun onResponse(call: Call<User>, response: Response<User>) {
-//                data.value = response.body()
-//            }
-//            // Error case is left out for brevity.
-//            override fun onFailure(call: Call<User>, t: Throwable) {
-//                TODO()
-//            }
-//        })
-//        return data
-//    }
+    private fun saveToCache(user: User) {
+        val sharedPref = App.instance.getSharedPreferences(
+            "APP_PREFS", Context.MODE_PRIVATE
+        ) ?: return
 
-//    fun login(username: String, password: String): Result<User> {
-//        val result = null
-//
-////        return result
-//    }
+        with (sharedPref.edit()) {
+            putString("loggedIn", Gson().toJson(user))
+            apply()
+        }
+    }
 
-//    fun logout() {
-//        user = null
-//    }
-//
-//    private fun setUser(user: User) {
-//        this.user = user
-//        // If user credentials will be cached in local storage, it is recommended it be encrypted
-//        // @see https://developer.android.com/training/articles/keystore
-//    }
+    private fun loadFromCache(): User? {
+        val sharedPref = App.instance.getSharedPreferences(
+            "APP_PREFS", Context.MODE_PRIVATE
+        ) ?: return null
+
+        with (sharedPref.edit()){
+            clear()
+            apply()
+        }
+
+        val user = sharedPref.getString("loggedIn", null) ?: return null
+
+        return Gson().fromJson(user, User::class.java)
+    }
 }

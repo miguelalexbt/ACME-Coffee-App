@@ -4,12 +4,12 @@ const { Schema } = mongoose;
 // User schema
 const userSchema = new Schema({
     _id: String,
-    name: String,
+    name: { type: String, required: true },
     // NIF: 
     // credit/DEBIT:
-    username: String,
-    password: String,
-    certificate: String
+    username: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
+    certificate: { type: String, required: true },
 }, {
     toJSON: {
         transform: (doc, ret) => {
@@ -24,8 +24,8 @@ const userSchema = new Schema({
 // Item schema
 const itemSchema = new Schema({
     type: { type: String, enum: ['food', 'drink'] },
-    name: String,
-    price: Number
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
 }, {
     toJSON: {
         transform: (doc, ret) => {
