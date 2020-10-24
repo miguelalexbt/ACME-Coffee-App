@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import org.feup.cmov.acmeclient.MainApplication
 import org.feup.cmov.acmeclient.Utils
+import org.feup.cmov.acmeclient.data.db.ItemDao
 import org.feup.cmov.acmeclient.data.db.UserDao
 import org.feup.cmov.acmeclient.data.model.User
 import org.feup.cmov.acmeclient.data.request.SignInRequest
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 class DataRepository @Inject constructor(
     private val webService: WebService,
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val itemDao: ItemDao
 ) {
     var user: User? = null
         private set
@@ -45,23 +47,11 @@ class DataRepository @Inject constructor(
         }
 
         return result.getOrNull()!!
-
-//        webService.signIn(username, password).enqueue(object: Callback<User> {
-//            override fun onResponse(call: Call<User>, response: Response<User>) {
-//                if (response.isSuccessful) {
-//                    setUser(response.body()!!)
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<User>, t: Throwable) {
-//                println(t.toString())
-//            }
-//        })
     }
 
     suspend fun signUp(name: String, username: String, password: String): User {
 
-        val result = kotlin.runCatching {
+        val result = runCatching {
             val user = User(id="", name=name, username=username, password=password)
 
             // Generate certificate
@@ -77,30 +67,9 @@ class DataRepository @Inject constructor(
         }
 
         return result.getOrNull()!!
-
-
-        
-//        val result = runCatching {
-//
-//            val user = User(id="", name=name, username=username, password=password)
-//
-//            // Generate certificate
-//            val cert = Utils.generateCertificate(alias=username)
-//
-//            // Call web service
-//            webService.signUp(SignUpRequest(user, cert))
-//        }
-
-//        result.onSuccess {
-//            setUser(result.getOrNull()!!)
-//        }
-
-//        return result
     }
 
-    suspend fun getItems() {
-
-    }
+    fun getItems() = itemDao.getAll()
 
 
     private suspend fun setUser(user: User) {

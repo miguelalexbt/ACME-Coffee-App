@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.feup.cmov.acmeclient.data.db.AppDatabase
+import org.feup.cmov.acmeclient.data.db.ItemDao
 import org.feup.cmov.acmeclient.data.db.UserDao
 import javax.inject.Singleton
 
@@ -23,4 +24,7 @@ object DatabaseModule {
 
     @Provides
     fun provideUserDao(db: AppDatabase): UserDao = db.userDao()
+
+    @Provides
+    fun provideItemDao(db: AppDatabase): ItemDao = db.itemDao()
 }

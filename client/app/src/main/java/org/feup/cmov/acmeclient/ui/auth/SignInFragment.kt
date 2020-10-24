@@ -6,32 +6,44 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.R
+import org.feup.cmov.acmeclient.databinding.FragmentSignInBinding
 
 @AndroidEntryPoint
 class SignInFragment : Fragment() {
+
+    private lateinit var binding: FragmentSignInBinding
+
     private val viewModel: SignInViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_sign_in, container, false)
+        binding = FragmentSignInBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Subscribe to state, etc
-        val btn = view.findViewById<Button>(R.id.button2)
+        viewModel.items.observe(viewLifecycleOwner, Observer { items ->
+            println("Got $items")
+        })
 
-        btn.setOnClickListener {
-            // TODO CHECK OUT LIBRARY SafeArgs
-            findNavController().navigate(R.id.navigate_to_sign_up)
-        }
+        // Subscribe to state, etc
+//        val btn = view.findViewById<Button>(R.id.signIn_submit)
+//
+//        btn.setOnClickListener {
+//            // TODO CHECK OUT LIBRARY SafeArgs
+//            findNavController().navigate(R.id.navigate_to_sign_up)
+//        }
     }
 }
