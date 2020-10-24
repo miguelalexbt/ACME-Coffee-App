@@ -5,8 +5,12 @@ const { Schema } = mongoose;
 const userSchema = new Schema({
     _id: String,
     name: { type: String, required: true },
-    // NIF: 
-    // credit/DEBIT:
+    // NIF: { type: String, required: true },
+    // CC: { 
+    //     number: { type: Number, required: true },
+    //     securityCode: { type: Number, required: true },
+    //     expirationDate: { type: String, required: true }
+    // },
     username: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     certificate: { type: String, required: true },
