@@ -3,7 +3,7 @@ const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 
-const { User } = require('./models');
+const { User, Item } = require('./models');
 
 // Validation
 const validate = validations => {
@@ -21,7 +21,7 @@ const validate = validations => {
 
 const authenticated = (req, res, next) => {
 
-    // CHEcK IF AUTHENTICATED
+    // CHECK IF AUTHENTICATED
 }
 
 // Auth
@@ -62,11 +62,13 @@ authRouter.post('/signUp', async (req, res) => {
 
 let itemRouter = express.Router()
 
-itemRouter.get('/', (req, res) => {
-	
-
+itemRouter.get('/', async (req, res) => {
+    let allItems = await Item.find({}).exec()
+    res.json(allItems)
+    // res.send(__dirname)
 })
 
 module.exports = { 
     authRouter: authRouter,
+    itemRouter: itemRouter
 };

@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 
-const { authRouter } = require('./api/routes');
+const { authRouter, itemRouter } = require('./api/routes');
 
 let isDbReady = false;
 
@@ -25,6 +25,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/', authRouter);
+app.use('/item/', itemRouter);
 
 // Listen
 const port = 3000;
