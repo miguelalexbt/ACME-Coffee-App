@@ -18,38 +18,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @HiltAndroidApp
-class App: Application() {
-
+class MainApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
     }
 
     companion object {
-        lateinit var instance: App
+        lateinit var instance: MainApplication
             private set
     }
-}
-
-@Module
-@InstallIn(ApplicationComponent::class)
-object AppModule {
-    @Singleton
-    @Provides
-    fun provideAppDatabase(
-        @ApplicationContext app: Context
-    ) = Room.databaseBuilder(app, AppDatabase::class.java, "db").build()
-
-    @Provides
-    fun provideWebService(): WebService {
-        return Retrofit.Builder()
-//            .baseUrl("http://10.0.2.2")
-            .baseUrl("http://192.168.1.71") // Miguel
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(WebService::class.java)
-    }
-
-    @Provides
-    fun provideUserDao(db: AppDatabase): UserDao = db.userDao()
 }

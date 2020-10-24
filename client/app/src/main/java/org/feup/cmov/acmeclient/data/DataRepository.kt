@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
-import org.feup.cmov.acmeclient.App
+import org.feup.cmov.acmeclient.MainApplication
 import org.feup.cmov.acmeclient.Utils
 import org.feup.cmov.acmeclient.data.db.UserDao
 import org.feup.cmov.acmeclient.data.model.User
@@ -110,7 +110,7 @@ class DataRepository @Inject constructor(
     }
 
     private fun saveToCache(user: User) {
-        val sharedPref = App.instance.getSharedPreferences(
+        val sharedPref = MainApplication.instance.getSharedPreferences(
             "APP_PREFS", Context.MODE_PRIVATE
         ) ?: return
 
@@ -121,7 +121,7 @@ class DataRepository @Inject constructor(
     }
 
     private fun loadFromCache(): User? {
-        val sharedPref = App.instance.getSharedPreferences(
+        val sharedPref = MainApplication.instance.getSharedPreferences(
             "APP_PREFS", Context.MODE_PRIVATE
         ) ?: return null
 

@@ -29,7 +29,7 @@ class Utils {
             end.add(Calendar.YEAR, 1)
 
             val spec = KeyPairGeneratorSpec
-                .Builder(App.instance)
+                .Builder( MainApplication.instance)
                 .setAlias(alias)
                 .setSubject(X500Principal("CN=ACME, O=ACME Inc., C=PT"))
                 .setSerialNumber(BigInteger.ONE)

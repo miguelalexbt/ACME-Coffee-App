@@ -14,5 +14,5 @@ interface UserDao {
     suspend fun save(user: User)
 
 //    @Query("SELECT * FROM user WHERE id = :id")
-//    fun load(id: String) : Flow<User?>
+//    fun load(id: String) : LiveData<User?>
 }
