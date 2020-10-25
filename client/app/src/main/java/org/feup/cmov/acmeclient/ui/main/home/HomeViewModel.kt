@@ -1,12 +1,13 @@
-package org.feup.cmov.acmeclient.ui.vouchers
+package org.feup.cmov.acmeclient.ui.main.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class VouchersViewModel : ViewModel() {
+class HomeViewModel : ViewModel() {
+
     private val _text = MutableLiveData<String>().apply {
-        value = "This is vouchers Fragment"
+        value = "This is home Fragment"
     }
     val text: LiveData<String> = _text
 }

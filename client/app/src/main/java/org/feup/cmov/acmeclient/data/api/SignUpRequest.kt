@@ -1,4 +1,4 @@
-package org.feup.cmov.acmeclient.data.request
+package org.feup.cmov.acmeclient.data.api
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

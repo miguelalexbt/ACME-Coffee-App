@@ -1,4 +1,4 @@
-package org.feup.cmov.acmeclient.ui.vouchers
+package org.feup.cmov.acmeclient.ui.main.vouchers
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import org.feup.cmov.acmeclient.R
-import org.feup.cmov.acmeclient.ui.home.HomeViewModel
 
 class VouchersFragment : Fragment() {
 

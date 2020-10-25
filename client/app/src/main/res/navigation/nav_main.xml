@@ -7,16 +7,16 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="org.feup.cmov.acmeclient.ui.home.HomeFragment"
+        android:name="org.feup.cmov.acmeclient.ui.main.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_vouchersFragment2"
+            android:id="@+id/action_homeFragment_to_vouchersFragment"
             app:destination="@id/vouchersFragment" />
     </fragment>
     <fragment
         android:id="@+id/vouchersFragment"
-        android:name="org.feup.cmov.acmeclient.ui.vouchers.VouchersFragment"
+        android:name="org.feup.cmov.acmeclient.ui.main.vouchers.VouchersFragment"
         android:label="fragment_vouchers"
         tools:layout="@layout/fragment_vouchers" />
 </navigation>

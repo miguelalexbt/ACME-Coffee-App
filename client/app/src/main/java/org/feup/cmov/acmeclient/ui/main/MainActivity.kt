@@ -1,16 +1,12 @@
-package org.feup.cmov.acmeclient
+package org.feup.cmov.acmeclient.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import androidx.databinding.DataBindingUtil
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import org.feup.cmov.acmeclient.databinding.ActivityAuthBinding
+import org.feup.cmov.acmeclient.R
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

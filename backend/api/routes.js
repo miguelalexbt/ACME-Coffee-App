@@ -29,15 +29,17 @@ let authRouter = express.Router()
 
 authRouter.post('/signIn', async (req, res) => {
     const body = req.body
+    const user = await User.findOne({ username: body.username }).exec();
 
-    console.log(body)
+    if (user === null) {
+        res.status(401).json("Username/password combination is incorrect");
+        return;
+    }
 
-    const user = await User.findOne({ username: body.username }).exec()
-
-    if (user !== null)
-        res.json(user)
-    else
-        res.status(401)
+    await bcrypt.compare(body.password, user.password) ? 
+        res.json(user) 
+        :
+        res.status(403).json("Username/password combination is incorrect")
 });
 
 authRouter.post('/signUp', async (req, res) => {

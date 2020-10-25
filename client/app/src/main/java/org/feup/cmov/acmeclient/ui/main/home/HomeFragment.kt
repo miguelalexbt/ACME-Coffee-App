@@ -1,4 +1,4 @@
-package org.feup.cmov.acmeclient.ui.home
+package org.feup.cmov.acmeclient.ui.main.home
 
 import android.os.Bundle
 import android.view.LayoutInflater

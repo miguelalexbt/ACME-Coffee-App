@@ -1,22 +1,18 @@
 package org.feup.cmov.acmeclient.data
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import org.feup.cmov.acmeclient.MainApplication
 import org.feup.cmov.acmeclient.Utils
+import org.feup.cmov.acmeclient.data.api.ApiResponse
+import org.feup.cmov.acmeclient.data.api.ApiSuccessResponse
 import org.feup.cmov.acmeclient.data.db.ItemDao
 import org.feup.cmov.acmeclient.data.db.UserDao
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.model.User
-import org.feup.cmov.acmeclient.data.request.SignInRequest
-import org.feup.cmov.acmeclient.data.request.SignUpRequest
-import retrofit2.Response
-import java.io.IOException
-import java.security.KeyStore
-import java.util.concurrent.Executor
+import org.feup.cmov.acmeclient.data.api.SignInRequest
+import org.feup.cmov.acmeclient.data.api.SignUpRequest
 
 import javax.inject.Inject
 
@@ -36,19 +32,24 @@ class DataRepository @Inject constructor(
         user = null
     }
 
-    suspend fun signIn(username: String, password: String): User {
+    suspend fun signIn(username: String, password: String): ApiResponse<User> {
 
+        // Call web service and catch exceptions
         val result = kotlin.runCatching {
-            // Call web service
             webService.signIn(SignInRequest(username, password))
         }
 
-        result.onSuccess {
-            println("Success! Logged in")
-//            setUser(result.getOrNull()!!)
+        // Exception thrown
+        if (result.isFailure)
+            return ApiResponse.create(result.exceptionOrNull()!!)
+
+        val response = ApiResponse.create(result.getOrNull()!!)
+
+        if (response is ApiSuccessResponse)  {
+            // Cache user
         }
 
-        return result.getOrNull()!!
+        return response
     }
 
     suspend fun signUp(name: String, username: String, password: String): User {

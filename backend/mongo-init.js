@@ -11,6 +11,15 @@ db.createUser(
 db.users.drop();
 db.items.drop();
 
+db.users.insert([
+  {
+    _id: '62fc8181-dfe4-4b3b-abe6-61175416486f',
+    name: 'John Doe',
+    username: 'johndoe',
+    password: '$2b$10$IaPlqcuqYi3ZV1lPpFlHQuUIsMWKevQ9GHvjmslX3Q8j7BFMo.NRm'
+  }
+]);
+
 db.items.insertMany([
   {
     name: 'Sandwich',

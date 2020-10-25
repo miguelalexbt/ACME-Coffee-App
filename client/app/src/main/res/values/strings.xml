@@ -5,5 +5,6 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_sign_in">Sign in</string>
     <string name="prompt_sign_up">Sign up</string>
+    <string name="logo_description" />
     <string name="title_activity_nav">MainActivity</string>
 </resources>

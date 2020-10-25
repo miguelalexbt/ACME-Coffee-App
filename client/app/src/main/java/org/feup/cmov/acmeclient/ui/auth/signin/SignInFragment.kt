@@ -1,13 +1,11 @@
-package org.feup.cmov.acmeclient.ui.auth
+package org.feup.cmov.acmeclient.ui.auth.signin
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.R
@@ -34,16 +32,11 @@ class SignInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.items.observe(viewLifecycleOwner, Observer { items ->
-            println("Got $items")
-        })
+        viewModel.state.observe(viewLifecycleOwner, { newState ->
+            println("LOGGED IN ${newState.success}")
 
-        // Subscribe to state, etc
-//        val btn = view.findViewById<Button>(R.id.signIn_submit)
-//
-//        btn.setOnClickListener {
-//            // TODO CHECK OUT LIBRARY SafeArgs
-//            findNavController().navigate(R.id.navigate_to_sign_up)
-//        }
+            if (newState.success)
+                findNavController().navigate(R.id.action_signInFragment_to_mainActivity)
+        })
     }
 }
