@@ -21,7 +21,8 @@ interface WebService {
     ) : User
 
     //Items
-    @GET("items")
-    fun getItems(@Header("User-Signature") userSignature: String): List<Item>
+    @GET("item")
+    suspend fun getItems(): List<Item>
+//    fun getItems(@Header("User-Signature") userSignature: String): List<Item>
 
 }

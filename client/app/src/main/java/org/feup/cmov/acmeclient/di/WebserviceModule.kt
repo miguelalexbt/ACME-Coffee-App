@@ -15,8 +15,9 @@ object WebserviceModule {
     @Provides
     fun provideWebService(): WebService {
         return Retrofit.Builder()
-//            .baseUrl("http://10.0.2.2")
-            .baseUrl("http://192.168.1.71") // Miguel
+            .baseUrl("http://10.0.2.2")
+//            .baseUrl("http://192.168.1.71") // Miguel
+//            .baseUrl("http://192.168.1.2") // Xavi
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(WebService::class.java)

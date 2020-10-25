@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import org.feup.cmov.acmeclient.MainApplication
 import org.feup.cmov.acmeclient.Utils
 import org.feup.cmov.acmeclient.data.db.ItemDao
 import org.feup.cmov.acmeclient.data.db.UserDao
+import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.model.User
 import org.feup.cmov.acmeclient.data.request.SignInRequest
 import org.feup.cmov.acmeclient.data.request.SignUpRequest
@@ -69,8 +71,23 @@ class DataRepository @Inject constructor(
         return result.getOrNull()!!
     }
 
-    fun getItems() = itemDao.getAll()
+    suspend fun fetchItems() {
+        println("fetchItems")
+        val result = runCatching {
+            webService.getItems()
+        }
+        result.onFailure {
+            println(result.exceptionOrNull())
+            println("onFailure")
+        }
+        result.onSuccess {
+            println(result)
+            itemDao.save(result.getOrNull()!!)
+            println("fetchItems onSuccess")
+        }
+    }
 
+    fun getItemsCached(): Flow<List<Item>> = itemDao.getAll()
 
     private suspend fun setUser(user: User) {
         this.user = user
