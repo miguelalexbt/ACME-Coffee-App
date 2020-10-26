@@ -2,11 +2,14 @@ package org.feup.cmov.acmeclient.data
 
 import android.content.Context
 import com.google.gson.Gson
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.isActive
 import org.feup.cmov.acmeclient.MainApplication
 import org.feup.cmov.acmeclient.Utils
 import org.feup.cmov.acmeclient.data.api.*
