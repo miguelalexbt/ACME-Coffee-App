@@ -1,12 +1,14 @@
 package org.feup.cmov.acmeclient.ui.auth.signin
 
+import android.content.Context
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
+import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.data.*
 import org.feup.cmov.acmeclient.data.api.ApiResponse
-import org.feup.cmov.acmeclient.data.model.Item
 
 class SignInViewModel @ViewModelInject constructor(
     @Assisted savedStateHandle: SavedStateHandle,
@@ -15,7 +17,7 @@ class SignInViewModel @ViewModelInject constructor(
 
     data class State(
         val success: Boolean = false,
-        val error: String? = null
+        val error: Int = R.string.empty_string,
     )
 
     // Form state
@@ -23,15 +25,26 @@ class SignInViewModel @ViewModelInject constructor(
     val password = MutableLiveData("")
 
     // Sign in state
-    private val _state = MutableLiveData<State>()
+    private val _state = MutableLiveData(State())
     val state: LiveData<State> = _state
 
     fun signIn() {
-        viewModelScope.launch {
-            when (val apiCall = dataRepository.signIn(username.value!!, password.value!!)) {
-                is ApiResponse.Success -> _state.postValue(State(success = true))
-                is ApiResponse.ApiError -> _state.postValue(State(error = apiCall.error))
-                is ApiResponse.NetworkError -> _state.postValue(State(error = apiCall.error))
+        when {
+            username.value!!.isEmpty() ->
+                _state.postValue(State(error = R.string.error_empty_username))
+            password.value!!.isEmpty() ->
+                _state.postValue(State(error = R.string.error_empty_password))
+            else -> {
+                viewModelScope.launch {
+                    when (dataRepository.signIn(username.value!!, password.value!!)) {
+                        is ApiResponse.Success ->
+                            _state.postValue(State(success = true))
+                        is ApiResponse.ApiError ->
+                            _state.postValue(State(error = R.string.error_wrong_credentials))
+                        is ApiResponse.NetworkError ->
+                            _state.postValue(State(error = R.string.error_wrong_credentials))
+                    }
+                }
             }
         }
     }

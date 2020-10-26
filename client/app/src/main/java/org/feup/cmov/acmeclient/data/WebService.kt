@@ -1,13 +1,10 @@
 package org.feup.cmov.acmeclient.data
 
-import androidx.lifecycle.LiveData
-import kotlinx.coroutines.flow.Flow
 import org.feup.cmov.acmeclient.data.api.ApiResponse
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.model.User
 import org.feup.cmov.acmeclient.data.api.SignInRequest
 import org.feup.cmov.acmeclient.data.api.SignUpRequest
-import retrofit2.Response
 import retrofit2.http.*
 
 interface WebService {
