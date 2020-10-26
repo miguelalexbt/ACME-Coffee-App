@@ -4,14 +4,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data />
+    <data>
+        <variable
+            name="isLoading"
+            type="Boolean" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.auth.signin.SignInFragment">
 
+        <include
+            android:id="@+id/signIn_loading"
+            layout="@layout/fragment_loading"
+            isGone="@{!isLoading}"/>
+
         <ImageView
+            android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
@@ -23,6 +33,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/signIn_username_layout"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="270dp"
@@ -36,10 +47,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                app:errorEnabled="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/signIn_password_layout"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="350dp"
@@ -54,7 +67,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                app:errorEnabled="true" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button

@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,17 +29,47 @@ class SignInFragment : Fragment() {
         binding = FragmentSignInBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        // Redirect if successful, show error otherwise
-        viewModel.state.observe(viewLifecycleOwner, { newState ->
-            if (newState.success)
-                findNavController().navigate(R.id.action_signIn_to_main)
+        viewModel.apiState.observe(viewLifecycleOwner, {
+            val apiState = it ?: return@observe
 
-            if (newState.error != R.string.empty_string)
-                Toast.makeText(context, newState.error, Toast.LENGTH_LONG).show()
+            binding.isLoading = false
+
+            if (apiState.error != null)
+                Toast.makeText(context, apiState.error, Toast.LENGTH_SHORT).show()
+
+            if (apiState.success)
+                findNavController().navigate(R.id.action_signIn_to_main)
         })
+
+        viewModel.formState.observe(viewLifecycleOwner, {
+            val formState = it ?: return@observe
+
+            binding.signInSubmit.isEnabled = formState.isValid
+
+            binding.signInUsernameLayout.error = if (formState.usernameError != null)
+                getString(formState.usernameError)
+            else
+                null
+
+            binding.signInPasswordLayout.error = if (formState.passwordError != null)
+                getString(formState.passwordError)
+            else
+                null
+        })
+        
+        binding.signInUsernameLayout.editText?.doAfterTextChanged { text ->
+            viewModel.checkForm(text.toString(), binding.signInPassword.text.toString())
+        }
+
+        binding.signInPasswordLayout.editText?.doAfterTextChanged { text ->
+            viewModel.checkForm(binding.signInUsername.text.toString(), text.toString())
+        }
 
         // Sign in
         binding.signInSubmit.setOnClickListener {
+
+            binding.isLoading = true
+
             viewModel.signIn(
                 binding.signInUsername.text.toString(),
                 binding.signInPassword.text.toString()

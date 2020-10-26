@@ -9,10 +9,13 @@
 
     <string name="empty_string" />
 
+    <!--API-->
+    <string name="error_unknown">An error has occurred</string>
+    <string name="error_wrong_credentials">Username/password combination is incorrect</string>
+
     <!--Sign in-->
     <string name="prompt_sign_in">Sign in</string>
     <string name="prompt_redirect_sign_up">I don\'t have an account</string>
     <string name="error_empty_username">Username is empty</string>
     <string name="error_empty_password">Password is empty</string>
-    <string name="error_wrong_credentials">Username/password combination is incorrect</string>
 </resources>
