@@ -1,33 +1,27 @@
 package org.feup.cmov.acmeclient.data.api
 
-import retrofit2.Response
-
-sealed class ApiResponse<T> {
-    companion object {
-        fun <T> create(response: Response<T>): ApiResponse<T> {
-            return if (response.isSuccessful) {
-                val body = response.body()
-                if (body == null || response.code() == 204)
-                    ApiEmptyResponse()
-                else
-                    ApiSuccessResponse(body)
-            } else {
-                val msg = response.errorBody()?.string()
-                val errorMsg = if (msg.isNullOrEmpty()) response.message() else msg
-                ApiErrorResponse(errorMsg ?: "unknown error")
-            }
-        }
-
-        fun <T> create(error: Throwable): ApiErrorResponse<T> {
-            return ApiErrorResponse(error.message ?: "unknown error")
-        }
-    }
+sealed class ApiResponse<out T> {
+    data class Success<out T>(val data: T) : ApiResponse<T>()
+    data class ApiError<out T>(val error: String) : ApiResponse<T>()
+    data class NetworkError<out T>(val error: String) : ApiResponse<T>()
 }
 
-class ApiEmptyResponse<T> : ApiResponse<T>()
+//enum class Status {
+//    SUCCESS, API_ERROR, NETWORK_ERROR
+//}
 
-data class ApiSuccessResponse<T>(
-    val body: T
-) : ApiResponse<T>()
-
-data class ApiErrorResponse<T>(val errorMessage: String) : ApiResponse<T>()
+//data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
+//    companion object {
+//        fun <T> success(data: T?): Resource<T> {
+//            return Resource(Status.SUCCESS, data, null)
+//        }
+//
+//        fun <T> error(msg: String, data: T?): Resource<T> {
+//            return Resource(Status.ERROR, data, msg)
+//        }
+//
+//        fun <T> loading(data: T?): Resource<T> {
+//            return Resource(Status.LOADING, data, null)
+//        }
+//    }
+//}

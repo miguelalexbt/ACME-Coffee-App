@@ -1,5 +1,6 @@
 package org.feup.cmov.acmeclient.data.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
@@ -14,7 +15,6 @@ interface UserDao {
 
     @Query("SELECT * FROM user ")
     fun getAll() : Flow<List<User>>
-
 
 //    @Query("SELECT * FROM user WHERE id = :id")
 //    fun load(id: String) : LiveData<User?>

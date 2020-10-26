@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import org.feup.cmov.acmeclient.data.WebService
+import org.feup.cmov.acmeclient.utils.ApiResponseAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -19,6 +20,7 @@ object WebServiceModule {
             .baseUrl("http://192.168.1.71") // Miguel
 //            .baseUrl("http://192.168.1.2") // Xavi
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(ApiResponseAdapterFactory())
             .build()
             .create(WebService::class.java)
     }
