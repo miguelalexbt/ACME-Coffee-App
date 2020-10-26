@@ -26,7 +26,6 @@ class SignInFragment : Fragment() {
     ): View? {
         binding = FragmentSignInBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.viewModel = viewModel
 
         // Redirect if successful, show error otherwise
         viewModel.state.observe(viewLifecycleOwner, { newState ->
@@ -37,7 +36,15 @@ class SignInFragment : Fragment() {
                 Toast.makeText(context, newState.error, Toast.LENGTH_LONG).show()
         })
 
-        // Redirect to sign up
+        // Sign in
+        binding.signInSubmit.setOnClickListener {
+            viewModel.signIn(
+                binding.signInUsername.text.toString(),
+                binding.signInPassword.text.toString()
+            )
+        }
+
+        // Sign up
         binding.signInRedirect.setOnClickListener {
             findNavController().navigate(R.id.action_signIn_to_signUp)
         }

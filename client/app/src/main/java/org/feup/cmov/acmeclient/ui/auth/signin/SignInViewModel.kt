@@ -18,23 +18,19 @@ class SignInViewModel @ViewModelInject constructor(
         val error: Int = R.string.empty_string,
     )
 
-    // Form state
-    val username = MutableLiveData("")
-    val password = MutableLiveData("")
-
-    // Sign in state
+    // State
     private val _state = MutableLiveData(State())
     val state: LiveData<State> = _state
 
-    fun signIn() {
+    fun signIn(username: String, password: String) {
         when {
-            username.value!!.isEmpty() ->
+            username.isEmpty() ->
                 _state.postValue(State(error = R.string.error_empty_username))
-            password.value!!.isEmpty() ->
+            password.isEmpty() ->
                 _state.postValue(State(error = R.string.error_empty_password))
             else -> {
                 viewModelScope.launch {
-                    when (dataRepository.signIn(username.value!!, password.value!!)) {
+                    when (dataRepository.signIn(username, password)) {
                         is ApiResponse.Success ->
                             _state.postValue(State(success = true))
                         is ApiResponse.ApiError ->

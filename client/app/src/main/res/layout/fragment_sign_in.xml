@@ -4,11 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <variable
-            name="viewModel"
-            type="org.feup.cmov.acmeclient.ui.auth.signin.SignInViewModel" />
-    </data>
+    <data />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -40,8 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="@={viewModel.username}" />
+                android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -59,8 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPassword"
-                android:text="@={viewModel.password}" />
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -68,7 +62,6 @@
             android:layout_width="150dp"
             android:layout_height="60dp"
             android:layout_marginTop="450dp"
-            android:onClick="@{() -> viewModel.signIn()}"
             android:text="@string/prompt_sign_in"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
