@@ -1,5 +1,6 @@
 package org.feup.cmov.acmeclient.utils
 
+import com.google.gson.Gson
 import okhttp3.Request
 import okio.Timeout
 import org.feup.cmov.acmeclient.data.api.ApiResponse
@@ -29,19 +30,12 @@ internal class ApiResponseCall<T : Any>(private val delegate: Call<T>) : Call<Ap
                     val errorMessage = if (errorBody.isNullOrEmpty())
                         response.message()
                     else
-                        errorBody
+                        Gson().fromJson(errorBody, String::class.java)
 
-                    if (errorMessage != null) {
-                        callback.onResponse(
-                            this@ApiResponseCall,
-                            Response.success(ApiResponse.ApiError(errorMessage))
-                        )
-                    } else {
-                        callback.onResponse(
-                            this@ApiResponseCall,
-                            Response.success(ApiResponse.NetworkError("unknown error"))
-                        )
-                    }
+                    callback.onResponse(
+                        this@ApiResponseCall,
+                        Response.success(ApiResponse.ApiError(errorMessage ?: "unknown error"))
+                    )
                 }
             }
 

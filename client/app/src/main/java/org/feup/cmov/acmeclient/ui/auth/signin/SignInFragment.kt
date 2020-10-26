@@ -33,14 +33,8 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.state.observe(viewLifecycleOwner, { newState ->
-            println("LOGGED IN ${newState.success}")
-
             if (newState.success)
                 findNavController().navigate(R.id.action_signInFragment_to_mainActivity)
-        })
-
-        viewModel.items.observe(viewLifecycleOwner, { items ->
-            println("Got items ${items.size} from DB")
         })
     }
 }
