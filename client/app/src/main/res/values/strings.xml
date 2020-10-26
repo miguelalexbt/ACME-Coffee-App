@@ -3,7 +3,6 @@
     <string name="prompt_name">Name</string>
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
-    <string name="prompt_sign_in">Sign in</string>
     <string name="prompt_sign_up">Sign up</string>
     <string name="logo_description" />
     <string name="title_activity_nav">MainActivity</string>
@@ -11,6 +10,8 @@
     <string name="empty_string" />
 
     <!--Sign in-->
+    <string name="prompt_sign_in">Sign in</string>
+    <string name="prompt_redirect_sign_up">I don\'t have an account</string>
     <string name="error_empty_username">Username is empty</string>
     <string name="error_empty_password">Password is empty</string>
     <string name="error_wrong_credentials">Username/password combination is incorrect</string>

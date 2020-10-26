@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,15 +27,21 @@ class SignInFragment : Fragment() {
         binding = FragmentSignInBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        return binding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+        // Redirect if successful, show error otherwise
         viewModel.state.observe(viewLifecycleOwner, { newState ->
             if (newState.success)
-                findNavController().navigate(R.id.action_signInFragment_to_mainActivity)
+                findNavController().navigate(R.id.action_signIn_to_main)
+
+            if (newState.error != R.string.empty_string)
+                Toast.makeText(context, newState.error, Toast.LENGTH_LONG).show()
         })
+
+        // Redirect to sign up
+        binding.signInRedirect.setOnClickListener {
+            findNavController().navigate(R.id.action_signIn_to_signUp)
+        }
+
+        return binding.root
     }
 }
