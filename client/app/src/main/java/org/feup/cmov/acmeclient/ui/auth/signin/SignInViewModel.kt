@@ -31,11 +31,11 @@ class SignInViewModel @ViewModelInject constructor(
     val formState: LiveData<FormState> = _formState
 
     fun checkForm(username: String, password: String) {
-        _formState.value = FormState(
-            usernameError = if (username.isEmpty()) R.string.error_empty_username else null,
-            passwordError = if (password.isEmpty()) R.string.error_empty_password else null,
-            isValid = username.isNotEmpty() && password.isNotEmpty()
-        )
+        when {
+            username.isEmpty() -> _formState.postValue(FormState(usernameError = R.string.error_empty_username))
+            password.isEmpty() -> _formState.postValue(FormState(passwordError = R.string.error_empty_password))
+            else -> _formState.postValue(FormState(isValid = true))
+        }
     }
 
     fun signIn(username: String, password: String) {
