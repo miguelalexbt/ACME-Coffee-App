@@ -40,5 +40,35 @@ db.items.insertMany([
     name: 'Coca-Cola',
     type: 'drink',
     price: 1.0
+  },
+  {
+    name: 'Latte',
+    type: 'drink',
+    price: 3.99
+  },
+  {
+    name: 'Mochaccino',
+    type: 'drink',
+    price: 4.99
+  },
+  {
+    name: 'Cappuccino',
+    type: 'drink',
+    price: 2.99
+  },
+  {
+    name: 'Croissant',
+    type: 'drink',
+    price: 2.50
+  },
+  {
+    name: 'Water',
+    type: 'drink',
+    price: 0.99
+  },
+  {
+    name: 'Expresso',
+    type: 'drink',
+    price: 0.70
   }
 ]);
