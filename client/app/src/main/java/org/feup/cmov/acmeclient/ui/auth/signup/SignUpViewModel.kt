@@ -6,8 +6,6 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.data.DataRepository
-import org.feup.cmov.acmeclient.data.api.ApiResponse
-import org.feup.cmov.acmeclient.ui.auth.signin.SignInViewModel
 
 class SignUpViewModel @ViewModelInject constructor(
     @Assisted savedStateHandle: SavedStateHandle,
@@ -37,25 +35,80 @@ class SignUpViewModel @ViewModelInject constructor(
     val formState: LiveData<FormState> = _formState
 
     fun checkPersonalInfo(name: String) {
+        val nameError = when {
+            name.isEmpty() -> R.string.error_required
+            else -> null
+        }
+
+        val isValid = nameError == null
+
         _formState.value = _formState.value?.copy(
-            nameError = if (name.isEmpty()) R.string.error_empty_name else null,
-            isValid = _formState.value!!.isValid && name.isNotEmpty()
+            nameError = nameError,
+            isValid = _formState.value!!.isValid && isValid
         )
     }
 
-    fun checkBillingInfo() {
+    fun checkBillingInfo(nif: String, ccNumber: String, ccExpiration: String, ccCVV: String) {
+        val nifError = when {
+            nif.isEmpty() -> R.string.error_required
+            nif.length != 9 -> R.string.error_invalid
+            else -> null
+        }
 
+        val ccNumberError = when {
+            ccNumber.isEmpty() -> R.string.error_required
+            ccNumber.length != 16 -> R.string.error_invalid
+            else -> null
+        }
+
+        val ccExpirationError = when {
+            ccExpiration.isEmpty() -> R.string.error_required
+            ccExpiration.length < 4 || ccExpiration.length > 5 -> R.string.error_invalid
+            else -> null
+        }
+
+        val ccCVVError = when {
+            ccCVV.isEmpty() -> R.string.error_required
+            ccCVV.length != 3 -> R.string.error_invalid
+            else -> null
+        }
+
+        val isValid = nifError == null && ccNumberError == null && ccExpirationError == null&& ccCVVError == null
+
+        _formState.value = _formState.value?.copy(
+            nifError = nifError,
+            ccNumberError = ccNumberError,
+            ccExpirationError = ccExpirationError,
+            ccCVVError = ccCVVError,
+            isValid = _formState.value!!.isValid && isValid
+        )
     }
 
     fun checkCredentials(username: String, password: String) {
+        val usernameError = when {
+            username.isEmpty() -> R.string.error_required
+            else -> null
+        }
+
+        val passwordError = when {
+            password.isEmpty() -> R.string.error_required
+            else -> null
+        }
+
+        val isValid = usernameError == null && passwordError == null
+
         _formState.value = _formState.value?.copy(
-            usernameError = if (username.isEmpty()) R.string.error_empty_username else null,
-            passwordError = if (password.isEmpty()) R.string.error_empty_password else null,
-            isValid = _formState.value!!.isValid && username.isNotEmpty() && password.isNotEmpty()
+            usernameError = usernameError,
+            passwordError = passwordError,
+            isValid = _formState.value!!.isValid && isValid
         )
     }
 
-    fun signUp() {
+    fun signUp(
+        name: String,
+        nif: String, ccNumber: String, ccExpiration: String, ccCVV: String,
+        username: String, password: String
+    ) {
         viewModelScope.launch {
 //            when (dataRepository.signUp(username, password)) {
 //                is ApiResponse.Success ->

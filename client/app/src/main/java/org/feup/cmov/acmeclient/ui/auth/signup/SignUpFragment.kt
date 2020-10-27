@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.R
-import org.feup.cmov.acmeclient.databinding.FragmentSignInBinding
 import org.feup.cmov.acmeclient.databinding.FragmentSignUpBinding
 
 @AndroidEntryPoint
@@ -60,6 +59,26 @@ class SignUpFragment : Fragment() {
             else
                 null
 
+            binding.signUpNifLayout.error = if (formState.nifError != null)
+                getString(formState.nifError)
+            else
+                null
+
+            binding.signUpCcNumberLayout.error = if (formState.ccNumberError != null)
+                getString(formState.ccNumberError)
+            else
+                null
+
+            binding.signUpCcExpirationLayout.error = if (formState.ccExpirationError != null)
+                getString(formState.ccExpirationError)
+            else
+                null
+
+            binding.signUpCcCvvLayout.error = if (formState.ccCVVError != null)
+                getString(formState.ccCVVError)
+            else
+                null
+
             binding.signUpUsernameLayout.error = if (formState.usernameError != null)
                 getString(formState.usernameError)
             else
@@ -75,12 +94,54 @@ class SignUpFragment : Fragment() {
             viewModel.checkPersonalInfo(text.toString())
         }
 
+        binding.signUpNifLayout.editText?.doAfterTextChanged { text ->
+            viewModel.checkBillingInfo(
+                text.toString(),
+                binding.signUpCcNumber.text.toString(),
+                binding.signUpCcExpiration.text.toString(),
+                binding.signUpCcCvv.text.toString()
+            )
+        }
+
+        binding.signUpCcNumberLayout.editText?.doAfterTextChanged { text ->
+            viewModel.checkBillingInfo(
+                binding.signUpNif.text.toString(),
+                text.toString(),
+                binding.signUpCcExpiration.text.toString(),
+                binding.signUpCcCvv.text.toString()
+            )
+        }
+
+        binding.signUpCcExpirationLayout.editText?.doAfterTextChanged { text ->
+            viewModel.checkBillingInfo(
+                binding.signUpNif.text.toString(),
+                binding.signUpCcNumber.text.toString(),
+                text.toString(),
+                binding.signUpCcCvv.text.toString()
+            )
+        }
+
+        binding.signUpCcCvvLayout.editText?.doAfterTextChanged { text ->
+            viewModel.checkBillingInfo(
+                binding.signUpNif.text.toString(),
+                binding.signUpCcNumber.text.toString(),
+                binding.signUpCcExpiration.text.toString(),
+                text.toString()
+            )
+        }
+
         binding.signUpUsernameLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkCredentials(text.toString(), binding.signUpPassword.text.toString())
+            viewModel.checkCredentials(
+                text.toString(),
+                binding.signUpPassword.text.toString()
+            )
         }
 
         binding.signUpPasswordLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkCredentials(binding.signUpUsername.text.toString(), text.toString())
+            viewModel.checkCredentials(
+                binding.signUpUsername.text.toString(),
+                text.toString()
+            )
         }
 
         // Sign up

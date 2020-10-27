@@ -19,7 +19,6 @@
     <!--Sign up-->
     <string name="section_personal">Personal information</string>
     <string name="prompt_name">Name</string>
-
     <string name="section_billing">Billing information</string>
     <string name="prompt_nif">NIF</string>
     <string name="prompt_cc_number">Debit/Credit card number</string>
@@ -30,7 +29,6 @@
     <string name="prompt_redirect_sign_in">I already have an account</string>
 
     <!--Errors-->
-    <string name="error_empty_name">Name is empty</string>
-    <string name="error_empty_username">Username is empty</string>
-    <string name="error_empty_password">Password is empty</string>
+    <string name="error_required">This field is required</string>
+    <string name="error_invalid">This field is invalid</string>
 </resources>

@@ -88,7 +88,8 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:inputType="number"
-                        app:errorEnabled="true" />
+                        app:errorEnabled="true"
+                        android:maxLength="9"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -107,15 +108,14 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:inputType="number"
-                        app:errorEnabled="true" />
+                        app:errorEnabled="true"
+                        android:maxLength="16"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_cc_expiration_layout"
                     android:layout_width="145dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="10dp"
                     android:hint="@string/prompt_cc_expiration">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -131,7 +131,6 @@
                     android:id="@+id/signUp_cc_cvv_layout"
                     android:layout_width="145dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:hint="@string/prompt_cc_cvv">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -140,7 +139,8 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:inputType="number"
-                        app:errorEnabled="true" />
+                        app:errorEnabled="true"
+                        android:maxLength="3" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.constraintlayout.helper.widget.Flow

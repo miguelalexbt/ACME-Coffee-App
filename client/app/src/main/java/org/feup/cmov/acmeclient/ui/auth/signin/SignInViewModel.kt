@@ -30,14 +30,25 @@ class SignInViewModel @ViewModelInject constructor(
     private val _formState = MutableLiveData(FormState())
     val formState: LiveData<FormState> = _formState
 
-    fun checkForm(username: String, password: String) {
-        when {
-            username.isEmpty() -> _formState.postValue(FormState(usernameError = R.string.error_empty_username))
-            password.isEmpty() -> _formState.postValue(FormState(passwordError = R.string.error_empty_password))
-            else -> _formState.postValue(FormState(isValid = true))
+    fun checkCredentials(username: String, password: String) {
+        val usernameError = when {
+            username.isEmpty() -> R.string.error_required
+            else -> null
         }
-    }
 
+        val passwordError = when {
+            password.isEmpty() -> R.string.error_required
+            else -> null
+        }
+
+        val isValid = usernameError == null && passwordError == null
+
+        _formState.value = _formState.value?.copy(
+            usernameError = usernameError,
+            passwordError = passwordError,
+            isValid = _formState.value!!.isValid && isValid
+        )
+    }
     fun signIn(username: String, password: String) {
         viewModelScope.launch {
             when (dataRepository.signIn(username, password)) {
