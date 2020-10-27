@@ -66,17 +66,11 @@ class SignInFragment : Fragment() {
         })
 
         binding.signInUsernameLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkCredentials(
-                text.toString(),
-                binding.signInPassword.text.toString()
-            )
+            viewModel.checkUsername(text.toString())
         }
 
         binding.signInPasswordLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkCredentials(
-                binding.signInUsername.text.toString(),
-                text.toString()
-            )
+            viewModel.checkPassword(text.toString())
         }
 
         // Sign in

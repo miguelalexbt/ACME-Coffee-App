@@ -6,6 +6,8 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.data.DataRepository
+import org.feup.cmov.acmeclient.data.api.ApiResponse
+import org.feup.cmov.acmeclient.ui.auth.signin.SignInViewModel
 
 class SignUpViewModel @ViewModelInject constructor(
     @Assisted savedStateHandle: SavedStateHandle,
@@ -18,13 +20,13 @@ class SignUpViewModel @ViewModelInject constructor(
     )
 
     data class FormState(
-        val nameError: Int? = null,
-        val nifError: Int? = null,
-        val ccNumberError: Int? = null,
-        val ccExpirationError: Int? = null,
-        val ccCVVError: Int? = null,
-        val usernameError: Int? = null,
-        val passwordError: Int? = null,
+        val nameError: Int? = R.string.empty_string,
+        val nifError: Int? = R.string.empty_string,
+        val ccNumberError: Int? = R.string.empty_string,
+        val ccExpirationError: Int? = R.string.empty_string,
+        val ccCVVError: Int? = R.string.empty_string,
+        val usernameError: Int? = R.string.empty_string,
+        val passwordError: Int? = R.string.empty_string,
         val isValid: Boolean = false
     )
 
@@ -34,74 +36,96 @@ class SignUpViewModel @ViewModelInject constructor(
     private val _formState = MutableLiveData(FormState())
     val formState: LiveData<FormState> = _formState
 
-    fun checkPersonalInfo(name: String) {
+    fun checkName(name: String) {
         val nameError = when {
             name.isEmpty() -> R.string.error_required
             else -> null
         }
 
-        val isValid = nameError == null
+        _formState.value = _formState.value?.copy(nameError = nameError)
 
-        _formState.value = _formState.value?.copy(
-            nameError = nameError,
-            isValid = _formState.value!!.isValid && isValid
-        )
+        checkValid()
     }
 
-    fun checkBillingInfo(nif: String, ccNumber: String, ccExpiration: String, ccCVV: String) {
+    fun checkNif(nif: String) {
         val nifError = when {
             nif.isEmpty() -> R.string.error_required
             nif.length != 9 -> R.string.error_invalid
             else -> null
         }
 
+        _formState.value = _formState.value?.copy(nifError = nifError)
+
+        checkValid()
+    }
+
+    fun checkCcNumber(ccNumber: String) {
         val ccNumberError = when {
             ccNumber.isEmpty() -> R.string.error_required
             ccNumber.length != 16 -> R.string.error_invalid
             else -> null
         }
 
+        _formState.value = _formState.value?.copy(ccNumberError = ccNumberError)
+
+        checkValid()
+    }
+
+    fun checkCcExpiration(ccExpiration: String) {
         val ccExpirationError = when {
             ccExpiration.isEmpty() -> R.string.error_required
             ccExpiration.length < 4 || ccExpiration.length > 5 -> R.string.error_invalid
             else -> null
         }
 
+        _formState.value = _formState.value?.copy(ccExpirationError = ccExpirationError)
+
+        checkValid()
+    }
+
+    fun checkCcCVV(ccCVV: String) {
         val ccCVVError = when {
             ccCVV.isEmpty() -> R.string.error_required
             ccCVV.length != 3 -> R.string.error_invalid
             else -> null
         }
 
-        val isValid = nifError == null && ccNumberError == null && ccExpirationError == null&& ccCVVError == null
+        _formState.value = _formState.value?.copy(ccCVVError = ccCVVError)
 
-        _formState.value = _formState.value?.copy(
-            nifError = nifError,
-            ccNumberError = ccNumberError,
-            ccExpirationError = ccExpirationError,
-            ccCVVError = ccCVVError,
-            isValid = _formState.value!!.isValid && isValid
-        )
+        checkValid()
     }
 
-    fun checkCredentials(username: String, password: String) {
+    fun checkUsername(username: String) {
         val usernameError = when {
             username.isEmpty() -> R.string.error_required
             else -> null
         }
 
+        _formState.value = _formState.value?.copy(usernameError = usernameError)
+
+        checkValid()
+    }
+
+    fun checkPassword(password: String) {
         val passwordError = when {
             password.isEmpty() -> R.string.error_required
             else -> null
         }
 
-        val isValid = usernameError == null && passwordError == null
+        _formState.value = _formState.value?.copy(passwordError = passwordError)
 
-        _formState.value = _formState.value?.copy(
-            usernameError = usernameError,
-            passwordError = passwordError,
-            isValid = _formState.value!!.isValid && isValid
-        )
+        checkValid()
+    }
+
+    private fun checkValid() {
+        val state = _formState.value!!
+
+        val isValid = state.nameError == null && state.nifError == null &&
+                state.ccNumberError == null && state.ccExpirationError == null &&
+                state.ccCVVError == null &&
+                state.usernameError == null && state.passwordError == null
+
+        _formState.value = _formState.value?.copy(isValid = isValid)
     }
 
     fun signUp(
@@ -109,17 +133,24 @@ class SignUpViewModel @ViewModelInject constructor(
         nif: String, ccNumber: String, ccExpiration: String, ccCVV: String,
         username: String, password: String
     ) {
-        viewModelScope.launch {
-//            when (dataRepository.signUp(username, password)) {
+        if (!_formState.value!!.isValid) return
+
+//        viewModelScope.launch {
+//            val apiCall = dataRepository.signUp(
+//                name,
+//                nif, ccNumber, ccExpiration, ccCVV,
+//                username, password
+//            )
+//
+//            when (apiCall) {
 //                is ApiResponse.Success ->
-//                    _apiState.value = SignInViewModel.ApiState(success = true)
+//                    _apiState.value = ApiState(success = true)
 //                is ApiResponse.ApiError ->
-//                    _apiState.value =
-//                        SignInViewModel.ApiState(error = R.string.error_wrong_credentials)
+//                    _apiState.value = ApiState(error = R.string.error_wrong_credentials)
 //                is ApiResponse.NetworkError ->
-//                    _apiState.value = SignInViewModel.ApiState(error = R.string.error_unknown)
+//                    _apiState.value = ApiState(error = R.string.error_unknown)
 //            }
-        }
+//        }
     }
 
 

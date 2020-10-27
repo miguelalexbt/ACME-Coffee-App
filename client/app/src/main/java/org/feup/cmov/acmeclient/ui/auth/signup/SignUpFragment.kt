@@ -91,67 +91,46 @@ class SignUpFragment : Fragment() {
         })
 
         binding.signUpNameLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkPersonalInfo(text.toString())
+            viewModel.checkName(text.toString())
         }
 
         binding.signUpNifLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkBillingInfo(
-                text.toString(),
-                binding.signUpCcNumber.text.toString(),
-                binding.signUpCcExpiration.text.toString(),
-                binding.signUpCcCvv.text.toString()
-            )
+            viewModel.checkNif(text.toString())
         }
 
         binding.signUpCcNumberLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkBillingInfo(
-                binding.signUpNif.text.toString(),
-                text.toString(),
-                binding.signUpCcExpiration.text.toString(),
-                binding.signUpCcCvv.text.toString()
-            )
+            viewModel.checkCcNumber(text.toString())
         }
 
         binding.signUpCcExpirationLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkBillingInfo(
-                binding.signUpNif.text.toString(),
-                binding.signUpCcNumber.text.toString(),
-                text.toString(),
-                binding.signUpCcCvv.text.toString()
-            )
+            viewModel.checkCcExpiration(text.toString())
         }
 
         binding.signUpCcCvvLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkBillingInfo(
-                binding.signUpNif.text.toString(),
-                binding.signUpCcNumber.text.toString(),
-                binding.signUpCcExpiration.text.toString(),
-                text.toString()
-            )
+            viewModel.checkCcCVV(text.toString())
         }
 
         binding.signUpUsernameLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkCredentials(
-                text.toString(),
-                binding.signUpPassword.text.toString()
-            )
+            viewModel.checkUsername(text.toString())
         }
 
         binding.signUpPasswordLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkCredentials(
-                binding.signUpUsername.text.toString(),
-                text.toString()
-            )
+            viewModel.checkPassword(text.toString())
         }
 
         // Sign up
         binding.signUpSubmit.setOnClickListener {
             binding.isLoading = true
 
-//            viewModel.signUp(
-//                binding.signInUsername.text.toString(),
-//                binding.signInPassword.text.toString()
-//            )
+            viewModel.signUp(
+                binding.signUpName.text.toString(),
+                binding.signUpNif.text.toString(),
+                binding.signUpCcNumber.text.toString(),
+                binding.signUpCcExpiration.text.toString(),
+                binding.signUpCcCvv.text.toString(),
+                binding.signUpUsername.text.toString(),
+                binding.signUpPassword.text.toString()
+            )
         }
 
         // Redirect to sign in

@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.data.*
 import org.feup.cmov.acmeclient.data.api.ApiResponse
+import org.feup.cmov.acmeclient.data.api.SignInRequest
 
 class SignInViewModel @ViewModelInject constructor(
     @Assisted savedStateHandle: SavedStateHandle,
@@ -19,8 +20,8 @@ class SignInViewModel @ViewModelInject constructor(
     )
 
     data class FormState(
-        val usernameError: Int? = null,
-        val passwordError: Int? = null,
+        val usernameError: Int? = R.string.empty_string,
+        val passwordError: Int? = R.string.empty_string,
         val isValid: Boolean = false
     )
 
@@ -30,28 +31,46 @@ class SignInViewModel @ViewModelInject constructor(
     private val _formState = MutableLiveData(FormState())
     val formState: LiveData<FormState> = _formState
 
-    fun checkCredentials(username: String, password: String) {
+    fun checkUsername(username: String) {
         val usernameError = when {
             username.isEmpty() -> R.string.error_required
             else -> null
         }
 
+        _formState.value = _formState.value?.copy(usernameError = usernameError)
+
+        checkValid()
+    }
+
+    fun checkPassword(password: String) {
         val passwordError = when {
             password.isEmpty() -> R.string.error_required
             else -> null
         }
 
-        val isValid = usernameError == null && passwordError == null
+        _formState.value = _formState.value?.copy(passwordError = passwordError)
 
-        _formState.value = _formState.value?.copy(
-            usernameError = usernameError,
-            passwordError = passwordError,
-            isValid = _formState.value!!.isValid && isValid
-        )
+        checkValid()
     }
+
+    private fun checkValid() {
+        val state = _formState.value!!
+
+        val isValid = state.usernameError == null && state.passwordError == null
+
+        _formState.value = _formState.value?.copy(isValid = isValid)
+    }
+
     fun signIn(username: String, password: String) {
+        if (!_formState.value!!.isValid) return
+
         viewModelScope.launch {
-            when (dataRepository.signIn(username, password)) {
+            val apiCall = dataRepository.signIn(
+                username,
+                password
+            )
+
+            when (apiCall) {
                 is ApiResponse.Success ->
                     _apiState.value = ApiState(success = true)
                 is ApiResponse.ApiError ->
