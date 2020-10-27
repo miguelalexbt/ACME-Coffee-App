@@ -1,9 +1,5 @@
 <resources>
     <string name="app_name">ACME Client</string>
-    <string name="prompt_name">Name</string>
-    <string name="prompt_username">Username</string>
-    <string name="prompt_password">Password</string>
-    <string name="prompt_sign_up">Sign up</string>
     <string name="logo_description" />
     <string name="title_activity_nav">MainActivity</string>
     <string name="home_title">Home</string>
@@ -15,8 +11,26 @@
     <string name="error_wrong_credentials">Username/password combination is incorrect</string>
 
     <!--Sign in-->
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
     <string name="prompt_sign_in">Sign in</string>
     <string name="prompt_redirect_sign_up">I don\'t have an account</string>
+
+    <!--Sign up-->
+    <string name="section_personal">Personal information</string>
+    <string name="prompt_name">Name</string>
+
+    <string name="section_billing">Billing information</string>
+    <string name="prompt_nif">NIF</string>
+    <string name="prompt_cc_number">Debit/Credit card number</string>
+    <string name="prompt_cc_expiration">Expiration date</string>
+    <string name="prompt_cc_cvv">Security code</string>
+    <string name="section_credentials">Credentials</string>
+    <string name="prompt_sign_up">Sign up</string>
+    <string name="prompt_redirect_sign_in">I already have an account</string>
+
+    <!--Errors-->
+    <string name="error_empty_name">Name is empty</string>
     <string name="error_empty_username">Username is empty</string>
     <string name="error_empty_password">Password is empty</string>
 </resources>

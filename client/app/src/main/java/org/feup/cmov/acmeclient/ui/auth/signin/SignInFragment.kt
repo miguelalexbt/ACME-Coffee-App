@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,18 +28,27 @@ class SignInFragment : Fragment() {
         binding = FragmentSignInBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
+        subscribeApi()
+        subscribeUi()
+
+        return binding.root
+    }
+
+    private fun subscribeApi() {
         viewModel.apiState.observe(viewLifecycleOwner, {
             val apiState = it ?: return@observe
 
             binding.isLoading = false
 
             if (apiState.error != null)
-                Toast.makeText(context, apiState.error, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, apiState.error, Toast.LENGTH_LONG).show()
 
             if (apiState.success)
                 findNavController().navigate(R.id.action_signIn_to_main)
         })
+    }
 
+    private fun subscribeUi() {
         viewModel.formState.observe(viewLifecycleOwner, {
             val formState = it ?: return@observe
 
@@ -56,7 +64,7 @@ class SignInFragment : Fragment() {
             else
                 null
         })
-        
+
         binding.signInUsernameLayout.editText?.doAfterTextChanged { text ->
             viewModel.checkForm(text.toString(), binding.signInPassword.text.toString())
         }
@@ -76,11 +84,9 @@ class SignInFragment : Fragment() {
             )
         }
 
-        // Sign up
+        // Redirect to sign up
         binding.signInRedirect.setOnClickListener {
             findNavController().navigate(R.id.action_signIn_to_signUp)
         }
-
-        return binding.root
     }
 }
