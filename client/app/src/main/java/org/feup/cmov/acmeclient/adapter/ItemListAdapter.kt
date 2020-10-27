@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
+import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.databinding.ListItemBinding
 
@@ -25,9 +27,8 @@ class ItemListAdapter : ListAdapter<Item, RecyclerView.ViewHolder>(ListItemDiffC
         (holder as ItemViewHolder).bind(item)
     }
 
-    class ItemViewHolder(
-        private val binding: ListItemBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    class ItemViewHolder(private val binding: ListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 //        init {
 //            binding.setClickListener {
 //                println("click")
@@ -49,9 +50,18 @@ class ItemListAdapter : ListAdapter<Item, RecyclerView.ViewHolder>(ListItemDiffC
 //        }
 
         fun bind(item2: Item) {
-            println(item2)
             binding.apply {
                 item = item2
+
+//                Picasso.get().setIndicatorsEnabled(true)
+                Picasso.get()
+                    .load("https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Acme_Markets_lolo.svg/2560px-Acme_Markets_lolo.svg.png")
+                    .placeholder(R.drawable.ic_baseline_home_24)
+                    .error(R.drawable.ic_baseline_remove_circle_outline_24)
+                    .fit()
+                    .centerCrop()
+                    .into(itemImage);
+
                 executePendingBindings()
             }
         }
@@ -61,12 +71,10 @@ class ItemListAdapter : ListAdapter<Item, RecyclerView.ViewHolder>(ListItemDiffC
 private class ListItemDiffCallback : DiffUtil.ItemCallback<Item>() {
 
     override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-        TODO("SEE BETTER")
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
-        TODO("SEE BETTER")
         return oldItem.name == newItem.name
     }
 }

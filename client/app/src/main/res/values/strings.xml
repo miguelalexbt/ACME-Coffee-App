@@ -31,4 +31,9 @@
     <!--Errors-->
     <string name="error_required">This field is required</string>
     <string name="error_invalid">This field is invalid</string>
+
+    <!--List Item-->
+    <string name="add_item_to_cart">ADD</string>
+    <string name="decreaseItem">decreaseItem</string>
+    <string name="increaseItem">increaseItem</string>
 </resources>
