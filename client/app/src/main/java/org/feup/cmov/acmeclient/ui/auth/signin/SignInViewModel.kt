@@ -65,12 +65,7 @@ class SignInViewModel @ViewModelInject constructor(
         if (!_formState.value!!.isValid) return
 
         viewModelScope.launch {
-            val apiCall = dataRepository.signIn(
-                username,
-                password
-            )
-
-            when (apiCall) {
+            when (dataRepository.signIn(username, password)) {
                 is ApiResponse.Success ->
                     _apiState.value = ApiState(success = true)
                 is ApiResponse.ApiError ->

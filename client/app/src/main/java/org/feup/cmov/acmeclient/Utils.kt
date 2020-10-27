@@ -1,9 +1,9 @@
 package org.feup.cmov.acmeclient
 
-import android.content.Context
 import android.security.KeyPairGeneratorSpec
 import android.util.Base64
-import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import java.security.*
 import java.security.cert.Certificate
@@ -14,34 +14,36 @@ class Utils {
     companion object {
         private const val KEY_STORE = "AndroidKeyStore"
 
-        @Suppress("DEPRECATION")
-        fun generateCertificate(
+        @Suppress("DEPRECATION", "BlockingMethodInNonBlockingContext")
+        suspend fun generateCertificate(
             alias: String
         ): String {
-            val ks: KeyStore = KeyStore.getInstance(KEY_STORE).apply {
-                load(null)
+            return withContext(Dispatchers.IO) {
+                val ks: KeyStore = KeyStore.getInstance(KEY_STORE).apply {
+                    load(null)
+                }
+
+                val kpg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA", KEY_STORE)
+
+                val start = Calendar.getInstance()
+                val end = Calendar.getInstance()
+                end.add(Calendar.YEAR, 1)
+
+                val spec = KeyPairGeneratorSpec
+                    .Builder( MainApplication.instance)
+                    .setAlias(alias)
+                    .setSubject(X500Principal("CN=ACME, O=ACME Inc., C=PT"))
+                    .setSerialNumber(BigInteger.ONE)
+                    .setStartDate(start.time).setEndDate(end.time)
+                    .build()
+
+                kpg.initialize(spec)
+                kpg.generateKeyPair()
+
+                val cert: Certificate = ks.getCertificate(alias)
+
+                encode(cert.encoded)
             }
-
-            val kpg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA", KEY_STORE)
-
-            val start = Calendar.getInstance()
-            val end = Calendar.getInstance()
-            end.add(Calendar.YEAR, 1)
-
-            val spec = KeyPairGeneratorSpec
-                .Builder( MainApplication.instance)
-                .setAlias(alias)
-                .setSubject(X500Principal("CN=ACME, O=ACME Inc., C=PT"))
-                .setSerialNumber(BigInteger.ONE)
-                .setStartDate(start.time).setEndDate(end.time)
-                .build()
-
-            kpg.initialize(spec)
-            kpg.generateKeyPair()
-
-            val cert: Certificate = ks.getCertificate(alias)
-
-            return encode(cert.encoded)
         }
 
         fun sign(username: String, data: ByteArray): String? {

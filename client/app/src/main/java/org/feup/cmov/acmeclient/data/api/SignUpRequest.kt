@@ -1,19 +1,29 @@
 package org.feup.cmov.acmeclient.data.api
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import org.feup.cmov.acmeclient.data.model.User
 
 data class SignUpRequest(
-    @SerializedName("user")
-    @Expose
-    var user: User,
+    @SerializedName("name")
+    var name: String,
 
-    @SerializedName("cert")
-    @Expose
-    var cert: String,
+    @SerializedName("nif")
+    var nif: String,
 
-    @SerializedName("timestamp")
-    @Expose
-    var timestamp: Long = System.currentTimeMillis() / 1000
+    @SerializedName("ccNumber")
+    var ccNumber: String,
+
+    @SerializedName("ccExpiration")
+    var ccExpiration: String,
+
+    @SerializedName("ccCVV")
+    var ccCVV: String,
+
+    @SerializedName("username")
+    var username: String,
+
+    @SerializedName("password")
+    var password: String,
+
+    @SerializedName("certificate")
+    var certificate: String
 )

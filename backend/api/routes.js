@@ -45,13 +45,15 @@ authRouter.post('/signIn', async (req, res) => {
 authRouter.post('/signUp', async (req, res) => {
     const body = req.body
 
-    console.log(body)
-
     const user = new User({
         _id: uuidv4(),
-        name: body.user.name,
-        username: body.user.username,
-        password: await bcrypt.hash(body.user.password, 10),
+        name: body.name,
+        nif: body.nif,
+        ccNumber: body.ccNumber,
+        ccExpiration: body.ccExpiration,
+        ccCVV: body.ccCVV,
+        username: body.username,
+        password: await bcrypt.hash(body.password, 10),
         certificate: body.certificate
     });
 

@@ -17,7 +17,7 @@ interface WebService {
     @POST("signUp")
     suspend fun signUp(
         @Body request: SignUpRequest
-    ) : User
+    ) : ApiResponse<User>
 
     //Items
     @GET("items")

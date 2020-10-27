@@ -2,14 +2,9 @@ package org.feup.cmov.acmeclient.data
 
 import android.content.Context
 import com.google.gson.Gson
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.isActive
 import org.feup.cmov.acmeclient.MainApplication
 import org.feup.cmov.acmeclient.Utils
 import org.feup.cmov.acmeclient.data.api.*
@@ -36,8 +31,34 @@ class DataRepository @Inject constructor(
 //        user = null
 //    }
 
-    suspend fun signIn(username: String, password: String): ApiResponse<User> {
-        val response = webService.signIn(SignInRequest(username, password))
+    suspend fun signIn(
+        username: String,
+        password: String
+    ): ApiResponse<User> {
+
+        // Create request
+        val request = SignInRequest(username, password)
+        val response = webService.signIn(request)
+
+        if (response is ApiResponse.Success) {
+            // Cache user
+        }
+
+        return response
+    }
+
+    suspend fun signUp(
+        name: String,
+        nif: String, ccNumber: String, ccExpiration: String, ccCVV: String,
+        username: String, password: String
+    ): ApiResponse<User> {
+
+        // Generate certificate
+        val certificate = Utils.generateCertificate(username)
+
+        // Create request
+        val request = SignUpRequest(name, nif, ccNumber, ccExpiration, ccCVV, username, password, certificate)
+        val response = webService.signUp(request)
 
         if (response is ApiResponse.Success) {
             // Cache user

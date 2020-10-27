@@ -135,23 +135,15 @@ class SignUpViewModel @ViewModelInject constructor(
     ) {
         if (!_formState.value!!.isValid) return
 
-//        viewModelScope.launch {
-//            val apiCall = dataRepository.signUp(
-//                name,
-//                nif, ccNumber, ccExpiration, ccCVV,
-//                username, password
-//            )
-//
-//            when (apiCall) {
-//                is ApiResponse.Success ->
-//                    _apiState.value = ApiState(success = true)
-//                is ApiResponse.ApiError ->
-//                    _apiState.value = ApiState(error = R.string.error_wrong_credentials)
-//                is ApiResponse.NetworkError ->
-//                    _apiState.value = ApiState(error = R.string.error_unknown)
-//            }
-//        }
+        viewModelScope.launch {
+            when (dataRepository.signUp(name, nif, ccNumber, ccExpiration, ccCVV, username, password)) {
+                is ApiResponse.Success ->
+                    _apiState.value = ApiState(success = true)
+                is ApiResponse.ApiError ->
+                    _apiState.value = ApiState(error = R.string.error_wrong_credentials)
+                is ApiResponse.NetworkError ->
+                    _apiState.value = ApiState(error = R.string.error_unknown)
+            }
+        }
     }
-
-
 }
