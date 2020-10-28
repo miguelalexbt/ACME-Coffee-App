@@ -36,23 +36,26 @@ object WebServiceModule {
                 // Cached user
                 val cachedUser = Cache.cachedUser!!
 
-                when (request.method()) {
-                    "GET" -> {
-                        buffer.write(cachedUser.userId.toByteArray())
-                    }
-                    else -> {
-                        request.body()!!.writeTo(buffer)
-                    }
-                }
+                // Full path
+                val url = request.url().url()
+                val fullPath = url.path + if (url.query != null) ("?" + url.query) else ""
+
+                // Timestamp
+                val timestamp = Crypto.generateTimestamp()
+
+                // Add data to buffer
+                buffer.write(cachedUser.userId.toByteArray())
+                    .write(fullPath.toByteArray())
+                    .write(timestamp.toByteArray())
+
+                request.body()?.writeTo(buffer)
 
                 val signature = Crypto.sign(cachedUser.username, buffer)
 
-                newRequest.addHeader(
-                    "User-Signature",
-                    "${cachedUser.userId}:$signature"
-                )
-
                 buffer.close()
+
+                newRequest.addHeader("Date", timestamp)
+                newRequest.addHeader("User-Signature", "${cachedUser.userId}:$signature")
 
                 return@addInterceptor chain.proceed(newRequest.build())
             }

@@ -22,9 +22,12 @@ const validate = validations => {
 
 const authenticateRequest = async (req, res, next) => {
     if (!('user-signature' in req.headers)) {
-        res.status(403).json({ error: "authentication" });
+        res.status(403).json({ error: 'missing_signature' });
         return;
     }
+
+    const dateHeader = req.header('Date');
+    const timestamp = new Date(dateHeader);
 
     const authHeader = req.header('User-Signature');
     const [userId, signature] = authHeader.split(':');
@@ -32,13 +35,13 @@ const authenticateRequest = async (req, res, next) => {
     const user = await User.findById(userId).exec();
 
     if (!user) {
-        res.status(403).json({ error: "authentication" });
+        res.status(403).json({ error: 'invalid_signature' });
         return;
     }
 
     const publicKey = `-----BEGIN PUBLIC KEY-----\n${user.publicKey}\n-----END PUBLIC KEY-----`;
 
-    let verifiableData = req.method === 'GET' ? userId : (req.rawBody ? req.rawBody.toString() : "");
+    let verifiableData = userId + req.originalUrl + dateHeader + (req.rawBody ? req.rawBody.toString() : "")
 
     const verifier = crypto.createVerify('RSA-SHA256');
     verifier.update(verifiableData, 'utf-8');
@@ -46,7 +49,13 @@ const authenticateRequest = async (req, res, next) => {
     const isValid = verifier.verify(publicKey, signature, 'base64');
 
     if (!isValid) {
-        res.status(403).json({ error: "authentication" });
+        res.status(403).json({ error: 'invalid_signature' });
+        return;
+    }
+
+    const requestAge = (new Date().getTime() - timestamp.getTime()) / 60000
+    if (requestAge > 1) {
+        res.status(401).json({ error: 'expired_timestamp' });
         return;
     }
 

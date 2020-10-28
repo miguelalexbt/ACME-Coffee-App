@@ -8,6 +8,7 @@ import okio.Buffer
 import org.feup.cmov.acmeclient.MainApplication
 import java.math.BigInteger
 import java.security.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.security.auth.x500.X500Principal
 
@@ -54,6 +55,13 @@ class Crypto {
             }
 
             return encode(signature)
+        }
+
+        fun generateTimestamp(): String {
+            val dateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US)
+            dateFormat.timeZone = TimeZone.getTimeZone("GMT")
+
+            return dateFormat.format(Calendar.getInstance().time)
         }
 
         private fun encode(data: ByteArray): String {
