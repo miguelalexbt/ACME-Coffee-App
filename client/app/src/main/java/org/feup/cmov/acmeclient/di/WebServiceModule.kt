@@ -6,10 +6,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import okhttp3.OkHttpClient
 import okio.Buffer
-import org.feup.cmov.acmeclient.utils.Crypto
 import org.feup.cmov.acmeclient.data.WebService
 import org.feup.cmov.acmeclient.data.api.details.ApiResponseAdapterFactory
-import org.feup.cmov.acmeclient.utils.Preferences
+import org.feup.cmov.acmeclient.utils.Cache
+import org.feup.cmov.acmeclient.utils.Crypto
 import retrofit2.Invocation
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -33,12 +33,12 @@ object WebServiceModule {
                 val newRequest = request.newBuilder()
                 val buffer = Buffer()
 
-                // Logged in user
-                val cachedUser = Preferences.cachedUser!!
+                // Cached user
+                val cachedUser = Cache.cachedUser!!
 
                 when (request.method()) {
                     "GET" -> {
-                        buffer.write(cachedUser.id.toByteArray())
+                        buffer.write(cachedUser.userId.toByteArray())
                     }
                     else -> {
                         request.body()!!.writeTo(buffer)
@@ -49,7 +49,7 @@ object WebServiceModule {
 
                 newRequest.addHeader(
                     "User-Signature",
-                    "${cachedUser.id}:$signature"
+                    "${cachedUser.userId}:$signature"
                 )
 
                 buffer.close()

@@ -9,7 +9,7 @@ import org.feup.cmov.acmeclient.data.db.ItemDao
 import org.feup.cmov.acmeclient.data.db.UserDao
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.model.User
-import org.feup.cmov.acmeclient.utils.Preferences
+import org.feup.cmov.acmeclient.utils.Cache
 
 import javax.inject.Inject
 
@@ -18,16 +18,6 @@ class DataRepository @Inject constructor(
     private val userDao: UserDao,
     private val itemDao: ItemDao
 ) {
-//    var user: User? = null
-//        private set
-
-    val isLoggedIn: Boolean
-        get() = Preferences.cachedUser != null
-
-//    init {
-//        user = PreferencesUtils.cachedUser
-//    }
-
     suspend fun signIn(
         username: String,
         password: String
@@ -39,7 +29,7 @@ class DataRepository @Inject constructor(
 
         // Cache user
         if (response is ApiResponse.Success)
-            setUser(response.data)
+            Cache.cachedUser = Cache.create(response.data)
 
         return response
     }
@@ -59,7 +49,7 @@ class DataRepository @Inject constructor(
 
         // Cache user
         if (response is ApiResponse.Success)
-            setUser(response.data)
+            Cache.cachedUser = Cache.create(response.data)
 
         return response
     }
@@ -80,9 +70,9 @@ class DataRepository @Inject constructor(
 
     fun getItems(): Flow<List<Item>> = itemDao.getAll().distinctUntilChanged()
 
-    private fun setUser(user: User) {
-//        this.user = user
-        Preferences.cachedUser = user
-//        userDao.save(user)
-    }
+//    private fun setUser(user: User) {
+////        this.user = user
+//        Preferences.cachedUser = user
+////        userDao.save(user)
+//    }
 }

@@ -20,7 +20,7 @@ const validate = validations => {
       };
 };
 
-const authenticatedRequest = async (req, res, next) => {
+const authenticateRequest = async (req, res, next) => {
     if (!('user-signature' in req.headers)) {
         res.status(403).json({ error: "authentication" });
         return;
