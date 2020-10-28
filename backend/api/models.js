@@ -11,7 +11,7 @@ const userSchema = new Schema({
     ccCVV: { type: String, required: true },
     username: { type: String, unique: true, required: true },
     password: { type: String, required: true },
-    certificate: { type: String, required: true },
+    publicKey: { type: String, required: true },
 }, {
     toJSON: {
         transform: (doc, ret) => {

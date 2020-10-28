@@ -75,7 +75,6 @@ class SignInFragment : Fragment() {
 
         // Sign in
         binding.signInSubmit.setOnClickListener {
-
             binding.isLoading = true
 
             viewModel.signIn(

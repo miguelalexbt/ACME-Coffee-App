@@ -7,7 +7,6 @@ import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.data.*
 import org.feup.cmov.acmeclient.data.api.ApiResponse
-import org.feup.cmov.acmeclient.data.api.SignInRequest
 
 class SignInViewModel @ViewModelInject constructor(
     @Assisted savedStateHandle: SavedStateHandle,
@@ -30,6 +29,11 @@ class SignInViewModel @ViewModelInject constructor(
 
     private val _formState = MutableLiveData(FormState())
     val formState: LiveData<FormState> = _formState
+
+    init {
+        if (dataRepository.isLoggedIn)
+            _apiState.value = ApiState(success = true)
+    }
 
     fun checkUsername(username: String) {
         val usernameError = when {

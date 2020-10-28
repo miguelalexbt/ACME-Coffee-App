@@ -1,4 +1,4 @@
-package org.feup.cmov.acmeclient.utils
+package org.feup.cmov.acmeclient.data.api.details
 
 import org.feup.cmov.acmeclient.data.api.ApiResponse
 import retrofit2.*

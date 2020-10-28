@@ -9,13 +9,18 @@ let isDbReady = false;
 // Connect to MongoDB
 mongoose
     .connect(`mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@mongo:27017/${process.env.MONGO_DB}`, 
-        { useNewUrlParser: true, useUnifiedTopology: true }
+        { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
     )
     .then(() => isDbReady = true)
     .catch((err) => console.log(err));
 
 // Global middleware
-app.use(express.json());
+app.use(express.json({
+    verify: (req, res, buf, encoding) => {
+        req.rawBody = buf
+    }
+}));
+
 app.use(express.urlencoded({ extended: true }));
 
 // Wait for DB connection

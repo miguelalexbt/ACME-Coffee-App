@@ -24,6 +24,6 @@ data class SignUpRequest(
     @SerializedName("password")
     var password: String,
 
-    @SerializedName("certificate")
-    var certificate: String
+    @SerializedName("publicKey")
+    var publicKey: String
 )

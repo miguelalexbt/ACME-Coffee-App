@@ -1,6 +1,7 @@
-package org.feup.cmov.acmeclient.utils
+package org.feup.cmov.acmeclient.data.api.details
 
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import okhttp3.Request
 import okio.Timeout
 import org.feup.cmov.acmeclient.data.api.ApiResponse
@@ -30,7 +31,7 @@ internal class ApiResponseCall<T : Any>(private val delegate: Call<T>) : Call<Ap
                     val errorMessage = if (errorBody.isNullOrEmpty())
                         response.message()
                     else
-                        Gson().fromJson(errorBody, String::class.java)
+                        Gson().fromJson(errorBody, JsonObject::class.java).get("error").asString
 
                     callback.onResponse(
                         this@ApiResponseCall,

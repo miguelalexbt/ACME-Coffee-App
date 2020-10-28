@@ -22,6 +22,10 @@ interface WebService {
     //Items
     @GET("items")
     suspend fun getItems(): ApiResponse<List<Item>>
-//    fun getItems(@Header("User-Signature") userSignature: String): List<Item>
 
+    companion object {
+        @Target(AnnotationTarget.FUNCTION)
+        @Retention(AnnotationRetention.RUNTIME)
+        annotation class AuthenticatedRequest
+    }
 }
