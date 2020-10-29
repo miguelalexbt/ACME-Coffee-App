@@ -5,19 +5,15 @@ import org.feup.cmov.acmeclient.MainApplication
 import org.feup.cmov.acmeclient.data.model.User
 
 class Cache {
-    companion object {
-        data class CachedUser(val userId: String, val username: String)
+    data class CachedUser(val userId: String, val username: String)
 
+    companion object {
+        private const val CACHE = "app_cache"
         private const val USER_ID = "user_id"
         private const val USERNAME = "username"
 
         var cachedUser: CachedUser? = null
             get() {
-                // Load from memory
-                if (field != null)
-                    return field
-
-                // Load from cache
                 val userId = load(USER_ID)
                 val username = load(USERNAME)
 
@@ -26,7 +22,7 @@ class Cache {
                 else
                     null
             }
-            set(user) {
+            private set(user) {
                 if (user == null) {
                     clear(USER_ID)
                     clear(USERNAME)
@@ -38,14 +34,16 @@ class Cache {
                 field = user
             }
 
-        fun create(user: User) = CachedUser(user.id, user.username)
+        fun cacheUser(user: User) {
+            cachedUser = CachedUser(user.id, user.username)
+        }
 
         private fun store(key: String, value: String) {
             val sharedPref = MainApplication.instance.getSharedPreferences(
-                "app_cache", Context.MODE_PRIVATE
+                CACHE, Context.MODE_PRIVATE
             ) ?: return
 
-            with (sharedPref.edit()) {
+            with(sharedPref.edit()) {
                 putString(key, value)
                 apply()
             }
@@ -53,7 +51,7 @@ class Cache {
 
         private fun load(key: String): String? {
             val sharedPref = MainApplication.instance.getSharedPreferences(
-                "app_cache", Context.MODE_PRIVATE
+                CACHE, Context.MODE_PRIVATE
             ) ?: return null
 
             return sharedPref.getString(key, null)
@@ -61,10 +59,10 @@ class Cache {
 
         private fun clear(key: String) {
             val sharedPref = MainApplication.instance.getSharedPreferences(
-                "app_cache", Context.MODE_PRIVATE
+                CACHE, Context.MODE_PRIVATE
             ) ?: return
 
-            with (sharedPref.edit()){
+            with(sharedPref.edit()) {
                 remove(key)
                 apply()
             }

@@ -7,10 +7,9 @@ import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.data.*
 import org.feup.cmov.acmeclient.data.api.ApiResponse
-import org.feup.cmov.acmeclient.utils.Cache
 
 class SignInViewModel @ViewModelInject constructor(
-    @Assisted savedStateHandle: SavedStateHandle,
+//    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
@@ -32,7 +31,7 @@ class SignInViewModel @ViewModelInject constructor(
     val formState: LiveData<FormState> = _formState
 
     init {
-        if (Cache.cachedUser != null)
+        if (dataRepository.isLoggedIn)
             _apiState.value = ApiState(success = true)
     }
 

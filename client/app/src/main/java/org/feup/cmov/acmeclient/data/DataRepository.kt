@@ -18,6 +18,8 @@ class DataRepository @Inject constructor(
     private val userDao: UserDao,
     private val itemDao: ItemDao
 ) {
+    val isLoggedIn = Cache.cachedUser != null
+
     suspend fun signIn(
         username: String,
         password: String
@@ -29,7 +31,7 @@ class DataRepository @Inject constructor(
 
         // Cache user
         if (response is ApiResponse.Success)
-            Cache.cachedUser = Cache.create(response.data)
+            Cache.cacheUser(response.data)
 
         return response
     }
@@ -49,7 +51,7 @@ class DataRepository @Inject constructor(
 
         // Cache user
         if (response is ApiResponse.Success)
-            Cache.cachedUser = Cache.create(response.data)
+            Cache.cacheUser(response.data)
 
         return response
     }

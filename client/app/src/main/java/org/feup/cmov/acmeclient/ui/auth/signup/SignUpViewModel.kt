@@ -7,10 +7,9 @@ import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.data.DataRepository
 import org.feup.cmov.acmeclient.data.api.ApiResponse
-import org.feup.cmov.acmeclient.ui.auth.signin.SignInViewModel
 
 class SignUpViewModel @ViewModelInject constructor(
-    @Assisted savedStateHandle: SavedStateHandle,
+//    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
@@ -35,6 +34,11 @@ class SignUpViewModel @ViewModelInject constructor(
 
     private val _formState = MutableLiveData(FormState())
     val formState: LiveData<FormState> = _formState
+
+    init {
+        if (dataRepository.isLoggedIn)
+            _apiState.value = ApiState(success = true)
+    }
 
     fun checkName(name: String) {
         val nameError = when {
