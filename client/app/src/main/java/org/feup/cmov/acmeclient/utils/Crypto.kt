@@ -26,7 +26,7 @@ class Crypto {
                 end.add(Calendar.YEAR, 1)
 
                 val spec = KeyPairGeneratorSpec
-                    .Builder(MainApplication.instance)
+                    .Builder(MainApplication.context)
                     .setAlias(alias)
                     .setSubject(X500Principal("CN=ACME, O=ACME Inc., C=PT"))
                     .setSerialNumber(BigInteger.ONE)

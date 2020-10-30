@@ -39,7 +39,7 @@ class Cache {
         }
 
         private fun store(key: String, value: String) {
-            val sharedPref = MainApplication.instance.getSharedPreferences(
+            val sharedPref = MainApplication.context.getSharedPreferences(
                 CACHE, Context.MODE_PRIVATE
             ) ?: return
 
@@ -50,7 +50,7 @@ class Cache {
         }
 
         private fun load(key: String): String? {
-            val sharedPref = MainApplication.instance.getSharedPreferences(
+            val sharedPref = MainApplication.context.getSharedPreferences(
                 CACHE, Context.MODE_PRIVATE
             ) ?: return null
 
@@ -58,7 +58,7 @@ class Cache {
         }
 
         private fun clear(key: String) {
-            val sharedPref = MainApplication.instance.getSharedPreferences(
+            val sharedPref = MainApplication.context.getSharedPreferences(
                 CACHE, Context.MODE_PRIVATE
             ) ?: return
 
