@@ -1,6 +1,10 @@
 package org.feup.cmov.acmeclient.utils
 
-import android.content.Context
+import androidx.datastore.preferences.createDataStore
+import androidx.datastore.preferences.edit
+import androidx.datastore.preferences.preferencesKey
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.feup.cmov.acmeclient.MainApplication
 import org.feup.cmov.acmeclient.data.model.User
 
@@ -8,63 +12,26 @@ class Cache {
     data class CachedUser(val userId: String, val username: String)
 
     companion object {
-        private const val CACHE = "app_cache"
-        private const val USER_ID = "user_id"
-        private const val USERNAME = "username"
+        private val dataStore = MainApplication.context.createDataStore(name = "app_cache")
 
-        var cachedUser: CachedUser? = null
-            get() {
-                val userId = load(USER_ID)
-                val username = load(USERNAME)
+        private val USER_ID = preferencesKey<String>("user_id")
+        private val USERNAME = preferencesKey<String>("username")
 
-                return if (userId != null && username != null)
-                    CachedUser(userId, username)
-                else
-                    null
-            }
-            private set(user) {
-                if (user == null) {
-                    clear(USER_ID)
-                    clear(USERNAME)
-                } else {
-                    store(USER_ID, user.userId)
-                    store(USERNAME, user.username)
-                }
+        val cachedUser: Flow<CachedUser?> = dataStore.data
+            .map {
+                val userId = it[USER_ID]!!
+                val username = it[USERNAME]!!
 
-                field = user
+                if (userId == "" || username == "")
+                    return@map null
+
+                CachedUser(userId, username)
             }
 
-        fun cacheUser(user: User) {
-            cachedUser = CachedUser(user.id, user.username)
-        }
-
-        private fun store(key: String, value: String) {
-            val sharedPref = MainApplication.context.getSharedPreferences(
-                CACHE, Context.MODE_PRIVATE
-            ) ?: return
-
-            with(sharedPref.edit()) {
-                putString(key, value)
-                apply()
-            }
-        }
-
-        private fun load(key: String): String? {
-            val sharedPref = MainApplication.context.getSharedPreferences(
-                CACHE, Context.MODE_PRIVATE
-            ) ?: return null
-
-            return sharedPref.getString(key, null)
-        }
-
-        private fun clear(key: String) {
-            val sharedPref = MainApplication.context.getSharedPreferences(
-                CACHE, Context.MODE_PRIVATE
-            ) ?: return
-
-            with(sharedPref.edit()) {
-                remove(key)
-                apply()
+        suspend fun cacheUser(user: User?) {
+            dataStore.edit {
+                it[USER_ID] = user?.id ?: ""
+                it[USERNAME] = user?.username ?: ""
             }
         }
     }

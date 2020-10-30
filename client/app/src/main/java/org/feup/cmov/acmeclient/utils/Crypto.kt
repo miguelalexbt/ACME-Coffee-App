@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.Buffer
 import org.feup.cmov.acmeclient.MainApplication
+import org.mindrot.jbcrypt.BCrypt
 import java.math.BigInteger
 import java.security.*
 import java.text.SimpleDateFormat
@@ -62,6 +63,14 @@ class Crypto {
             dateFormat.timeZone = TimeZone.getTimeZone("GMT")
 
             return dateFormat.format(Calendar.getInstance().time)
+        }
+
+        fun hashPassword(password: String): String {
+            return BCrypt.hashpw(password, BCrypt.gensalt())
+        }
+
+        fun checkPassword(password1: String, password2: String): Boolean {
+            return BCrypt.checkpw(password1, password2)
         }
 
         private fun encode(data: ByteArray): String {

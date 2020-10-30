@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.R
+import org.feup.cmov.acmeclient.data.event.EventObserver
 import org.feup.cmov.acmeclient.databinding.FragmentSignInBinding
 
 @AndroidEntryPoint
@@ -28,27 +29,27 @@ class SignInFragment : Fragment() {
         binding = FragmentSignInBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        subscribeApi()
         subscribeUi()
 
         return binding.root
     }
 
-    private fun subscribeApi() {
-        viewModel.apiState.observe(viewLifecycleOwner, {
-            val apiState = it ?: return@observe
-
-            binding.isLoading = false
-
-            if (apiState.error != null)
-                Toast.makeText(context, apiState.error, Toast.LENGTH_LONG).show()
-
-            if (apiState.success)
-                findNavController().navigate(R.id.action_signIn_to_main)
-        })
-    }
-
     private fun subscribeUi() {
+        viewModel.authState.observe(viewLifecycleOwner, {
+            val authState = it ?: return@observe
+            if (authState) {
+                findNavController().navigate(R.id.action_signIn_to_main)
+                activity?.finish()
+            }
+        })
+
+        viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
+            binding.isLoading = it.isLoading
+
+            if (it.error != null)
+                Toast.makeText(context, it.error, Toast.LENGTH_LONG).show()
+        })
+
         viewModel.formState.observe(viewLifecycleOwner, {
             val formState = it ?: return@observe
 
@@ -75,8 +76,6 @@ class SignInFragment : Fragment() {
 
         // Sign in
         binding.signInSubmit.setOnClickListener {
-            binding.isLoading = true
-
             viewModel.signIn(
                 binding.signInUsername.text.toString(),
                 binding.signInPassword.text.toString()

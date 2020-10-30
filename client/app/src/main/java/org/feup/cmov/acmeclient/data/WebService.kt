@@ -5,19 +5,13 @@ import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.model.User
 import org.feup.cmov.acmeclient.data.api.SignInRequest
 import org.feup.cmov.acmeclient.data.api.SignUpRequest
+import org.feup.cmov.acmeclient.data.api.SignUpResponse
 import retrofit2.http.*
 
 interface WebService {
-    // Auth
-    @POST("signIn")
-    suspend fun signIn(
-        @Body request: SignInRequest
-    ): ApiResponse<User>
-
+    // Sign up
     @POST("signUp")
-    suspend fun signUp(
-        @Body request: SignUpRequest
-    ) : ApiResponse<User>
+    suspend fun signUp(@Body request: SignUpRequest) : ApiResponse<SignUpResponse>
 
     //Items
     @GET("items")

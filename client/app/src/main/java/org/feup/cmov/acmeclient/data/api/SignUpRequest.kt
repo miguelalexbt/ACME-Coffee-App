@@ -18,12 +18,6 @@ data class SignUpRequest(
     @SerializedName("ccCVV")
     var ccCVV: String,
 
-    @SerializedName("username")
-    var username: String,
-
-    @SerializedName("password")
-    var password: String,
-
     @SerializedName("publicKey")
     var publicKey: String
 )

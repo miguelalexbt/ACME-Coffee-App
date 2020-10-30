@@ -1,33 +1,18 @@
 package org.feup.cmov.acmeclient.data.model
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "user")
+@Entity(tableName = "user", indices = [Index(value = ["id", "username"], unique = true)])
 data class User(
-    @SerializedName("id")
     @PrimaryKey(autoGenerate = false)
-    var id: String,
-
-    @SerializedName("name")
-    var name: String,
-
-    @SerializedName("nif")
-    var nif: String,
-
-    @SerializedName("ccNumber")
-    var ccNumber: String,
-
-    @SerializedName("ccExpiration")
-    var ccExpiration: String,
-
-    @SerializedName("ccCVV")
-    var ccCVV: String,
-
-    @SerializedName("username")
-    var username: String,
-
-    @SerializedName("password")
-    var password: String
+    val id: String,
+    val name: String,
+    val nif: String,
+    val ccNumber: String,
+    val ccExpiration: String,
+    val ccCVV: String,
+    val username: String,
+    val password: String
 )

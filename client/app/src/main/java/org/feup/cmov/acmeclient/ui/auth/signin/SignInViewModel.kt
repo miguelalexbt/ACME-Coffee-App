@@ -1,22 +1,16 @@
 package org.feup.cmov.acmeclient.ui.auth.signin
 
-import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.data.*
-import org.feup.cmov.acmeclient.data.api.ApiResponse
+import org.feup.cmov.acmeclient.data.event.UiEvent
 
 class SignInViewModel @ViewModelInject constructor(
 //    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
-
-    data class ApiState(
-        val success: Boolean = false,
-        val error: Int? = null
-    )
 
     data class FormState(
         val usernameError: Int? = R.string.empty_string,
@@ -24,16 +18,13 @@ class SignInViewModel @ViewModelInject constructor(
         val isValid: Boolean = false
     )
 
-    private val _apiState = MutableLiveData(ApiState())
-    val apiState: LiveData<ApiState> = _apiState
+    val authState: LiveData<Boolean?> = dataRepository.isLoggedIn.asLiveData()
+
+    private val _uiEvent = MutableLiveData<UiEvent>()
+    val uiEvent: LiveData<UiEvent> = _uiEvent
 
     private val _formState = MutableLiveData(FormState())
     val formState: LiveData<FormState> = _formState
-
-    init {
-        if (dataRepository.isLoggedIn)
-            _apiState.value = ApiState(success = true)
-    }
 
     fun checkUsername(username: String) {
         val usernameError = when {
@@ -68,14 +59,22 @@ class SignInViewModel @ViewModelInject constructor(
     fun signIn(username: String, password: String) {
         if (!_formState.value!!.isValid) return
 
+        _uiEvent.value = UiEvent(isLoading = true)
+
         viewModelScope.launch {
-            when (dataRepository.signIn(username, password)) {
-                is ApiResponse.Success ->
-                    _apiState.value = ApiState(success = true)
-                is ApiResponse.ApiError ->
-                    _apiState.value = ApiState(error = R.string.error_wrong_credentials)
-                is ApiResponse.NetworkError ->
-                    _apiState.value = ApiState(error = R.string.error_unknown)
+            val result = dataRepository.signIn(username, password)
+            when (result.status) {
+                Status.SUCCESS -> {
+                    _uiEvent.value = UiEvent()
+                }
+                Status.ERROR -> {
+                    when (result.message) {
+                        "wrong_credentials" ->
+                            _uiEvent.value = UiEvent(error = R.string.error_wrong_credentials)
+                        else ->
+                            _uiEvent.value = UiEvent(error = R.string.error_unknown)
+                    }
+                }
             }
         }
     }

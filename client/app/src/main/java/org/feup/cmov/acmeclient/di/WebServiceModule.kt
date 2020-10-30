@@ -4,6 +4,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okio.Buffer
 import org.feup.cmov.acmeclient.data.WebService
@@ -34,7 +38,9 @@ object WebServiceModule {
                 val buffer = Buffer()
 
                 // Cached user
-                val cachedUser = Cache.cachedUser!!
+                val cachedUser = runBlocking {
+                    Cache.cachedUser.first()!!
+                }
 
                 // Full path
                 val url = request.url().url()

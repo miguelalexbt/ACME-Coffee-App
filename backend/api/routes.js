@@ -65,21 +65,6 @@ const authenticateRequest = async (req, res, next) => {
 // Auth
 let authRouter = express.Router()
 
-authRouter.post('/signIn', async (req, res) => {
-    const body = req.body;
-    const user = await User.findOne({ username: body.username }).exec();
-
-    if (user === null) {
-        res.status(401).json("Username/password combination is incorrect");
-        return;
-    }
-
-    await bcrypt.compare(body.password, user.password) ? 
-        res.json(user) 
-        :
-        res.status(403).json("Username/password combination is incorrect");
-});
-
 authRouter.post('/signUp', async (req, res) => {
     const body = req.body;
 
@@ -90,14 +75,12 @@ authRouter.post('/signUp', async (req, res) => {
         ccNumber: body.ccNumber,
         ccExpiration: body.ccExpiration,
         ccCVV: body.ccCVV,
-        username: body.username,
-        password: bcrypt.hashSync(body.password, bcrypt.genSaltSync()),
         publicKey: body.publicKey
     });
 
     await user.save();
 
-    res.json(user);
+    res.status(200).json({ userId: user._id });
 });
 
 // Items

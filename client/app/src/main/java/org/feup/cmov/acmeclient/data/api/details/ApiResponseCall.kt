@@ -15,27 +15,21 @@ internal class ApiResponseCall<T : Any>(private val delegate: Call<T>) : Call<Ap
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 if (response.isSuccessful) {
                     val body = response.body()
-
-                    val apiResponse = if (body != null)
-                        ApiResponse.Success(body)
-                    else
-                        ApiResponse.ApiError("unknown error")
-
                     callback.onResponse(
                         this@ApiResponseCall,
-                        Response.success(apiResponse)
+                        Response.success(ApiResponse.Success(body))
                     )
                 } else {
                     val errorBody = response.errorBody()?.string()
 
                     val errorMessage = if (errorBody.isNullOrEmpty())
-                        response.message()
+                        "unknown error"
                     else
                         Gson().fromJson(errorBody, JsonObject::class.java).get("error").asString
 
                     callback.onResponse(
                         this@ApiResponseCall,
-                        Response.success(ApiResponse.ApiError(errorMessage ?: "unknown error"))
+                        Response.success(ApiResponse.ApiError(errorMessage))
                     )
                 }
             }
