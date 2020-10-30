@@ -15,7 +15,6 @@ class SignInViewModel @ViewModelInject constructor(
     data class FormState(
         val usernameError: Int? = R.string.empty_string,
         val passwordError: Int? = R.string.empty_string,
-        val isValid: Boolean = false
     )
 
     val authState: LiveData<Boolean?> = dataRepository.isLoggedIn.asLiveData()
@@ -26,38 +25,9 @@ class SignInViewModel @ViewModelInject constructor(
     private val _formState = MutableLiveData(FormState())
     val formState: LiveData<FormState> = _formState
 
-    fun checkUsername(username: String) {
-        val usernameError = when {
-            username.isEmpty() -> R.string.error_required
-            else -> null
-        }
-
-        _formState.value = _formState.value?.copy(usernameError = usernameError)
-
-        checkValid()
-    }
-
-    fun checkPassword(password: String) {
-        val passwordError = when {
-            password.isEmpty() -> R.string.error_required
-            else -> null
-        }
-
-        _formState.value = _formState.value?.copy(passwordError = passwordError)
-
-        checkValid()
-    }
-
-    private fun checkValid() {
-        val state = _formState.value!!
-
-        val isValid = state.usernameError == null && state.passwordError == null
-
-        _formState.value = _formState.value?.copy(isValid = isValid)
-    }
-
     fun signIn(username: String, password: String) {
-        if (!_formState.value!!.isValid) return
+        if (!checkForm(username, password))
+            return
 
         _uiEvent.value = UiEvent(isLoading = true)
 
@@ -77,5 +47,21 @@ class SignInViewModel @ViewModelInject constructor(
                 }
             }
         }
+    }
+
+    private fun checkForm(username: String, password: String): Boolean {
+        val usernameError = when {
+            username.isEmpty() -> R.string.error_required
+            else -> null
+        }
+
+        val passwordError = when {
+            password.isEmpty() -> R.string.error_required
+            else -> null
+        }
+
+        _formState.value = FormState(usernameError, passwordError)
+
+        return usernameError == null && passwordError == null
     }
 }

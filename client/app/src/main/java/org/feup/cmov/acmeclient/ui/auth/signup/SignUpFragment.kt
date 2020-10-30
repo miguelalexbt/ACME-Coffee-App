@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,14 +45,11 @@ class SignUpFragment : Fragment() {
         viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
             binding.isLoading = it.isLoading
 
-            if (it.error != null)
-                Toast.makeText(context, it.error, Toast.LENGTH_LONG).show()
+            if (it.error != null) Toast.makeText(context, it.error, Toast.LENGTH_LONG).show()
         })
 
         viewModel.formState.observe(viewLifecycleOwner, {
             val formState = it ?: return@observe
-
-            binding.signUpSubmit.isEnabled = formState.isValid
 
             binding.signUpNameLayout.error = if (formState.nameError != null)
                 getString(formState.nameError)
@@ -91,34 +87,6 @@ class SignUpFragment : Fragment() {
                 null
         })
 
-        binding.signUpNameLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkName(text.toString())
-        }
-
-        binding.signUpNifLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkNif(text.toString())
-        }
-
-        binding.signUpCcNumberLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkCcNumber(text.toString())
-        }
-
-        binding.signUpCcExpirationLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkCcExpiration(text.toString())
-        }
-
-        binding.signUpCcCvvLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkCcCVV(text.toString())
-        }
-
-        binding.signUpUsernameLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkUsername(text.toString())
-        }
-
-        binding.signUpPasswordLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkPassword(text.toString())
-        }
-
         // Sign up
         binding.signUpSubmit.setOnClickListener {
             viewModel.signUp(
@@ -134,7 +102,7 @@ class SignUpFragment : Fragment() {
 
         // Redirect to sign in
         binding.signUpRedirect.setOnClickListener {
-            findNavController().navigate(R.id.action_signUp_to_signIn)
+            findNavController().popBackStack()
         }
     }
 }

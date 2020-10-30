@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,14 +45,11 @@ class SignInFragment : Fragment() {
         viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
             binding.isLoading = it.isLoading
 
-            if (it.error != null)
-                Toast.makeText(context, it.error, Toast.LENGTH_LONG).show()
+            if (it.error != null) Toast.makeText(context, it.error, Toast.LENGTH_LONG).show()
         })
 
         viewModel.formState.observe(viewLifecycleOwner, {
             val formState = it ?: return@observe
-
-            binding.signInSubmit.isEnabled = formState.isValid
 
             binding.signInUsernameLayout.error = if (formState.usernameError != null)
                 getString(formState.usernameError)
@@ -65,14 +61,6 @@ class SignInFragment : Fragment() {
             else
                 null
         })
-
-        binding.signInUsernameLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkUsername(text.toString())
-        }
-
-        binding.signInPasswordLayout.editText?.doAfterTextChanged { text ->
-            viewModel.checkPassword(text.toString())
-        }
 
         // Sign in
         binding.signInSubmit.setOnClickListener {

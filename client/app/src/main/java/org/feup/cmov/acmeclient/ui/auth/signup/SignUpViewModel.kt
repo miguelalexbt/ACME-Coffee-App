@@ -22,7 +22,6 @@ class SignUpViewModel @ViewModelInject constructor(
         val ccCVVError: Int? = R.string.empty_string,
         val usernameError: Int? = R.string.empty_string,
         val passwordError: Int? = R.string.empty_string,
-        val isValid: Boolean = false
     )
 
     val authState: LiveData<Boolean?> = dataRepository.isLoggedIn.asLiveData()
@@ -33,103 +32,12 @@ class SignUpViewModel @ViewModelInject constructor(
     private val _formState = MutableLiveData(FormState())
     val formState: LiveData<FormState> = _formState
 
-    fun checkName(name: String) {
-        val nameError = when {
-            name.isEmpty() -> R.string.error_required
-            else -> null
-        }
-
-        _formState.value = _formState.value?.copy(nameError = nameError)
-
-        checkValid()
-    }
-
-    fun checkNif(nif: String) {
-        val nifError = when {
-            nif.isEmpty() -> R.string.error_required
-            nif.length != 9 -> R.string.error_invalid
-            else -> null
-        }
-
-        _formState.value = _formState.value?.copy(nifError = nifError)
-
-        checkValid()
-    }
-
-    fun checkCcNumber(ccNumber: String) {
-        val ccNumberError = when {
-            ccNumber.isEmpty() -> R.string.error_required
-            ccNumber.length != 16 -> R.string.error_invalid
-            else -> null
-        }
-
-        _formState.value = _formState.value?.copy(ccNumberError = ccNumberError)
-
-        checkValid()
-    }
-
-    fun checkCcExpiration(ccExpiration: String) {
-        val ccExpirationError = when {
-            ccExpiration.isEmpty() -> R.string.error_required
-            ccExpiration.length < 4 || ccExpiration.length > 5 -> R.string.error_invalid
-            else -> null
-        }
-
-        _formState.value = _formState.value?.copy(ccExpirationError = ccExpirationError)
-
-        checkValid()
-    }
-
-    fun checkCcCVV(ccCVV: String) {
-        val ccCVVError = when {
-            ccCVV.isEmpty() -> R.string.error_required
-            ccCVV.length != 3 -> R.string.error_invalid
-            else -> null
-        }
-
-        _formState.value = _formState.value?.copy(ccCVVError = ccCVVError)
-
-        checkValid()
-    }
-
-    fun checkUsername(username: String) {
-        val usernameError = when {
-            username.isEmpty() -> R.string.error_required
-            else -> null
-        }
-
-        _formState.value = _formState.value?.copy(usernameError = usernameError)
-
-        checkValid()
-    }
-
-    fun checkPassword(password: String) {
-        val passwordError = when {
-            password.isEmpty() -> R.string.error_required
-            else -> null
-        }
-
-        _formState.value = _formState.value?.copy(passwordError = passwordError)
-
-        checkValid()
-    }
-
-    private fun checkValid() {
-        val state = _formState.value!!
-
-        val isValid = state.nameError == null && state.nifError == null &&
-                state.ccNumberError == null && state.ccExpirationError == null &&
-                state.ccCVVError == null &&
-                state.usernameError == null && state.passwordError == null
-
-        _formState.value = _formState.value?.copy(isValid = isValid)
-    }
-
     fun signUp(
         name: String, nif: String, ccNumber: String, ccExpiration: String, ccCVV: String,
         username: String, password: String
     ) {
-        if (!_formState.value!!.isValid) return
+        if (!checkForm(name, nif, ccNumber, ccExpiration, ccCVV, username, password))
+            return
 
         _uiEvent.value = UiEvent(isLoading = true)
 
@@ -149,5 +57,60 @@ class SignUpViewModel @ViewModelInject constructor(
                 }
             }
         }
+    }
+
+    private fun checkForm(
+        name: String,
+        nif: String, ccNumber: String, ccExpiration: String, ccCVV: String,
+        username: String, password: String
+    ): Boolean {
+        val nameError = when {
+            name.isEmpty() -> R.string.error_required
+            else -> null
+        }
+
+        val nifError = when {
+            nif.isEmpty() -> R.string.error_required
+            nif.length != 9 -> R.string.error_invalid
+            else -> null
+        }
+
+        val ccNumberError = when {
+            ccNumber.isEmpty() -> R.string.error_required
+            ccNumber.length != 16 -> R.string.error_invalid
+            else -> null
+        }
+
+        val ccExpirationError = when {
+            ccExpiration.isEmpty() -> R.string.error_required
+            ccExpiration.length < 4 || ccExpiration.length > 5 -> R.string.error_invalid
+            else -> null
+        }
+
+        val ccCVVError = when {
+            ccCVV.isEmpty() -> R.string.error_required
+            ccCVV.length != 3 -> R.string.error_invalid
+            else -> null
+        }
+
+        val usernameError = when {
+            username.isEmpty() -> R.string.error_required
+            else -> null
+        }
+
+        val passwordError = when {
+            password.isEmpty() -> R.string.error_required
+            else -> null
+        }
+
+        _formState.value = FormState(
+            nameError,
+            nifError, ccNumberError, ccExpirationError, ccCVVError,
+            usernameError, passwordError
+        )
+
+        return nameError == null && nifError == null &&
+                ccNumberError == null && ccExpirationError == null && ccCVVError == null &&
+                usernameError == null && passwordError == null
     }
 }
