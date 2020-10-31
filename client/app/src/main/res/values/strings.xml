@@ -34,6 +34,10 @@
 
     <!--List Item-->
     <string name="add_item_to_cart">ADD</string>
+    <string name="remove_item_from_cart">REMOVE</string>
     <string name="decreaseItem">decreaseItem</string>
     <string name="increaseItem">increaseItem</string>
+
+    <string name="error_no_items">No items available</string>
+    <string name="error_fetch_items">An error has occurred</string>
 </resources>

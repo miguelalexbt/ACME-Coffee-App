@@ -44,6 +44,7 @@ class SignUpViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val result = dataRepository.signUp(name, nif, ccNumber, ccExpiration, ccCVV, username, password)
             when (result.status) {
+                Status.LOADING -> { }
                 Status.SUCCESS -> {
                     _uiEvent.value = UiEvent()
                 }

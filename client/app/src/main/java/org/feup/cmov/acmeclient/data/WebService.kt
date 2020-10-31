@@ -1,6 +1,5 @@
 package org.feup.cmov.acmeclient.data
 
-import okhttp3.ResponseBody
 import org.feup.cmov.acmeclient.data.api.ApiResponse
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.api.SignUpRequest

@@ -4,9 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <variable
-            name="item"
-            type="org.feup.cmov.acmeclient.data.model.Item" />
+        <variable name="item" type="org.feup.cmov.acmeclient.data.model.Item" />
+        <variable name="isChosen" type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -93,10 +92,11 @@
                     android:orientation="horizontal">
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/list_item_add"
                         style="?attr/materialButtonOutlinedStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/add_item_to_cart"
+                        android:text="@{isChosen ? @string/remove_item_from_cart : @string/add_item_to_cart}"
                         app:icon="@drawable/ic_baseline_add_24"
                         app:strokeColor="@color/colorPrimary"
                         app:strokeWidth="1dp" />

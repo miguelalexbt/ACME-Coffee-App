@@ -3,37 +3,57 @@ package org.feup.cmov.acmeclient.ui.main.home
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.data.DataRepository
+import org.feup.cmov.acmeclient.data.Resource
+import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.model.Item
-import org.feup.cmov.acmeclient.ui.auth.signin.SignInViewModel
 
 class HomeViewModel @ViewModelInject constructor(
 //    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
-    // Sign in state
-//    private val _state = MutableLiveData<SignInViewModel.State>()
-//    val state: LiveData<SignInViewModel.State> = _state
+    data class MarkedItem(val item: Item, val chosen: Boolean)
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+    private val _order = MutableLiveData<Map<String, Int>>(emptyMap())
+    val order: Flow<Map<String, Int>> = _order.asFlow()
+
+    val items: LiveData<Resource<List<MarkedItem>>> = dataRepository.getItems()
+        .combine(order) { items, order ->
+            when (items.status) {
+                Status.LOADING -> {
+                    Resource.loading<List<MarkedItem>>(null)
+                }
+                Status.SUCCESS -> {
+                    Resource.success(items.data?.map { MarkedItem(it, it.id in order.keys) })
+                }
+                Status.ERROR -> {
+                    Resource.error(items.message!!)
+                }
+            }
+        }
+        .asLiveData()
+
+    private val _refreshing = MutableLiveData<Boolean>()
+    val refreshing: LiveData<Boolean> =_refreshing
+
+    fun fetchItems() {
+        viewModelScope.launch {
+            _refreshing.value = true
+            dataRepository.fetchItems()
+            _refreshing.value = false
+        }
     }
-    val text: LiveData<String> = _text
 
-    val items: LiveData<List<Item>> = dataRepository.getItems().asLiveData()
-
-//    init {
-//        viewModelScope.launch {
-//            println("FETCHING ITEMS")
-//            dataRepository.fetchItems()
-//        }
-//    }
-
-//    fun test() {
-//        viewModelScope.launch {
-//            dataRepository.fetchItems()
-//        }
-//    }
+    fun addItem(item: Item) {
+        _order.value = _order.value!!
+            .toMutableMap()
+            .apply {
+                putIfAbsent(item.id, 1)
+            }
+    }
 }

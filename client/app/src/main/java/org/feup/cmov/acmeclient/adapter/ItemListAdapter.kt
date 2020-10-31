@@ -1,6 +1,7 @@
 package org.feup.cmov.acmeclient.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -9,8 +10,15 @@ import com.squareup.picasso.Picasso
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.databinding.ListItemBinding
+import org.feup.cmov.acmeclient.ui.main.home.HomeViewModel
 
-class ItemListAdapter : ListAdapter<Item, RecyclerView.ViewHolder>(ListItemDiffCallback()) {
+interface ClickListener {
+    fun onItemClick(item: Item)
+}
+
+class ItemListAdapter(
+    private val listener: ClickListener
+) : ListAdapter<HomeViewModel.MarkedItem, RecyclerView.ViewHolder>(ListItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ItemViewHolder(
@@ -23,35 +31,17 @@ class ItemListAdapter : ListAdapter<Item, RecyclerView.ViewHolder>(ListItemDiffC
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = getItem(position)
-        (holder as ItemViewHolder).bind(item)
+        (holder as ItemViewHolder).bind(getItem(position), listener)
     }
 
     class ItemViewHolder(private val binding: ListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-//        init {
-//            binding.setClickListener {
-//                println("click")
-//                binding.plant?.let { plant ->
-//                    navigateToPlant(plant, it)
-//                }
-//            }
-//        }
 
-//        private fun navigateToPlant(
-//            plant: Plant,
-//            view: View
-//        ) {
-//            val direction =
-//                HomeViewPagerFragmentDirections.actionViewPagerFragmentToPlantDetailFragment(
-//                    plant.plantId
-//                )
-//            view.findNavController().navigate(direction)
-//        }
+        fun bind(contentItem: HomeViewModel.MarkedItem, listener: ClickListener) {
 
-        fun bind(item2: Item) {
             binding.apply {
-                item = item2
+                item = contentItem.item
+                isChosen = contentItem.chosen
 
 //                Picasso.get().setIndicatorsEnabled(true)
                 Picasso.get()
@@ -63,18 +53,22 @@ class ItemListAdapter : ListAdapter<Item, RecyclerView.ViewHolder>(ListItemDiffC
                     .into(itemImage);
 
                 executePendingBindings()
+
+                listItemAdd.setOnClickListener {
+                    listener.onItemClick(contentItem.item)
+                }
             }
         }
     }
 }
 
-private class ListItemDiffCallback : DiffUtil.ItemCallback<Item>() {
+private class ListItemDiffCallback : DiffUtil.ItemCallback<HomeViewModel.MarkedItem>() {
 
-    override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-        return oldItem.id == newItem.id
+    override fun areItemsTheSame(oldItem: HomeViewModel.MarkedItem, newItem: HomeViewModel.MarkedItem): Boolean {
+        return oldItem.item.id == newItem.item.id
     }
 
-    override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
-        return oldItem.name == newItem.name
+    override fun areContentsTheSame(oldItem: HomeViewModel.MarkedItem, newItem: HomeViewModel.MarkedItem): Boolean {
+        return oldItem.chosen == newItem.chosen
     }
 }

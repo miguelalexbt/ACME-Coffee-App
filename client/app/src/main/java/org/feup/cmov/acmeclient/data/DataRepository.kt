@@ -1,6 +1,7 @@
 package org.feup.cmov.acmeclient.data
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.feup.cmov.acmeclient.utils.Crypto
 import org.feup.cmov.acmeclient.data.api.*
@@ -9,6 +10,7 @@ import org.feup.cmov.acmeclient.data.db.UserDao
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.model.User
 import org.feup.cmov.acmeclient.utils.Cache
+import java.io.IOException
 
 import javax.inject.Inject
 
@@ -28,7 +30,7 @@ class DataRepository @Inject constructor(
             return Resource.success(null)
         }
 
-        return Resource.error("wrong_credentials", null)
+        return Resource.error("wrong_credentials")
     }
 
     suspend fun signUp(
@@ -58,30 +60,32 @@ class DataRepository @Inject constructor(
         return mapToResource(response)
     }
 
-    // VERSION 1.0
-    // TODO wrap in Resource for LOADING / ERROR STATE
-    fun getItems(): Flow<List<Item>> = itemDao.getAll()
-            .distinctUntilChanged()
-            .onStart {
-                // Check if menu is updated
-                val lastItem = itemDao.getLastAddedItem().first()
-                val response = webService.getItems(lastItem?.addedAt)
+    suspend fun fetchItems() {
+        // Check if menu is updated
+        val lastItem = itemDao.getLastAddedItem().first()
+        val response = webService.getItems(lastItem?.addedAt)
 
-                // Update menu if needed
-                if (response is ApiResponse.Success)
-                    itemDao.insertAll(response.data!!)
+        // Update menu if needed
+        if (response is ApiResponse.Success)
+            itemDao.insertAll(response.data!!)
+    }
 
-                val res: Resource<List<Item>> = Resource.loading(null)
-            }
-//            .map {
-//                Resource.success()
-//            }.flowPm
+    fun getItems(): Flow<Resource<List<Item>>> = itemDao.getAll()
+        .distinctUntilChanged()
+        .map { Resource.success(it) }
+        .onStart {
+            emit(Resource.loading(null))
+            fetchItems()
+        }
+        .catch { emit(Resource.error(it.message!!)) }
+        .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
+        .flowOn(Dispatchers.IO)
 
     private fun <T> mapToResource(apiResponse: ApiResponse<T>): Resource<T> {
         return when (apiResponse) {
             is ApiResponse.Success -> Resource.success(apiResponse.data)
-            is ApiResponse.ApiError -> Resource.error(apiResponse.error, null)
-            is ApiResponse.NetworkError -> Resource.error(apiResponse.error, null)
+            is ApiResponse.ApiError -> Resource.error(apiResponse.error)
+            is ApiResponse.NetworkError -> Resource.error(apiResponse.error)
         }
     }
 }

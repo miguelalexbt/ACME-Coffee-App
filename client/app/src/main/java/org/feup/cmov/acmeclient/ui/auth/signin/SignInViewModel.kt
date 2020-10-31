@@ -34,6 +34,7 @@ class SignInViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val result = dataRepository.signIn(username, password)
             when (result.status) {
+                Status.LOADING -> { }
                 Status.SUCCESS -> {
                     _uiEvent.value = UiEvent()
                 }
