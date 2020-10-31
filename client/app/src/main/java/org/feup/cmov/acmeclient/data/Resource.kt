@@ -1,6 +1,6 @@
 package org.feup.cmov.acmeclient.data
 
-enum class Status { SUCCESS, ERROR }
+enum class Status { SUCCESS, ERROR, LOADING }
 
 data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
     companion object {
@@ -10,6 +10,10 @@ data class Resource<out T>(val status: Status, val data: T?, val message: String
 
         fun <T> error(msg: String, data: T?): Resource<T> {
             return Resource(Status.ERROR, data, msg)
+        }
+
+        fun <T> loading(data: T?): Resource<T> {
+            return Resource(Status.LOADING, data, null)
         }
     }
 }

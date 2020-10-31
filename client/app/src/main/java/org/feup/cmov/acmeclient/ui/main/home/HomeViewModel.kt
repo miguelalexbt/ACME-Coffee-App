@@ -24,9 +24,16 @@ class HomeViewModel @ViewModelInject constructor(
 
     val items: LiveData<List<Item>> = dataRepository.getItems().asLiveData()
 
-    init {
-        viewModelScope.launch {
-            dataRepository.fetchItems()
-        }
-    }
+//    init {
+//        viewModelScope.launch {
+//            println("FETCHING ITEMS")
+//            dataRepository.fetchItems()
+//        }
+//    }
+
+//    fun test() {
+//        viewModelScope.launch {
+//            dataRepository.fetchItems()
+//        }
+//    }
 }

@@ -1,7 +1,6 @@
 let express = require('express')
 const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
-const bcrypt = require('bcrypt');
 const crypto = require('crypto')
 
 const { User, Item } = require('./models');
@@ -80,17 +79,45 @@ authRouter.post('/signUp', async (req, res) => {
 
     await user.save();
 
-    res.status(200).json({ userId: user._id });
+    res.json({ userId: user._id });
 });
 
 // Items
 
 let itemRouter = express.Router()
 
-itemRouter.get('/', async (req, res) => {
-    let allItems = await Item.find({}).exec()
-    res.json(allItems)
-    // res.send(__dirname)
+itemRouter.get('/populate', async (req, res) => {
+    await new Item({ name: 'Sandwich', type: 'food', price: 4.5}).save();
+    // await new Item({ name: 'Pastry', type: 'food', price: 2.3 }).save();
+    // await new Item({ name: 'Coffee', type: 'drink', price: 0.6 }).save();
+    // await new Item({ name: 'Coca-Cola', type: 'drink', price: 1.0 }).save();
+    // await new Item({ name: 'Latte', type: 'drink', price: 3.99 }).save();
+    // await new Item({ name: 'Mochaccino', type: 'drink', price: 4.99 }).save();
+    // await new Item({ name: 'Cappuccino', type: 'drink', price: 2.99 }).save();
+    // await new Item({ name: 'Croissant', type: 'drink', price: 2.50 }).save();
+    // await new Item({ name: 'Water', type: 'drink', price: 0.99 }).save();
+    // await new Item({ name: 'Expresso', type: 'drink', price: 0.70 }).save();
+
+    res.sendStatus(200);
+})
+
+itemRouter.get('/', authenticateRequest, async (req, res) => {
+    let query = {};
+
+    if (req.query.last_update) {
+        const lastUpdate = new Date(req.query.last_update);
+
+        query = {
+            $or: [
+                { createdAt: { $gte: lastUpdate } },
+                { updatedAt: { $gte: lastUpdate }}
+            ]
+        }
+    }
+
+    const items = await Item.find(query).exec() 
+    
+    res.json(items)
 })
 
 module.exports = { 

@@ -1,13 +1,12 @@
 package org.feup.cmov.acmeclient.di
 
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okio.Buffer
 import org.feup.cmov.acmeclient.data.WebService
@@ -17,6 +16,10 @@ import org.feup.cmov.acmeclient.utils.Crypto
 import retrofit2.Invocation
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.inject.Singleton
 
 @Module
@@ -47,7 +50,9 @@ object WebServiceModule {
                 val fullPath = url.path + if (url.query != null) ("?" + url.query) else ""
 
                 // Timestamp
-                val timestamp = Crypto.generateTimestamp()
+                val timestamp = DateTimeFormatter
+                    .ofPattern("EEE, dd MMM yyyy HH:mm:ss O", Locale.ENGLISH)
+                    .format(ZonedDateTime.now(ZoneOffset.UTC))
 
                 // Add data to buffer
                 buffer.write(cachedUser.userId.toByteArray())
@@ -74,7 +79,11 @@ object WebServiceModule {
             .baseUrl("http://192.168.1.71") // Miguel
 //            .baseUrl("http://192.168.1.2") // Xavi
 //            .baseUrl("http://172.28.144.1") // Xavi Porto
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(
+                GsonConverterFactory.create(
+                    GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
+                )
+            )
             .addCallAdapterFactory(ApiResponseAdapterFactory())
             .client(httpClient.build())
             .build()

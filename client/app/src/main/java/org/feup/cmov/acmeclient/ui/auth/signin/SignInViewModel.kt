@@ -17,7 +17,7 @@ class SignInViewModel @ViewModelInject constructor(
         val passwordError: Int? = R.string.empty_string,
     )
 
-    val authState: LiveData<Boolean?> = dataRepository.isLoggedIn.asLiveData()
+    val authState: LiveData<Boolean> = dataRepository.isLoggedIn.asLiveData()
 
     private val _uiEvent = MutableLiveData<UiEvent>()
     val uiEvent: LiveData<UiEvent> = _uiEvent

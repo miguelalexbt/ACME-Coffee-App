@@ -14,7 +14,7 @@ import org.feup.cmov.acmeclient.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
+        supportActionBar?.hide()
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         setupNavigation()
     }
@@ -23,27 +23,5 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_content)
         NavigationUI.setupWithNavController(navView, navHostFragment!!.findNavController())
-
-//        navView.setOnNavigationItemSelectedListener { item ->
-//            when (item.itemId) {
-//                R.id.home -> {
-//                    Toast.makeText(this, "Home selected", Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//                R.id.vouchers -> {
-//                    Toast.makeText(this, "Vouchers selected", Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//                R.id.pastOrders -> {
-//                    Toast.makeText(this, "Past Orders selected", Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//                R.id.checkout -> {
-//                    Toast.makeText(this, "Checkout selected", Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//                else -> true
-//            }
-//        }
     }
 }

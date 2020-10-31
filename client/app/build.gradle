@@ -30,6 +30,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -89,5 +90,9 @@ dependencies {
     // BCrypt
     implementation "org.mindrot:jbcrypt:0.4"
 
+    // Data Store
     implementation "androidx.datastore:datastore-preferences:1.0.0-alpha02"
+
+    // Java 8+ API
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
 }

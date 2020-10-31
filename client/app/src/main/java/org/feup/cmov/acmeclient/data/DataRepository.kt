@@ -1,8 +1,7 @@
 package org.feup.cmov.acmeclient.data
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import org.feup.cmov.acmeclient.utils.Crypto
 import org.feup.cmov.acmeclient.data.api.*
 import org.feup.cmov.acmeclient.data.db.ItemDao
@@ -22,7 +21,7 @@ class DataRepository @Inject constructor(
     val isLoggedIn = Cache.cachedUser.map { it != null }
 
     suspend fun signIn(username: String, password: String): Resource<Nothing> {
-        val user = userDao.get(username)
+        val user = userDao.get(username).first()
 
         if (user != null && Crypto.checkPassword(password, user.password)) {
             Cache.cacheUser(user)
@@ -59,21 +58,24 @@ class DataRepository @Inject constructor(
         return mapToResource(response)
     }
 
-    suspend fun fetchItems() {
-//        while (true) {
-//            println("Requesting API")
-//            val response = webService.getItems()
-//
-//            if (response is ApiResponse.Success) {
-//                println("Fetched items ${response.data.size} from API")
-//                itemDao.insertAll(response.data)
-//            }
-//
-//            delay(10000)
-//        }
-    }
+    // VERSION 1.0
+    // TODO wrap in Resource for LOADING / ERROR STATE
+    fun getItems(): Flow<List<Item>> = itemDao.getAll()
+            .distinctUntilChanged()
+            .onStart {
+                // Check if menu is updated
+                val lastItem = itemDao.getLastAddedItem().first()
+                val response = webService.getItems(lastItem?.addedAt)
 
-    fun getItems(): Flow<List<Item>> = itemDao.getAll().distinctUntilChanged()
+                // Update menu if needed
+                if (response is ApiResponse.Success)
+                    itemDao.insertAll(response.data!!)
+
+                val res: Resource<List<Item>> = Resource.loading(null)
+            }
+//            .map {
+//                Resource.success()
+//            }.flowPm
 
     private fun <T> mapToResource(apiResponse: ApiResponse<T>): Resource<T> {
         return when (apiResponse) {

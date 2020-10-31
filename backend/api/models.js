@@ -25,8 +25,9 @@ const userSchema = new Schema({
 const itemSchema = new Schema({
     type: { type: String, enum: ['food', 'drink'] },
     name: { type: String, required: true },
-    price: { type: Number, required: true },
+    price: { type: Number, required: true }
 }, {
+    timestamps: { createdAt: true },
     toJSON: {
         transform: (doc, ret) => {
             ret.id = ret._id;
