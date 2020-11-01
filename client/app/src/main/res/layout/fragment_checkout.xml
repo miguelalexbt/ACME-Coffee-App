@@ -80,6 +80,7 @@
         <LinearLayout
             android:layout_width="370dp"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -92,21 +93,6 @@
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:text="Send NDEF"
-                app:strokeColor="@color/colorPrimary"
-                app:strokeWidth="1dp"
-                tools:layout_constraintTop_toBottomOf="@id/imageViewQRCode" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/receive_ndef"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="180dp"
-                android:layout_height="wrap_content"
-                android:text="Receive NDEF"
                 app:strokeColor="@color/colorPrimary"
                 app:strokeWidth="1dp"
                 tools:layout_constraintTop_toBottomOf="@id/imageViewQRCode" />

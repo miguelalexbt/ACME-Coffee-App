@@ -13,6 +13,7 @@ import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.nfc.NfcEvent
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -64,6 +65,10 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 
         binding.readQrcode.setOnClickListener {
             readQRCode()
+        }
+
+        binding.sendNdef.setOnClickListener {
+            startNfcTransfer()
         }
 
         return binding.root
@@ -163,14 +168,26 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
         val nfcAdapter = NfcAdapter.getDefaultAdapter(MainApplication.context)
         if (nfcAdapter == null) {
             Toast.makeText(
-                MainApplication.context,
+                context,
                 "NFC is not available on this device.",
                 Toast.LENGTH_LONG
             ).show()
             // Nothing to do - go back to checkout
+            return
+        }
+        if (!nfcAdapter?.isEnabled!!) {
+            Toast.makeText(
+                context,
+                "NFC disabled on this device. Turn on to proceed",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
         }
 
         val orderString = generateOrderString()
+
+        println("NFC")
+        println(orderString)
 
         // Create NDEF message
         val msg = NdefMessage(createMimeRecord(orderString.toByteArray()))
@@ -181,7 +198,7 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
     }
 
     private fun createMimeRecord(payload: ByteArray?): NdefRecord? {
-        val mimeBytes = "text/json".toByteArray(Charset.forName("ISO-8859-1"))
+        val mimeBytes = "application/nfc.feup.apm.ordermsg".toByteArray(Charset.forName("ISO-8859-1"))
         return NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, ByteArray(0), payload)
     }
 

@@ -24,8 +24,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.main.MainActivity">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="application/org.feup.cmov.acmeclient"/>
+            </intent-filter>
+        </activity>
 
-        <activity android:name=".ui.main.MainActivity" />
     </application>
 
 </manifest>
