@@ -147,12 +147,14 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 //        }
 
         val order = runBlocking {
-            var order: String = ""
-            homeViewModel.order.first().forEach {
-                order += it.key + ":" + it.value + ";"
-            }
-            println(order)
-            return@runBlocking order
+//            var order: String = ""
+//            homeViewModel.order.first().forEach {
+//                order += it.key + ":" + it.value + ";"
+//            }
+//            println(order)
+//            return@runBlocking order
+
+            ""
         }
 
         println(order)

@@ -19,6 +19,7 @@ class DataRepository @Inject constructor(
     private val userDao: UserDao,
     private val itemDao: ItemDao
 ) {
+    // Auth
 
     val isLoggedIn = Cache.cachedUser.map { it != null }
 
@@ -37,7 +38,7 @@ class DataRepository @Inject constructor(
         name: String,
         nif: String, ccNumber: String, ccExpiration: String, ccCVV: String,
         username: String, password: String
-    ): Resource<*> {
+    ): Resource<Any> {
 
         // Generate RSA key pair
         val publicKey = Crypto.generateRSAKeyPair(username)
@@ -60,15 +61,7 @@ class DataRepository @Inject constructor(
         return mapToResource(response)
     }
 
-    suspend fun fetchItems() {
-        // Check if menu is updated
-        val lastItem = itemDao.getLastAddedItem().first()
-        val response = webService.getItems(lastItem?.addedAt)
-
-        // Update menu if needed
-        if (response is ApiResponse.Success)
-            itemDao.insertAll(response.data!!)
-    }
+    // Items
 
     fun getItems(): Flow<Resource<List<Item>>> = itemDao.getAll()
         .distinctUntilChanged()
@@ -80,6 +73,26 @@ class DataRepository @Inject constructor(
         .catch { emit(Resource.error(it.message!!)) }
         .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
         .flowOn(Dispatchers.IO)
+
+    suspend fun fetchItems() {
+        // Check if menu is updated
+        val lastItem = itemDao.getLastAddedItem().first()
+        val response = webService.getItems(lastItem?.addedAt)
+
+        // Update menu if needed
+        if (response is ApiResponse.Success)
+            itemDao.insertAll(response.data!!)
+    }
+
+    // Order
+
+    fun getOrder(): Flow<Map<String, Int>> = Cache.cachedOrder.flowOn(Dispatchers.IO)
+
+    suspend fun updateOrder(itemId: String, quantity: Int) {
+        Cache.cacheOrder(itemId, quantity)
+    }
+
+    // Utils
 
     private fun <T> mapToResource(apiResponse: ApiResponse<T>): Resource<T> {
         return when (apiResponse) {
