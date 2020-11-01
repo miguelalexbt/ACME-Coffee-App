@@ -29,7 +29,7 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = this
 
         val adapter = ItemListAdapter(object : ClickListener {
-            override fun onItemClick(item: Item) = viewModel.addItem(item)
+            override fun onItemClick(item: Item) = viewModel.toggleItem(item)
         })
 
         binding.homeRecyclerView.adapter = adapter

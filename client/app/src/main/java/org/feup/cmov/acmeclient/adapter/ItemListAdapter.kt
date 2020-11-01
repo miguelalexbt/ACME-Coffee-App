@@ -50,7 +50,7 @@ class ItemListAdapter(
                     .error(R.drawable.ic_baseline_remove_circle_outline_24)
                     .fit()
                     .centerCrop()
-                    .into(itemImage);
+                    .into(listItemImage);
 
                 executePendingBindings()
 

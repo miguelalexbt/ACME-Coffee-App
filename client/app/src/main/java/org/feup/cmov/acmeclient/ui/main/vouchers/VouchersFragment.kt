@@ -7,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.adapter.ItemListAdapter
+import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.databinding.FragmentHomeBinding
 import org.feup.cmov.acmeclient.databinding.FragmentVouchersBinding
 import org.feup.cmov.acmeclient.ui.main.home.HomeViewModel
@@ -19,44 +21,30 @@ import org.feup.cmov.acmeclient.ui.main.home.HomeViewModel
 @AndroidEntryPoint
 class VouchersFragment : Fragment() {
 
-//    private lateinit var vouchersViewModel: VouchersViewModel
-//
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        vouchersViewModel =
-//            ViewModelProvider(this).get(VouchersViewModel::class.java)
-//        val root = inflater.inflate(R.layout.fragment_vouchers, container, false)
-//        val textView: TextView = root.findViewById(R.id.text_vouchers)
-//        vouchersViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
-//        })
-//        return root
-//    }
-
-
     private lateinit var binding: FragmentVouchersBinding
 
-    private val viewModel: VouchersViewModel by viewModels()
+//    private val viewModel: VouchersViewModel by viewModels()
+
+    private val viewModel: HomeViewModel by activityViewModels() // viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-//        val root = inflater.inflate(R.layout.fragment_home, container, false)
-//        val textView: TextView = root.findViewById(R.id.text_home)
-//        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
-//        })
-
         binding = FragmentVouchersBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+
+        subscribeUi()
 
         return binding.root
+    }
+
+    private fun subscribeUi() {
+        viewModel.items.observe(viewLifecycleOwner) {
+            val items = it ?: return@observe
+
+            println("VOUCHERS $items")
+        }
     }
 }

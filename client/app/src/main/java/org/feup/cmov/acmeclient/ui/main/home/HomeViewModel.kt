@@ -5,7 +5,6 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.data.DataRepository
 import org.feup.cmov.acmeclient.data.Resource
@@ -49,11 +48,11 @@ class HomeViewModel @ViewModelInject constructor(
         }
     }
 
-    fun addItem(item: Item) {
+    fun toggleItem(item: Item) {
         _order.value = _order.value!!
             .toMutableMap()
             .apply {
-                putIfAbsent(item.id, 1)
+                compute(item.id) { _, v -> if (v == null) 1 else null }
             }
     }
 }
