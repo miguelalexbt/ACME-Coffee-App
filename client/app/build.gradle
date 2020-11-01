@@ -87,6 +87,9 @@ dependencies {
     // Image Loading and Caching
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    // QR Code
+    implementation 'com.google.zxing:core:3.4.1'
+
     // BCrypt
     implementation "org.mindrot:jbcrypt:0.4"
 

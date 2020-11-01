@@ -19,4 +19,8 @@
         android:name="org.feup.cmov.acmeclient.ui.main.vouchers.VouchersFragment"
         android:label="fragment_vouchers"
         tools:layout="@layout/fragment_vouchers" />
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="org.feup.cmov.acmeclient.ui.main.checkout.CheckoutFragment"
+        android:label="fragment_checkout" />
 </navigation>

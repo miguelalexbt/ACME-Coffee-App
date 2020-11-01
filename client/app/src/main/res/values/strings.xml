@@ -40,4 +40,5 @@
 
     <string name="error_no_items">No items available</string>
     <string name="error_fetch_items">An error has occurred</string>
+    <string name="qrcode_content_description">qrcode</string>
 </resources>

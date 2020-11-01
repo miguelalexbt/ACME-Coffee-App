@@ -12,12 +12,12 @@
         android:title="Vouchers" />
 
     <item
-        android:id="@+id/pastOrders"
+        android:id="@+id/pastOrdersFragment"
         android:icon="@drawable/ic_baseline_backpack_24"
         android:title="Past Orders" />
 
     <item
-        android:id="@+id/checkout"
+        android:id="@+id/checkoutFragment"
         android:icon="@drawable/ic_baseline_payment_24"
         android:title="Checkout" />
 
