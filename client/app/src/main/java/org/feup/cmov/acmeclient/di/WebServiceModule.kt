@@ -13,6 +13,7 @@ import org.feup.cmov.acmeclient.data.WebService
 import org.feup.cmov.acmeclient.data.api.details.ApiResponseAdapterFactory
 import org.feup.cmov.acmeclient.utils.Cache
 import org.feup.cmov.acmeclient.utils.Crypto
+import org.feup.cmov.acmeclient.utils.WEB_SERVICE_URL
 import retrofit2.Invocation
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -75,10 +76,7 @@ object WebServiceModule {
         }
 
         return Retrofit.Builder()
-            .baseUrl("http://10.0.2.2")
-//            .baseUrl("http://192.168.1.71") // Miguel
-//            .baseUrl("http://192.168.1.2") // Xavi
-//            .baseUrl("http://172.28.144.1") // Xavi Porto
+            .baseUrl(WEB_SERVICE_URL)
             .addConverterFactory(
                 GsonConverterFactory.create(
                     GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()

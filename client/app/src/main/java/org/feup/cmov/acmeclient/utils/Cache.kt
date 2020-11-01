@@ -13,7 +13,7 @@ class Cache {
     data class CachedUser(val userId: String, val username: String)
 
     companion object {
-        private val dataStore = MainApplication.context.createDataStore(name = "app_cache")
+        private val dataStore = MainApplication.context.createDataStore(name = CACHE_NAME)
 
         private val USER_ID = preferencesKey<String>("user_id")
         private val USERNAME = preferencesKey<String>("username")
