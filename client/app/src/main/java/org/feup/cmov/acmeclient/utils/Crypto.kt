@@ -18,6 +18,7 @@ import javax.security.auth.x500.X500Principal
 class Crypto {
     companion object {
         private const val KEY_STORE = "AndroidKeyStore"
+        private const val KEY_SIZE = 512
 
         @Suppress("DEPRECATION", "BlockingMethodInNonBlockingContext")
         suspend fun generateRSAKeyPair(alias: String): String {
@@ -30,6 +31,7 @@ class Crypto {
 
                 val spec = KeyPairGeneratorSpec
                     .Builder(MainApplication.context)
+                    .setKeySize(KEY_SIZE)
                     .setAlias(alias)
                     .setSubject(X500Principal("CN=ACME, O=ACME Inc., C=PT"))
                     .setSerialNumber(BigInteger.ONE)

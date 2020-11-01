@@ -88,15 +88,15 @@ let itemRouter = express.Router()
 
 itemRouter.get('/populate', async (req, res) => {
     await new Item({ name: 'Sandwich', type: 'food', price: 4.5}).save();
-    // await new Item({ name: 'Pastry', type: 'food', price: 2.3 }).save();
-    // await new Item({ name: 'Coffee', type: 'drink', price: 0.6 }).save();
-    // await new Item({ name: 'Coca-Cola', type: 'drink', price: 1.0 }).save();
-    // await new Item({ name: 'Latte', type: 'drink', price: 3.99 }).save();
-    // await new Item({ name: 'Mochaccino', type: 'drink', price: 4.99 }).save();
-    // await new Item({ name: 'Cappuccino', type: 'drink', price: 2.99 }).save();
-    // await new Item({ name: 'Croissant', type: 'drink', price: 2.50 }).save();
-    // await new Item({ name: 'Water', type: 'drink', price: 0.99 }).save();
-    // await new Item({ name: 'Expresso', type: 'drink', price: 0.70 }).save();
+    await new Item({ name: 'Pastry', type: 'food', price: 2.3 }).save();
+    await new Item({ name: 'Coffee', type: 'drink', price: 0.6 }).save();
+    await new Item({ name: 'Coca-Cola', type: 'drink', price: 1.0 }).save();
+    await new Item({ name: 'Latte', type: 'drink', price: 3.99 }).save();
+    await new Item({ name: 'Mochaccino', type: 'drink', price: 4.99 }).save();
+    await new Item({ name: 'Cappuccino', type: 'drink', price: 2.99 }).save();
+    await new Item({ name: 'Croissant', type: 'drink', price: 2.50 }).save();
+    await new Item({ name: 'Water', type: 'drink', price: 0.99 }).save();
+    await new Item({ name: 'Expresso', type: 'drink', price: 0.70 }).save();
 
     res.sendStatus(200);
 })
