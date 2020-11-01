@@ -1,8 +1,13 @@
 package org.feup.cmov.acmeclient.ui.main.checkout
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.ContentValues
+import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.nfc.NdefMessage
 import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
@@ -14,21 +19,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
 import com.google.gson.Gson
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import okio.Buffer
 import org.feup.cmov.acmeclient.MainApplication
 import org.feup.cmov.acmeclient.databinding.FragmentCheckoutBinding
@@ -36,6 +36,7 @@ import org.feup.cmov.acmeclient.ui.main.home.HomeViewModel
 import org.feup.cmov.acmeclient.utils.Cache
 import org.feup.cmov.acmeclient.utils.Crypto
 import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
 @AndroidEntryPoint
 class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
@@ -61,6 +62,10 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
             showQRCode()
         }
 
+        binding.readQrcode.setOnClickListener {
+            readQRCode()
+        }
+
         return binding.root
     }
 
@@ -72,7 +77,56 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 
     }
 
-    fun showQRCode() {
+    private fun readQRCode() {
+        try {
+            val intent = Intent("com.google.zxing.client.android.SCAN")
+            intent.putExtra("SCAN_MODE", "QR_CODE_MODE")
+            startActivityForResult(intent, 1)
+        } catch (anfe: ActivityNotFoundException) {
+            println(anfe)
+            showDialog(
+                requireActivity(),
+                "No Scanner Found",
+                "Download a scanner QRcode app?",
+                "Yes",
+                "No"
+            )?.show()
+        }
+    }
+
+    private fun showDialog(
+        act: Activity,
+        title: CharSequence,
+        message: CharSequence,
+        buttonYes: CharSequence,
+        buttonNo: CharSequence
+    ): AlertDialog? {
+        val downloadDialog = AlertDialog.Builder(act)
+        downloadDialog.setTitle(title)
+        downloadDialog.setMessage(message)
+        downloadDialog.setPositiveButton(buttonYes) { di: DialogInterface?, i: Int ->
+            val uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            act.startActivity(intent)
+        }
+        downloadDialog.setNegativeButton(buttonNo, null)
+        return downloadDialog.show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                println(data)
+                val contents = data?.getStringExtra("SCAN_RESULT")
+                println(contents)
+                println(contents?.toByteArray(StandardCharsets.ISO_8859_1))
+                binding.orderReceived.text = contents
+            }
+        }
+    }
+
+
+    private fun showQRCode() {
         val bitmap = generateQRCode()
         binding.imageViewQRCode.setImageBitmap(bitmap)
     }

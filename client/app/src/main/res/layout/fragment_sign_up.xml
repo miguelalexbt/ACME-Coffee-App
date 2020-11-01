@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/section_personal"
                     android:layout_marginTop="20dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="@dimen/sectionTitleMarginStart"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
@@ -42,7 +42,8 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_name_layout"
-                    android:layout_width="300dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="@dimen/textFieldWidth"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="@string/prompt_name"
@@ -52,6 +53,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/signUp_name"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
@@ -65,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/section_billing"
                     android:layout_marginTop="30dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="@dimen/sectionTitleMarginStart"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
@@ -74,7 +76,8 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_nif_layout"
-                    android:layout_width="300dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="@dimen/textFieldWidth"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="@string/prompt_nif"
@@ -84,6 +87,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/signUp_nif"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
@@ -94,7 +98,8 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_cc_number_layout"
-                    android:layout_width="300dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="@dimen/textFieldWidth"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="@string/prompt_cc_number"
@@ -104,6 +109,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/signUp_cc_number"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
@@ -114,12 +120,14 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_cc_expiration_layout"
-                    android:layout_width="145dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="@dimen/textFieldWidthTwoCol"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_cc_expiration">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/signUp_cc_expiration"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
@@ -130,12 +138,14 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_cc_cvv_layout"
-                    android:layout_width="145dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="@dimen/textFieldWidthTwoCol"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_cc_cvv">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/signUp_cc_cvv"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
@@ -146,7 +156,7 @@
 
                 <androidx.constraintlayout.helper.widget.Flow
                     android:id="@+id/signUp_flow"
-                    android:layout_width="300dp"
+                    android:layout_width="@dimen/textFieldWidth"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     app:constraint_referenced_ids="signUp_cc_expiration_layout,signUp_cc_cvv_layout"
@@ -165,7 +175,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/section_credentials"
                     android:layout_marginTop="30dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="@dimen/sectionTitleMarginStart"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
@@ -174,7 +184,8 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_username_layout"
-                    android:layout_width="300dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="@dimen/textFieldWidth"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="@string/prompt_username"
@@ -184,6 +195,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/signUp_username"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
@@ -193,7 +205,8 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_password_layout"
-                    android:layout_width="300dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="@dimen/textFieldWidth"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="@string/prompt_password"
@@ -204,6 +217,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/signUp_password"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
@@ -225,16 +239,16 @@
 
                 <Button
                     android:id="@+id/signUp_redirect"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:paddingBottom="20dp"
                     android:text="@string/prompt_redirect_sign_in"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/signUp_submit"
-                    style="@style/Widget.MaterialComponents.Button.TextButton" />
+                    app:layout_constraintTop_toBottomOf="@+id/signUp_submit" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

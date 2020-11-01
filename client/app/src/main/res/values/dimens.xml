@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="textFieldWidth">320dp</dimen>
+    <dimen name="textFieldWidthTwoCol">150dp</dimen>
+    <dimen name="sectionTitleMarginStart">20dp</dimen>
+</resources>

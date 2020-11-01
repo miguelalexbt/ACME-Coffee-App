@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="home_grid_columns">2</integer>
+
+    <!-- Duration (in milliseconds) for slide transition animation -->
+    <integer name="slide">3000</integer>
 </resources>
