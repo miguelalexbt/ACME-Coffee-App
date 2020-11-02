@@ -5,16 +5,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import org.feup.cmov.acmeclient.data.model.Item
-import org.feup.cmov.acmeclient.databinding.HomeListItemBinding
+import org.feup.cmov.acmeclient.data.model.Voucher
+import org.feup.cmov.acmeclient.databinding.VouchersListItemBinding
 
-class ItemListAdapter(
-    private val listener: ClickListener<Item>
-) : ListAdapter<Content<Item>, RecyclerView.ViewHolder>(ListItemDiffCallback()) {
+class VoucherListAdapter(
+    private val listener: ClickListener<Voucher>
+) : ListAdapter<Content<Voucher>, RecyclerView.ViewHolder>(ListItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ItemViewHolder(
-            HomeListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            VouchersListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -23,12 +23,12 @@ class ItemListAdapter(
     }
 
     class ItemViewHolder(
-        private val binding: HomeListItemBinding
+        private val binding: VouchersListItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(contentItem: Content<Item>, listener: ClickListener<Item>) {
+        fun bind(contentItem: Content<Voucher>, listener: ClickListener<Voucher>) {
             binding.apply {
-                item = contentItem.content
+                voucher = contentItem.content
                 isChosen = contentItem.isChosen
 
                 Picasso.get()
