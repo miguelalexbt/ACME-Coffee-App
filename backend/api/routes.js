@@ -3,7 +3,10 @@ const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto')
 
+const fs = require("fs");
+const path = require("path")
 const { User, Item } = require('./models');
+const { Router } = require('express');
 
 // Validation
 const validate = validations => {
@@ -120,7 +123,40 @@ itemRouter.get('/', authenticateRequest, async (req, res) => {
     res.json(items)
 })
 
+let imageRouter = express.Router()
+
+imageRouter.get('/:imagePath', async (req, res, next) => {
+    const options = {
+        root: `${__dirname}/../images/`,
+        dotfiles: 'deny',
+        headers: {
+            'x-timestamp': Date.now(),
+            'x-sent': true.valueOf(),
+            'contentType': 'image/png'
+        }
+    }
+
+    let imagePath = req.params.imagePath + '.png'
+    fs.stat(`${__dirname}/../images/` + imagePath, function(errStat, stats) {
+        if (errStat) {
+            console.log(errStat)
+            next(errStat)
+        }
+        else {
+            res.status(200).sendFile(imagePath, options, function(err) {
+                if (err) {
+                    console.log(err)
+                    next(err)
+                } else {
+                    console.log('Sent: ', imagePath)
+                }
+            })
+        }
+    })
+})
+
 module.exports = { 
     authRouter: authRouter,
-    itemRouter: itemRouter
+    itemRouter: itemRouter,
+    imageRouter: imageRouter
 };

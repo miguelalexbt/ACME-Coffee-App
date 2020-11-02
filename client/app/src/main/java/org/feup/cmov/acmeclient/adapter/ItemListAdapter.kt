@@ -1,13 +1,20 @@
 package org.feup.cmov.acmeclient.adapter
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.renderscript.ScriptGroup
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.squareup.picasso.Picasso
 import org.feup.cmov.acmeclient.R
+import org.feup.cmov.acmeclient.data.WebService
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.databinding.ListItemBinding
 import org.feup.cmov.acmeclient.ui.main.home.HomeViewModel
@@ -43,6 +50,7 @@ class ItemListAdapter(
                 item = contentItem.item
                 isChosen = contentItem.chosen
 
+//                WebService.
 //                Picasso.get().setIndicatorsEnabled(true)
                 Picasso.get()
                     .load("https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Acme_Markets_lolo.svg/2560px-Acme_Markets_lolo.svg.png")

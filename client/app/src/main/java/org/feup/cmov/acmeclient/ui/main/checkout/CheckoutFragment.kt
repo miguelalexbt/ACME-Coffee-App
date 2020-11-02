@@ -46,6 +46,15 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
 
+    private lateinit var nfcAdapter: NfcAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        nfcAdapter = NfcAdapter.getDefaultAdapter(context)
+        nfcAdapter.setOnNdefPushCompleteCallback(this, activity)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,7 +77,8 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
         }
 
         binding.sendNdef.setOnClickListener {
-            startNfcTransfer()
+//            startNfcTransfer()
+            sendNdefMessage()
         }
 
         return binding.root
@@ -157,15 +167,15 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
         return bitmap
     }
 
-    fun startNfcTransfer() {
+//    fun startNfcTransfer() {
         // Make screen bright
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        sendNdefMessage()
-    }
+//        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+//        sendNdefMessage()
+//    }
 
     private fun sendNdefMessage() {
         // Check for available NFC Adapter
-        val nfcAdapter = NfcAdapter.getDefaultAdapter(MainApplication.context)
+//        val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
         if (nfcAdapter == null) {
             Toast.makeText(
                 context,
@@ -193,13 +203,15 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
         val msg = NdefMessage(createMimeRecord(orderString.toByteArray()))
 
         // Register a NDEF message to be sent in P2P
+        println(nfcAdapter.isNdefPushEnabled)
         nfcAdapter.setNdefPushMessage(msg, activity)
-        nfcAdapter.setOnNdefPushCompleteCallback(this, activity)
+//        nfcAdapter.setOnNdefPushCompleteCallback(this, activity)
     }
 
     private fun createMimeRecord(payload: ByteArray?): NdefRecord? {
-        val mimeBytes = "application/nfc.feup.apm.ordermsg".toByteArray(Charset.forName("ISO-8859-1"))
-        return NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, ByteArray(0), payload)
+//        val mimeBytes = "application/org.feup.cmov.acmeclient".toByteArray(Charset.forName("ISO-8859-1"))
+        return NdefRecord.createMime("application/org.feup.cmov.acmeclient", payload)
+//        return NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, ByteArray(0), payload)
     }
 
     data class QRItem(
@@ -225,7 +237,7 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 //            println(order)
 //            return@runBlocking order
 
-            ""
+            "123:2"
         }
 
         println(order)
