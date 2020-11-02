@@ -57,7 +57,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
-                        android:inputType="textPersonName"
+                        android:inputType="textCapWords"
                         app:errorEnabled="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,13 +99,10 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_cc_number_layout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="@dimen/textFieldWidth"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
                     android:hint="@string/prompt_cc_number"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/signUp_nif_layout">
+                    app:layout_constraintHorizontal_weight="1">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/signUp_cc_number"
@@ -119,29 +116,12 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/signUp_cc_expiration_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="@dimen/textFieldWidthTwoCol"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_cc_expiration">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/signUp_cc_expiration"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:inputType="phone"
-                        android:digits="0123456789/"
-                        app:errorEnabled="true" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_cc_cvv_layout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="@dimen/textFieldWidthTwoCol"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_cc_cvv">
+                    android:hint="@string/prompt_cc_cvv"
+                    app:layout_constraintHorizontal_weight="0.7">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/signUp_cc_cvv"
@@ -155,16 +135,58 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.constraintlayout.helper.widget.Flow
+                    android:layout_width="@dimen/textFieldWidth"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:flow_horizontalGap="10dp"
+                    app:flow_maxElementsWrap="2"
+                    app:flow_wrapMode="chain"
+                    app:constraint_referenced_ids="signUp_cc_number_layout,signUp_cc_cvv_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/signUp_nif_layout"
+                    />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/signUp_cc_month_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_cc_expiration_month"
+                    app:layout_constraintHorizontal_weight="0.2">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/signUp_cc_month"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/signUp_cc_year_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_cc_expiration_year"
+                    app:layout_constraintHorizontal_weight="0.2">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/signUp_cc_year"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.constraintlayout.helper.widget.Flow
                     android:id="@+id/signUp_flow"
                     android:layout_width="@dimen/textFieldWidth"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    app:constraint_referenced_ids="signUp_cc_expiration_layout,signUp_cc_cvv_layout"
+                    app:constraint_referenced_ids="signUp_cc_month_layout,signUp_cc_year_layout"
                     app:flow_horizontalAlign="start"
                     app:flow_horizontalGap="10dp"
-                    app:flow_verticalBias="0"
-                    app:flow_maxElementsWrap="2"
-                    app:flow_wrapMode="aligned"
+                    app:flow_maxElementsWrap="3"
+                    app:flow_wrapMode="chain"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/signUp_cc_number_layout" />

@@ -5,8 +5,7 @@ const crypto = require('crypto')
 
 const fs = require("fs");
 const path = require("path")
-const { User, Item } = require('./models');
-const { Router } = require('express');
+const { User, Item, Voucher } = require('./models');
 
 // Validation
 const validate = validations => {
@@ -105,12 +104,45 @@ itemRouter.get('/populate', async (req, res) => {
 })
 
 itemRouter.get('/', authenticateRequest, async (req, res) => {
-    let query = {};
+    let lastUpdateQuery = {};
 
     if (req.query.last_update) {
         const lastUpdate = new Date(req.query.last_update);
 
-        query = {
+        lastUpdateQuery = {
+            $or: [
+                { createdAt: { $gte: lastUpdate } },
+                { updatedAt: { $gte: lastUpdate } }
+            ]
+        }
+    }
+
+    const items = await Item.find(lastUpdateQuery).exec() 
+    
+    res.json(items);
+})
+
+// Vouchers
+
+let voucherRouter = express.Router()
+
+voucherRouter.get('/populate', async (req, res) => {
+    await new Voucher({
+        _id: uuidv4(),
+        userId: 'e289241a-f5ed-42db-87b1-6e52eac5b3de',
+        type: 'o'
+    }).save();
+
+    res.sendStatus(200);
+})
+
+voucherRouter.get('/', async (req, res) => {
+    let lastUpdateQuery = {};
+
+    if (req.query.last_update) {
+        const lastUpdate = new Date(req.query.last_update);
+
+        lastUpdateQuery = {
             $or: [
                 { createdAt: { $gte: lastUpdate } },
                 { updatedAt: { $gte: lastUpdate }}
@@ -118,10 +150,20 @@ itemRouter.get('/', authenticateRequest, async (req, res) => {
         }
     }
 
-    const items = await Item.find(query).exec() 
-    
-    res.json(items)
-})
+    const vouchers = await Voucher.find({
+        $and: [
+            {
+                userId: req.query.userId,
+                used: false,
+            },
+            lastUpdateQuery
+        ]
+    }).exec() 
+
+    res.json(vouchers);
+});
+
+// Images
 
 let imageRouter = express.Router()
 
@@ -158,5 +200,6 @@ imageRouter.get('/:imagePath', async (req, res, next) => {
 module.exports = { 
     authRouter: authRouter,
     itemRouter: itemRouter,
+    voucherRouter: voucherRouter,
     imageRouter: imageRouter
 };

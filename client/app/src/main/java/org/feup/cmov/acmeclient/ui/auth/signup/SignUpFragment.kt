@@ -1,11 +1,12 @@
 package org.feup.cmov.acmeclient.ui.auth.signup
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +28,24 @@ class SignUpFragment : Fragment() {
     ): View? {
         binding = FragmentSignUpBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+
+        ArrayAdapter(
+            requireContext(),
+            R.layout.dropdown_menu_popup_item,
+            List(12) { (it + 1).toString() }
+        )
+        .also {
+            binding.signUpCcMonth.setAdapter(it)
+        }
+
+        ArrayAdapter(
+            requireContext(),
+            R.layout.dropdown_menu_popup_item,
+            List(5) { "20" + (20 + it).toString() }
+        )
+        .also {
+            binding.signUpCcYear.setAdapter(it)
+        }
 
         subscribeUi()
 
@@ -66,13 +85,18 @@ class SignUpFragment : Fragment() {
             else
                 null
 
-            binding.signUpCcExpirationLayout.error = if (formState.ccExpirationError != null)
-                getString(formState.ccExpirationError)
+            binding.signUpCcCvvLayout.error = if (formState.ccCVVError != null)
+                getString(formState.ccCVVError)
             else
                 null
 
-            binding.signUpCcCvvLayout.error = if (formState.ccCVVError != null)
-                getString(formState.ccCVVError)
+            binding.signUpCcMonthLayout.error = if (formState.ccExpirationMonthError != null)
+                getString(formState.ccExpirationMonthError)
+            else
+                null
+
+            binding.signUpCcYearLayout.error = if (formState.ccExpirationYearError != null)
+                getString(formState.ccExpirationYearError)
             else
                 null
 
@@ -93,8 +117,9 @@ class SignUpFragment : Fragment() {
                 binding.signUpName.text.toString(),
                 binding.signUpNif.text.toString(),
                 binding.signUpCcNumber.text.toString(),
-                binding.signUpCcExpiration.text.toString(),
                 binding.signUpCcCvv.text.toString(),
+                binding.signUpCcMonth.text.toString(),
+                binding.signUpCcYear.text.toString(),
                 binding.signUpUsername.text.toString(),
                 binding.signUpPassword.text.toString()
             )

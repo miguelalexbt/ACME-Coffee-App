@@ -22,7 +22,8 @@
     <string name="section_billing">Billing information</string>
     <string name="prompt_nif">NIF</string>
     <string name="prompt_cc_number">Debit/Credit card number</string>
-    <string name="prompt_cc_expiration">Expiration date</string>
+    <string name="prompt_cc_expiration_month">Month</string>
+    <string name="prompt_cc_expiration_year">Year</string>
     <string name="prompt_cc_cvv">Security code</string>
     <string name="section_credentials">Credentials</string>
     <string name="prompt_sign_up">Sign up</string>

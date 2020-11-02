@@ -55,8 +55,6 @@ class Cache {
                     }
 
                 it[ORDER] = orderToString(order)
-
-                println("ORDER ${it[ORDER]}")
             }
         }
 

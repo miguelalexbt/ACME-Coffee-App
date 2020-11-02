@@ -18,8 +18,9 @@ class SignUpViewModel @ViewModelInject constructor(
         val nameError: Int? = R.string.empty_string,
         val nifError: Int? = R.string.empty_string,
         val ccNumberError: Int? = R.string.empty_string,
-        val ccExpirationError: Int? = R.string.empty_string,
         val ccCVVError: Int? = R.string.empty_string,
+        val ccExpirationMonthError: Int? = R.string.empty_string,
+        val ccExpirationYearError: Int? = R.string.empty_string,
         val usernameError: Int? = R.string.empty_string,
         val passwordError: Int? = R.string.empty_string,
     )
@@ -33,16 +34,21 @@ class SignUpViewModel @ViewModelInject constructor(
     val formState: LiveData<FormState> = _formState
 
     fun signUp(
-        name: String, nif: String, ccNumber: String, ccExpiration: String, ccCVV: String,
-        username: String, password: String
+        name: String, nif: String, ccNumber: String, ccCVV: String,
+        ccExpirationMonth: String, ccExpirationYear: String, username: String, password: String
     ) {
-        if (!checkForm(name, nif, ccNumber, ccExpiration, ccCVV, username, password))
+        if (!checkForm(name, nif, ccNumber, ccCVV, ccExpirationMonth, ccExpirationYear, username, password))
             return
 
         _uiEvent.value = UiEvent(isLoading = true)
 
         viewModelScope.launch {
-            val result = dataRepository.signUp(name, nif, ccNumber, ccExpiration, ccCVV, username, password)
+            val result = dataRepository.signUp(
+                name, nif, ccNumber, ccCVV,
+                "${ccExpirationMonth.padStart(2, '0')}/${ccExpirationYear.takeLast(2)}",
+                username, password
+            )
+
             when (result.status) {
                 Status.LOADING -> { }
                 Status.SUCCESS -> {
@@ -61,9 +67,8 @@ class SignUpViewModel @ViewModelInject constructor(
     }
 
     private fun checkForm(
-        name: String,
-        nif: String, ccNumber: String, ccExpiration: String, ccCVV: String,
-        username: String, password: String
+        name: String, nif: String, ccNumber: String, ccCVV: String,
+        ccExpirationMonth: String, ccExpirationYear: String, username: String, password: String
     ): Boolean {
         val nameError = when {
             name.isEmpty() -> R.string.error_required
@@ -82,15 +87,19 @@ class SignUpViewModel @ViewModelInject constructor(
             else -> null
         }
 
-        val ccExpirationError = when {
-            ccExpiration.isEmpty() -> R.string.error_required
-            ccExpiration.length < 4 || ccExpiration.length > 5 -> R.string.error_invalid
-            else -> null
-        }
-
         val ccCVVError = when {
             ccCVV.isEmpty() -> R.string.error_required
             ccCVV.length != 3 -> R.string.error_invalid
+            else -> null
+        }
+
+        val ccExpirationMonthError = when {
+            ccExpirationMonth.isEmpty() -> R.string.error_required
+            else -> null
+        }
+
+        val ccExpirationYearError = when {
+            ccExpirationYear.isEmpty() -> R.string.error_required
             else -> null
         }
 
@@ -105,13 +114,13 @@ class SignUpViewModel @ViewModelInject constructor(
         }
 
         _formState.value = FormState(
-            nameError,
-            nifError, ccNumberError, ccExpirationError, ccCVVError,
+            nameError, nifError, ccNumberError, ccCVVError,
+            ccExpirationMonthError, ccExpirationYearError,
             usernameError, passwordError
         )
 
-        return nameError == null && nifError == null &&
-                ccNumberError == null && ccExpirationError == null && ccCVVError == null &&
+        return nameError == null && nifError == null && ccNumberError == null && ccCVVError == null &&
+                ccExpirationMonthError == null && ccExpirationYearError == null &&
                 usernameError == null && passwordError == null
     }
 }

@@ -7,8 +7,10 @@ import org.feup.cmov.acmeclient.utils.Crypto
 import org.feup.cmov.acmeclient.data.api.*
 import org.feup.cmov.acmeclient.data.db.ItemDao
 import org.feup.cmov.acmeclient.data.db.UserDao
+import org.feup.cmov.acmeclient.data.db.VoucherDao
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.model.User
+import org.feup.cmov.acmeclient.data.model.Voucher
 import org.feup.cmov.acmeclient.utils.Cache
 import java.io.IOException
 
@@ -17,7 +19,8 @@ import javax.inject.Inject
 class DataRepository @Inject constructor(
     private val webService: WebService,
     private val userDao: UserDao,
-    private val itemDao: ItemDao
+    private val itemDao: ItemDao,
+    private val voucherDao: VoucherDao
 ) {
     // Auth
 
@@ -36,7 +39,7 @@ class DataRepository @Inject constructor(
 
     suspend fun signUp(
         name: String,
-        nif: String, ccNumber: String, ccExpiration: String, ccCVV: String,
+        nif: String, ccNumber: String, ccCVV: String, ccExpiration: String,
         username: String, password: String
     ): Resource<Any> {
 
@@ -88,9 +91,9 @@ class DataRepository @Inject constructor(
 
     fun getOrder(): Flow<Map<String, Int>> = Cache.cachedOrder.flowOn(Dispatchers.IO)
 
-    suspend fun updateOrder(itemId: String, quantity: Int) {
-        Cache.cacheOrder(itemId, quantity)
-    }
+    suspend fun updateOrder(itemId: String, quantity: Int) = Cache.cacheOrder(itemId, quantity)
+
+    // Voucher
 
     // Utils
 
