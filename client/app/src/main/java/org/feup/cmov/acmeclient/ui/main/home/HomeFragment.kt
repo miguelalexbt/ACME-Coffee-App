@@ -29,8 +29,8 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = this
 
         val adapter = ItemListAdapter(object : ClickListener<Item> {
-            override fun onClick(item: Item) {
-                viewModel.toggleItem(item)
+            override fun onClick(target: Item) {
+                viewModel.toggleItem(target)
             }
         })
 

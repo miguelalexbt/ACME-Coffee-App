@@ -19,11 +19,11 @@ data class User(
     @ColumnInfo(name = "cc_number")
     val ccNumber: String,
 
-    @ColumnInfo(name = "cc_expiration")
-    val ccExpiration: String,
-
     @ColumnInfo(name = "cc_cvv")
     val ccCVV: String,
+
+    @ColumnInfo(name = "cc_expiration")
+    val ccExpiration: String,
 
     @ColumnInfo(name = "username")
     val username: String,

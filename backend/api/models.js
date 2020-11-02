@@ -7,8 +7,8 @@ const userSchema = new Schema({
     name: { type: String, required: true },
     nif: { type: String, required: true },
     ccNumber: { type: String, required: true },
-    ccExpiration: { type: String, required: true },
     ccCVV: { type: String, required: true },
+    ccExpiration: { type: String, required: true },
     publicKey: { type: String, required: true },
 }, {
     toJSON: {

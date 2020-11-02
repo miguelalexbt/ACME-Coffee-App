@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.adapter.ClickListener
-import org.feup.cmov.acmeclient.adapter.ItemListAdapter
-import org.feup.cmov.acmeclient.data.model.Item
+import org.feup.cmov.acmeclient.adapter.VoucherListAdapter
+import org.feup.cmov.acmeclient.data.model.Voucher
 import org.feup.cmov.acmeclient.databinding.FragmentVouchersBinding
 
 @AndroidEntryPoint
@@ -27,21 +27,27 @@ class VouchersFragment : Fragment() {
         binding = FragmentVouchersBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        val adapter = ItemListAdapter(object: ClickListener<Item> {
-            override fun onClick(item: Item) {
-                print("CLICKED")
+        val adapter = VoucherListAdapter(object: ClickListener<Voucher> {
+            override fun onClick(target: Voucher) {
+                viewModel.toggleVoucher(target)
             }
         })
 
         binding.vouchersRecyclerView.adapter = adapter
-//        binding.homeRefreshLayout.setOnRefreshListener { viewModel.fetchItems() }
+        binding.vouchersRefreshLayout.setOnRefreshListener { viewModel.fetchVouchers() }
 
-        subscribeUi()
+        subscribeUi(adapter)
 
         return binding.root
     }
 
-    private fun subscribeUi() {
+    private fun subscribeUi(adapter: VoucherListAdapter) {
+        viewModel.refreshing.observe(viewLifecycleOwner, {
+            val refreshing = it ?: return@observe
+            binding.vouchersRefreshLayout.isRefreshing = refreshing
+        })
+
+
 //        viewModel.items.observe(viewLifecycleOwner) {
 //            val items = it ?: return@observe
 //

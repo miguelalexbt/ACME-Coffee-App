@@ -74,8 +74,8 @@ authRouter.post('/signUp', async (req, res) => {
         name: body.name,
         nif: body.nif,
         ccNumber: body.ccNumber,
-        ccExpiration: body.ccExpiration,
         ccCVV: body.ccCVV,
+        ccExpiration: body.ccExpiration,
         publicKey: body.publicKey
     });
 
@@ -136,7 +136,7 @@ voucherRouter.get('/populate', async (req, res) => {
     res.sendStatus(200);
 })
 
-voucherRouter.get('/', async (req, res) => {
+voucherRouter.get('/', authenticateRequest, async (req, res) => {
     let lastUpdateQuery = {};
 
     if (req.query.last_update) {
@@ -153,12 +153,14 @@ voucherRouter.get('/', async (req, res) => {
     const vouchers = await Voucher.find({
         $and: [
             {
-                userId: req.query.userId,
+                userId: req.query.user_id,
                 used: false,
             },
             lastUpdateQuery
         ]
-    }).exec() 
+    }).exec()
+
+    console.log("SENDING: ", JSON.stringify(vouchers))
 
     res.json(vouchers);
 });

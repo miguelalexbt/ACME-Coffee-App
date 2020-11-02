@@ -16,13 +16,13 @@ data class SignUpRequest(
     @Expose
     var ccNumber: String,
 
-    @SerializedName("ccExpiration")
-    @Expose
-    var ccExpiration: String,
-
     @SerializedName("ccCVV")
     @Expose
     var ccCVV: String,
+
+    @SerializedName("ccExpiration")
+    @Expose
+    var ccExpiration: String,
 
     @SerializedName("publicKey")
     @Expose

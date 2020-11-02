@@ -47,7 +47,7 @@ class DataRepository @Inject constructor(
         val publicKey = Crypto.generateRSAKeyPair(username)
 
         // Create request
-        val request = SignUpRequest(name, nif, ccNumber, ccExpiration, ccCVV, publicKey)
+        val request = SignUpRequest(name, nif, ccNumber, ccCVV, ccExpiration, publicKey)
         val response = webService.signUp(request)
 
         if (response is ApiResponse.Success) {
@@ -55,7 +55,7 @@ class DataRepository @Inject constructor(
 
             // Hash password and create user
             val hashedPassword = Crypto.hashPassword(password)
-            val user = User(id, name, nif, ccNumber, ccExpiration, ccCVV, username, hashedPassword)
+            val user = User(id, name, nif, ccNumber, ccCVV, ccExpiration, username, hashedPassword)
 
             userDao.insert(user)
             Cache.cacheUser(user)
@@ -79,7 +79,7 @@ class DataRepository @Inject constructor(
 
     suspend fun fetchItems() {
         // Check if menu is updated
-        val lastItem = itemDao.getLastAddedItem().first()
+        val lastItem = itemDao.getLastAdded().first()
         val response = webService.getItems(lastItem?.addedAt)
 
         // Update menu if needed
@@ -87,13 +87,36 @@ class DataRepository @Inject constructor(
             itemDao.insertAll(response.data!!)
     }
 
+    // Vouchers
+
+    fun getVouchers(): Flow<Resource<List<Voucher>>> = voucherDao.getAll()
+        .distinctUntilChanged()
+        .map { Resource.success(it) }
+        .onStart {
+            emit(Resource.loading(null))
+            fetchItems()
+        }
+        .catch { emit(Resource.error(it.message!!)) }
+        .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
+        .flowOn(Dispatchers.IO)
+
+    suspend fun fetchVouchers() {
+        // Check if vouchers are updated
+        val lastVoucher = voucherDao.getLastAdded().first()
+        val response = webService.getVouchers(Cache.cachedUser.first()!!.userId, lastVoucher?.addedAt)
+
+        // Update vouchers if needed
+        if (response is ApiResponse.Success) {
+            println("GOT ${response.data}")
+//            voucherDao.insertAll(response.data!!)
+        }
+    }
+
     // Order
 
     fun getOrder(): Flow<Map<String, Int>> = Cache.cachedOrder.flowOn(Dispatchers.IO)
 
     suspend fun updateOrder(itemId: String, quantity: Int) = Cache.cacheOrder(itemId, quantity)
-
-    // Voucher
 
     // Utils
 

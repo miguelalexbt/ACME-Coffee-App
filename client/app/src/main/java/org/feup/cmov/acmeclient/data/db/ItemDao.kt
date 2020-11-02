@@ -16,5 +16,5 @@ interface ItemDao {
     fun getAll() : Flow<List<Item>>
 
     @Query("SELECT * FROM item ORDER BY added_at DESC LIMIT 1")
-    fun getLastAddedItem() : Flow<Item?>
+    fun getLastAdded() : Flow<Item?>
 }
