@@ -1,8 +1,6 @@
-package org.feup.cmov.acmeclient.data.model
+package org.feup.cmov.acmeclient.data.cache
 
-// TODO CachedOrder ?
-
-data class Order(
+data class CachedOrder(
     val id: String = "",
     val items: Map<String, Int> = emptyMap(),
     val offerVouchers: Set<String> = emptySet(),

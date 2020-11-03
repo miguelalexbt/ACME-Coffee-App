@@ -11,7 +11,8 @@ import org.feup.cmov.acmeclient.data.db.ItemDao
 import org.feup.cmov.acmeclient.data.db.UserDao
 import org.feup.cmov.acmeclient.data.db.VoucherDao
 import org.feup.cmov.acmeclient.data.model.Item
-import org.feup.cmov.acmeclient.data.model.Order
+import org.feup.cmov.acmeclient.data.cache.CachedOrder
+import org.feup.cmov.acmeclient.data.cache.CachedUser
 import org.feup.cmov.acmeclient.data.model.User
 import org.feup.cmov.acmeclient.data.model.Voucher
 import org.feup.cmov.acmeclient.utils.Cache
@@ -26,7 +27,7 @@ class DataRepository @Inject constructor(
     private val voucherDao: VoucherDao
 ) {
     // Auth
-    val loggedInUser: Cache.CachedUser?
+    val loggedInUser: CachedUser?
         get() = runBlocking { Cache.cachedUser.first() }
 
     val isLoggedIn = Cache.cachedUser.map { it != null }
@@ -121,10 +122,10 @@ class DataRepository @Inject constructor(
 
     // Order
 
-    fun getOrder(): Flow<Order> = Cache.cachedOrder.flowOn(Dispatchers.IO)
+    fun getOrder(): Flow<CachedOrder> = Cache.cachedOrder.flowOn(Dispatchers.IO)
 
     suspend fun addItemToOrder(item: Item, quantity: Int) {
-        val order: Order = Cache.cachedOrder.first()
+        val order: CachedOrder = Cache.cachedOrder.first()
         val items = order.items.toMutableMap()
 
         items.compute(item.id) { _, v ->
@@ -136,7 +137,7 @@ class DataRepository @Inject constructor(
     }
 
     suspend fun addVoucherToOrder(voucher: Voucher) {
-        val order: Order = Cache.cachedOrder.first()
+        val order: CachedOrder = Cache.cachedOrder.first()
 
         if (voucher.type == 'o')  {
             val offerVouchers = order.offerVouchers.toMutableSet()
