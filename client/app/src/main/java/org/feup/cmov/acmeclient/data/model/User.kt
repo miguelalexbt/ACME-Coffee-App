@@ -16,13 +16,13 @@ data class User(
     @ColumnInfo(name = "nif")
     val nif: String,
 
-    @ColumnInfo(name = "cc_number")
+    @ColumnInfo(name = "ccNumber")
     val ccNumber: String,
 
-    @ColumnInfo(name = "cc_cvv")
+    @ColumnInfo(name = "ccCVV")
     val ccCVV: String,
 
-    @ColumnInfo(name = "cc_expiration")
+    @ColumnInfo(name = "ccExpiration")
     val ccExpiration: String,
 
     @ColumnInfo(name = "username")

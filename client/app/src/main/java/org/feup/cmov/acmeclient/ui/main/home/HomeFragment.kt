@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.adapter.ClickListener
+import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.adapter.ItemListAdapter
 import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.model.Item
@@ -28,9 +29,9 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        val adapter = ItemListAdapter(object : ClickListener<Item> {
-            override fun onClick(target: Item) {
-                viewModel.toggleItem(target)
+        val adapter = ItemListAdapter(object : ClickListener<Content<Item>> {
+            override fun onClick(content: Content<Item>) {
+                viewModel.toggleItem(content)
             }
         })
 

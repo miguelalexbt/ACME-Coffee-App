@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.adapter.ClickListener
+import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.adapter.VoucherListAdapter
+import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.model.Voucher
 import org.feup.cmov.acmeclient.databinding.FragmentVouchersBinding
 
@@ -27,9 +29,9 @@ class VouchersFragment : Fragment() {
         binding = FragmentVouchersBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        val adapter = VoucherListAdapter(object: ClickListener<Voucher> {
-            override fun onClick(target: Voucher) {
-                viewModel.toggleVoucher(target)
+        val adapter = VoucherListAdapter(object: ClickListener<Content<Voucher>> {
+            override fun onClick(content: Content<Voucher>) {
+                viewModel.toggleVoucher(content)
             }
         })
 
@@ -47,11 +49,13 @@ class VouchersFragment : Fragment() {
             binding.vouchersRefreshLayout.isRefreshing = refreshing
         })
 
+        viewModel.vouchers.observe(viewLifecycleOwner, {
+            val vouchers = it ?: return@observe
 
-//        viewModel.items.observe(viewLifecycleOwner) {
-//            val items = it ?: return@observe
-//
-//            println("VOUCHERS $items")
-//        }
+            binding.vouchersRefreshLayout.isRefreshing = vouchers.status == Status.LOADING
+
+            if (vouchers.status == Status.SUCCESS)
+                adapter.submitList(vouchers.data)
+        })
     }
 }

@@ -19,11 +19,11 @@ class HomeViewModel @ViewModelInject constructor(
         .combine(dataRepository.getOrder()) { items, order ->
             when (items.status) {
                 Status.LOADING -> {
-                    Resource.loading<List<Content<Item>>>(null)
+                    Resource.loading(null)
                 }
                 Status.SUCCESS -> {
                     Resource.success(items.data?.map {
-                        Content(it.id, it, it.id in order.keys)
+                        Content(it.id, it, it.id in order.items.keys)
                     })
                 }
                 Status.ERROR -> {
@@ -44,9 +44,9 @@ class HomeViewModel @ViewModelInject constructor(
         }
     }
 
-    fun toggleItem(item: Item) {
+    fun toggleItem(item: Content<Item>) {
         viewModelScope.launch {
-            dataRepository.updateOrder(item.id, 1)
+            dataRepository.addItemToOrder(item.content, if (item.isChosen) -1 else 1)
         }
     }
 }

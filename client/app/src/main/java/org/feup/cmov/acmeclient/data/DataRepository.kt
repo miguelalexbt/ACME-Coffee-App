@@ -3,12 +3,15 @@ package org.feup.cmov.acmeclient.data
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.feup.cmov.acmeclient.utils.Crypto
 import org.feup.cmov.acmeclient.data.api.*
 import org.feup.cmov.acmeclient.data.db.ItemDao
 import org.feup.cmov.acmeclient.data.db.UserDao
 import org.feup.cmov.acmeclient.data.db.VoucherDao
 import org.feup.cmov.acmeclient.data.model.Item
+import org.feup.cmov.acmeclient.data.model.Order
 import org.feup.cmov.acmeclient.data.model.User
 import org.feup.cmov.acmeclient.data.model.Voucher
 import org.feup.cmov.acmeclient.utils.Cache
@@ -23,6 +26,8 @@ class DataRepository @Inject constructor(
     private val voucherDao: VoucherDao
 ) {
     // Auth
+    val loggedInUser: Cache.CachedUser?
+        get() = runBlocking { Cache.cachedUser.first() }
 
     val isLoggedIn = Cache.cachedUser.map { it != null }
 
@@ -78,45 +83,73 @@ class DataRepository @Inject constructor(
         .flowOn(Dispatchers.IO)
 
     suspend fun fetchItems() {
-        // Check if menu is updated
-        val lastItem = itemDao.getLastAdded().first()
-        val response = webService.getItems(lastItem?.addedAt)
+        withContext(Dispatchers.IO) {
+            // Check if menu is updated
+            val lastItem = itemDao.getLastAdded().first()
+            val response = webService.getItems(lastItem?.addedAt)
 
-        // Update menu if needed
-        if (response is ApiResponse.Success)
-            itemDao.insertAll(response.data!!)
+            // Update menu if needed
+            if (response is ApiResponse.Success)
+                itemDao.insertAll(response.data!!)
+        }
     }
 
     // Vouchers
 
-    fun getVouchers(): Flow<Resource<List<Voucher>>> = voucherDao.getAll()
+    fun getVouchers(): Flow<Resource<List<Voucher>>> = voucherDao.getAll(loggedInUser!!.userId)
         .distinctUntilChanged()
         .map { Resource.success(it) }
         .onStart {
             emit(Resource.loading(null))
-            fetchItems()
+            fetchVouchers()
         }
         .catch { emit(Resource.error(it.message!!)) }
         .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
         .flowOn(Dispatchers.IO)
 
     suspend fun fetchVouchers() {
-        // Check if vouchers are updated
-        val lastVoucher = voucherDao.getLastAdded().first()
-        val response = webService.getVouchers(Cache.cachedUser.first()!!.userId, lastVoucher?.addedAt)
+        withContext(Dispatchers.IO) {
+            val response = webService.getVouchers(Cache.cachedUser.first()!!.userId)
 
-        // Update vouchers if needed
-        if (response is ApiResponse.Success) {
-            println("GOT ${response.data}")
-//            voucherDao.insertAll(response.data!!)
+            // Update vouchers if needed
+            if (response is ApiResponse.Success) {
+                voucherDao.deleteAll(loggedInUser!!.userId)
+                voucherDao.insertAll(response.data!!)
+            }
         }
     }
 
     // Order
 
-    fun getOrder(): Flow<Map<String, Int>> = Cache.cachedOrder.flowOn(Dispatchers.IO)
+    fun getOrder(): Flow<Order> = Cache.cachedOrder.flowOn(Dispatchers.IO)
 
-    suspend fun updateOrder(itemId: String, quantity: Int) = Cache.cacheOrder(itemId, quantity)
+    suspend fun addItemToOrder(item: Item, quantity: Int) {
+        val order: Order = Cache.cachedOrder.first()
+        val items = order.items.toMutableMap()
+
+        items.compute(item.id) { _, v ->
+            v ?: return@compute quantity
+            if (v + quantity == 0) null else v + quantity
+        }
+
+        Cache.cacheOrder(order.copy(items = items))
+    }
+
+    suspend fun addVoucherToOrder(voucher: Voucher) {
+        val order: Order = Cache.cachedOrder.first()
+
+        if (voucher.type == 'o')  {
+            val offerVouchers = order.offerVouchers.toMutableSet()
+
+            if (!offerVouchers.removeIf { id -> id == voucher.id })
+                offerVouchers.add(voucher.id)
+
+            Cache.cacheOrder(order.copy(offerVouchers = offerVouchers))
+        } else {
+            val discountVoucher = if (order.discountVoucher == voucher.id) null else voucher.id
+            Cache.cacheOrder(order.copy(discountVoucher = discountVoucher))
+        }
+    }
 
     // Utils
 

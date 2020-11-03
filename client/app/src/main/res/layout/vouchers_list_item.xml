@@ -39,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:textAppearance="?attr/textAppearanceHeadline6"
+                android:text="@{voucher.id}"
                 tools:text="Latte" />
 
             <TextView

@@ -6,10 +6,10 @@ import androidx.datastore.preferences.preferencesKey
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import org.feup.cmov.acmeclient.MainApplication
+import org.feup.cmov.acmeclient.data.model.Order
 import org.feup.cmov.acmeclient.data.model.User
 
 class Cache {
@@ -28,16 +28,19 @@ class Cache {
                 val userId = it[USER_ID] ?: ""
                 val username = it[USERNAME] ?: ""
 
-                if (userId == "" || username == "")
-                    return@map null
+                if (userId == "" || username == "") return@map null
 
                 CachedUser(userId, username)
             }
 
-        val cachedOrder: Flow<Map<String, Int>> = dataStore.data
+        val cachedOrder: Flow<Order> = dataStore.data
             .catch { throw it }
             .map {
-                orderToMap(it[ORDER])
+                val order = it[ORDER] ?: ""
+
+                if (order == "") return@map Order()
+
+                Gson().fromJson(it[ORDER], Order::class.java)
             }
 
         suspend fun cacheUser(user: User?) {
@@ -47,26 +50,10 @@ class Cache {
             }
         }
 
-        suspend fun cacheOrder(key: String, value: Int) {
+        suspend fun cacheOrder(order: Order) {
             dataStore.edit {
-                val order = orderToMap(it[ORDER]).toMutableMap()
-                    .apply {
-                        compute(key) { _, v -> if (v == null) value else null }
-                    }
-
-                it[ORDER] = orderToString(order)
+                it[ORDER] = Gson().toJson(order)
             }
-        }
-
-        private fun orderToMap(order: String?): Map<String, Int> {
-            if (order.isNullOrEmpty()) return emptyMap()
-
-            val mapType = object: TypeToken<Map<String, Int>>(){}.type
-            return Gson().fromJson(order, mapType)
-        }
-
-        private fun orderToString(order: Map<String, Int>): String {
-            return Gson().toJson(order)
         }
     }
 }

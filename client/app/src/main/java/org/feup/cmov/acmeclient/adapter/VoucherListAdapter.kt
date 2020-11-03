@@ -9,7 +9,7 @@ import org.feup.cmov.acmeclient.data.model.Voucher
 import org.feup.cmov.acmeclient.databinding.VouchersListItemBinding
 
 class VoucherListAdapter(
-    private val listener: ClickListener<Voucher>
+    private val listener: ClickListener<Content<Voucher>>
 ) : ListAdapter<Content<Voucher>, RecyclerView.ViewHolder>(ListItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -26,10 +26,10 @@ class VoucherListAdapter(
         private val binding: VouchersListItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(contentItem: Content<Voucher>, listener: ClickListener<Voucher>) {
+        fun bind(contentVoucher: Content<Voucher>, listener: ClickListener<Content<Voucher>>) {
             binding.apply {
-                voucher = contentItem.content
-                isChosen = contentItem.isChosen
+                voucher = contentVoucher.content
+                isChosen = contentVoucher.isChosen
 
                 Picasso.get()
                     .load("https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Acme_Markets_lolo.svg/2560px-Acme_Markets_lolo.svg.png")
@@ -42,7 +42,7 @@ class VoucherListAdapter(
                 executePendingBindings()
 
                 listItemAdd.setOnClickListener {
-                    listener.onClick(contentItem.content)
+                    listener.onClick(contentVoucher)
                 }
             }
         }

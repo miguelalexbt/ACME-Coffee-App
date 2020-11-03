@@ -9,7 +9,7 @@ import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.databinding.HomeListItemBinding
 
 class ItemListAdapter(
-    private val listener: ClickListener<Item>
+    private val listener: ClickListener<Content<Item>>
 ) : ListAdapter<Content<Item>, RecyclerView.ViewHolder>(ListItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -26,7 +26,7 @@ class ItemListAdapter(
         private val binding: HomeListItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(contentItem: Content<Item>, listener: ClickListener<Item>) {
+        fun bind(contentItem: Content<Item>, listener: ClickListener<Content<Item>>) {
             binding.apply {
                 item = contentItem.content
                 isChosen = contentItem.isChosen
@@ -42,7 +42,7 @@ class ItemListAdapter(
                 executePendingBindings()
 
                 listItemAdd.setOnClickListener {
-                    listener.onClick(contentItem.content)
+                    listener.onClick(contentItem)
                 }
             }
         }

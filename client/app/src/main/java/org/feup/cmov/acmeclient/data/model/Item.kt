@@ -30,6 +30,6 @@ data class Item(
     @Expose
     val price: Double? = null,
 
-    @ColumnInfo(name = "added_at")
+    @ColumnInfo(name = "addedAt")
     val addedAt: String? = DateTimeFormatter.ISO_INSTANT.format(Instant.now())
 )

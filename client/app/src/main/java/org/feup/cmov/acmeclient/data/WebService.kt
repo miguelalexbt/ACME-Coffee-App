@@ -15,15 +15,12 @@ interface WebService {
     // Items
     @AuthenticatedRequest
     @GET("/items")
-    suspend fun getItems(@Query("last_update") lastUpdate: String?): ApiResponse<List<Item>>
+    suspend fun getItems(@Query("lastUpdate") lastUpdate: String?): ApiResponse<List<Item>>
 
     // Vouchers
     @AuthenticatedRequest
     @GET("/vouchers")
-    suspend fun getVouchers(
-        @Query("user_id") userId: String,
-        @Query("last_update") lastUpdate: String?
-    ): ApiResponse<List<Voucher>>
+    suspend fun getVouchers(@Query("userId") userId: String): ApiResponse<List<Voucher>>
 
     companion object {
         @Target(AnnotationTarget.FUNCTION)

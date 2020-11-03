@@ -52,7 +52,6 @@ const voucherSchema = new Schema({
             ret.id = ret._id;
             delete ret._id;
             delete ret.__v;
-            delete ret.userId;
             delete ret.used;
             delete ret.createdAt;
             delete ret.updatedAt;

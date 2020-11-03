@@ -13,9 +13,9 @@ interface VoucherDao {
     @Insert(onConflict = REPLACE)
     suspend fun insertAll(vouchers: List<Voucher>)
 
-    @Query("SELECT * FROM voucher")
-    fun getAll() : Flow<List<Voucher>>
+    @Query("SELECT * FROM voucher WHERE userId = :userId")
+    fun getAll(userId: String) : Flow<List<Voucher>>
 
-    @Query("SELECT * FROM voucher ORDER BY added_at DESC LIMIT 1")
-    fun getLastAdded() : Flow<Voucher?>
+    @Query("DELETE FROM voucher WHERE userId = :userId")
+    fun deleteAll(userId: String)
 }

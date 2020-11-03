@@ -8,18 +8,18 @@ const path = require("path")
 const { User, Item, Voucher } = require('./models');
 
 // Validation
-const validate = validations => {
-    return async (req, res, next) => {
-        await Promise.all(validations.map(validation => validation.run(req)));
+// const validate = validations => {
+//     return async (req, res, next) => {
+//         await Promise.all(validations.map(validation => validation.run(req)));
     
-        const errors = validationResult(req);
-        if (errors.isEmpty()) {
-          return next();
-        }
+//         const errors = validationResult(req);
+//         if (errors.isEmpty()) {
+//           return next();
+//         }
     
-        res.status(400).json({ errors: errors.array() });
-      };
-};
+//         res.status(400).json({ errors: errors.array() });
+//       };
+// };
 
 const authenticateRequest = async (req, res, next) => {
     if (!('user-signature' in req.headers)) {
@@ -106,8 +106,8 @@ itemRouter.get('/populate', async (req, res) => {
 itemRouter.get('/', authenticateRequest, async (req, res) => {
     let lastUpdateQuery = {};
 
-    if (req.query.last_update) {
-        const lastUpdate = new Date(req.query.last_update);
+    if (req.query.lastUpdate) {
+        const lastUpdate = new Date(req.query.lastUpdate);
 
         lastUpdateQuery = {
             $or: [
@@ -137,30 +137,10 @@ voucherRouter.get('/populate', async (req, res) => {
 })
 
 voucherRouter.get('/', authenticateRequest, async (req, res) => {
-    let lastUpdateQuery = {};
-
-    if (req.query.last_update) {
-        const lastUpdate = new Date(req.query.last_update);
-
-        lastUpdateQuery = {
-            $or: [
-                { createdAt: { $gte: lastUpdate } },
-                { updatedAt: { $gte: lastUpdate }}
-            ]
-        }
-    }
-
     const vouchers = await Voucher.find({
-        $and: [
-            {
-                userId: req.query.user_id,
-                used: false,
-            },
-            lastUpdateQuery
-        ]
+        userId: req.query.userId,
+        used: false
     }).exec()
-
-    console.log("SENDING: ", JSON.stringify(vouchers))
 
     res.json(vouchers);
 });
