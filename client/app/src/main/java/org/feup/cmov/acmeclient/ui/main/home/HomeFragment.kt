@@ -29,11 +29,24 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        val adapter = ItemListAdapter(object : ClickListener<Content<Item>> {
-            override fun onClick(content: Content<Item>) {
-                viewModel.toggleItem(content)
+        val adapter = ItemListAdapter(
+//            object : ClickListener<Item> {
+//                override fun onClick(target: Item) {
+//                    viewModel.toggleItem(target)
+//                }
+//            },
+            object : ClickListener<Item?> {
+                override fun onClick(target: Item?) {
+                    ItemDialogFragment(target) { item, quantity ->
+                        viewModel.changeItemQuantity(
+                            item,
+                            quantity
+                        )
+                    }.show(requireActivity().supportFragmentManager, ItemDialogFragment.TAG)
+//                    showDialog(target)
+                }
             }
-        })
+        )
 
         binding.homeRecyclerView.adapter = adapter
         binding.homeRefreshLayout.setOnRefreshListener { viewModel.fetchItems() }
@@ -58,4 +71,39 @@ class HomeFragment : Fragment() {
                 adapter.submitList(items.data)
         }
     }
+
+//    private fun showDialog(item: Item?) {
+//        val downloadDialog = AlertDialog.Builder(requireActivity())
+//        downloadDialog.setTitle(title)
+//        downloadDialog.setMessage(message)
+//        downloadDialog.setPositiveButton(buttonYes) { di: DialogInterface?, i: Int ->
+//            val uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android")
+//            val intent = Intent(Intent.ACTION_VIEW, uri)
+//            act.startActivity(intent)
+//        }
+//        downloadDialog.setNegativeButton(buttonNo, null)
+//        return downloadDialog.show()
+//        val inflater = requireActivity().layoutInflater
+
+//        val bundle = Bundle()
+//        bundle.putString("name", "This is name")
+//        val dialogBuilder = MaterialAlertDialogBuilder(requireContext())
+//            .setTitle("Select quantity")
+////            .setMessage(item?.price.toString())
+////            .setIcon(R.drawable.ic_baseline_star_outline_24)
+//            .setView(R.layout.number_picker_dialog)
+//
+////            .setNeutralButton("Neutral") { dialog, which ->
+////                // Respond to neutral button press
+////            }
+////            .setNegativeButton("Decline") { dialog, which ->
+////                // Respond to negative button press
+////            }
+//            .setPositiveButton("Save") { dialog, which ->
+//                // Respond to positive button press
+//                if (BUTTON_POSITIVE == which) {
+//                    dialog.findViewById<NumberPickerWithXml>(R.id.number_picker)
+//                }
+//            }
+//    }
 }

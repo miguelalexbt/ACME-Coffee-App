@@ -5,9 +5,9 @@
 
     <data>
         <variable name="item" type="org.feup.cmov.acmeclient.data.model.Item" />
-        <variable name="isChosen" type="Boolean" />
-        <variable name="clickListener" type="android.view.View.OnClickListener"/>
+<!--        <variable name="isChosen" type="Boolean" />-->
 <!--        <variable name="isFavorite" type="Boolean" />-->
+<!--        <variable name="clickListener" type="android.view.View.OnClickListener"/>-->
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -16,11 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/itemCardMargin"
         android:backgroundTint="@color/cardview_light_background"
-        android:clickable="true"
-        android:focusable="auto"
         android:longClickable="false"
-        android:onClick="@{clickListener}"
-        app:cardElevation="@{ isChosen ? @dimen/itemCardElevationSelected : @dimen/itemCardElevation }"
         tools:cardElevation="5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,41 +26,13 @@
             <ImageView
                 android:id="@+id/list_item_image"
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
+                android:layout_height="100dp"
                 android:contentDescription="@{item.name}"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@drawable/logo" />
-
-            <CheckBox
-                android:id="@+id/list_item_favorite"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="6dp"
-                android:background="@drawable/checkbox_selector"
-                android:backgroundTint="#FDCC0D"
-                android:button="@null"
-                android:checked="false"
-                android:enabled="true"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-<!--            <androidx.constraintlayout.helper.widget.Flow-->
-<!--                android:id="@+id/image_item_flow"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginHorizontal="5dp"-->
-<!--                app:constraint_referenced_ids="list_item_image,list_item_favorite"-->
-<!--                app:flow_horizontalStyle="packed"-->
-<!--                app:flow_maxElementsWrap="2"-->
-<!--                app:flow_wrapMode="chain"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
 
             <TextView
                 android:id="@+id/list_item_name"
@@ -106,7 +74,7 @@
 <!--                style="?attr/materialButtonOutlinedStyle"-->
 <!--                android:layout_width="wrap_content"-->
 <!--                android:layout_height="wrap_content"-->
-<!--                android:width="110dp"-->
+<!--                android:width="100dp"-->
 <!--                android:backgroundTint="@{isChosen ? @color/colorPrimary : @color/cardview_light_background}"-->
 <!--                android:paddingStart="10dp"-->
 <!--                android:paddingEnd="10dp"-->
@@ -121,26 +89,26 @@
 <!--                tools:layout_editor_absoluteY="127dp"-->
 <!--                tools:text="ADDED" />-->
 
-            <!--            <com.google.android.material.button.MaterialButton-->
-            <!--                android:id="@+id/list_item_favorite"-->
-            <!--                style="@style/Widget.App.Button.IconOnly"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:fadingEdge="vertical"-->
-            <!--                app:icon="@{isChosen ? @drawable/ic_baseline_star_24 : @drawable/ic_baseline_star_outline_24 }"-->
-            <!--                app:iconGravity="end"-->
-            <!--                app:iconSize="30dp"-->
-            <!--                app:iconTint="#FDCC0D"-->
-            <!--                tools:icon="@drawable/ic_baseline_star_outline_24"-->
-            <!--                tools:layout_editor_absoluteX="358dp"-->
-            <!--                tools:layout_editor_absoluteY="132dp" />-->
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/list_item_favorite"-->
+<!--                style="@style/Widget.App.Button.IconOnly"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:fadingEdge="vertical"-->
+<!--                app:icon="@{isChosen ? @drawable/ic_baseline_star_24 : @drawable/ic_baseline_star_outline_24 }"-->
+<!--                app:iconGravity="end"-->
+<!--                app:iconSize="30dp"-->
+<!--                app:iconTint="#FDCC0D"-->
+<!--                tools:icon="@drawable/ic_baseline_star_outline_24"-->
+<!--                tools:layout_editor_absoluteX="358dp"-->
+<!--                tools:layout_editor_absoluteY="132dp" />-->
 
 <!--            <androidx.constraintlayout.helper.widget.Flow-->
 <!--                android:id="@+id/list_item_button_flow"-->
 <!--                android:layout_width="match_parent"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginHorizontal="5dp"-->
-<!--                app:constraint_referenced_ids="list_item_add"-->
+<!--                app:constraint_referenced_ids="list_item_add,list_item_favorite"-->
 <!--                app:flow_horizontalStyle="spread_inside"-->
 <!--                app:flow_maxElementsWrap="2"-->
 <!--                app:flow_wrapMode="chain"-->

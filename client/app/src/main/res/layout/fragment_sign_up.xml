@@ -121,7 +121,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_cc_cvv"
-                    app:layout_constraintHorizontal_weight="0.7">
+                    app:layout_constraintHorizontal_weight="0.6"
+                    tools:layout_editor_absoluteX="238dp"
+                    tools:layout_editor_absoluteY="283dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/signUp_cc_cvv"
@@ -130,8 +132,8 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:inputType="number"
-                        app:errorEnabled="true"
-                        android:maxLength="3" />
+                        android:maxLength="3"
+                        app:errorEnabled="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.constraintlayout.helper.widget.Flow

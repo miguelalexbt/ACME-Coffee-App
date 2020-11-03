@@ -12,7 +12,9 @@
             android:id="@+id/home_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
+            android:layout_marginStart="@dimen/itemCardMargin"
+            android:layout_marginTop="@dimen/itemCardMargin"
+            android:layout_marginEnd="@dimen/itemCardMargin"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:spanCount="@integer/home_grid_columns"
             tools:listitem="@layout/home_list_item" />

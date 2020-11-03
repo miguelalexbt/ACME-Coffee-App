@@ -46,13 +46,8 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-    private lateinit var nfcAdapter: NfcAdapter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        nfcAdapter = NfcAdapter.getDefaultAdapter(context)
-        nfcAdapter.setOnNdefPushCompleteCallback(this, activity)
     }
 
     override fun onCreateView(
@@ -175,7 +170,7 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 
     private fun sendNdefMessage() {
         // Check for available NFC Adapter
-//        val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
+        val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
         if (nfcAdapter == null) {
             Toast.makeText(
                 context,
@@ -204,8 +199,8 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 
         // Register a NDEF message to be sent in P2P
         println(nfcAdapter.isNdefPushEnabled)
+        nfcAdapter.setOnNdefPushCompleteCallback(this, activity)
         nfcAdapter.setNdefPushMessage(msg, activity)
-//        nfcAdapter.setOnNdefPushCompleteCallback(this, activity)
     }
 
     private fun createMimeRecord(payload: ByteArray?): NdefRecord? {

@@ -28,14 +28,16 @@
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_height="100dp"
                     android:contentDescription="@string/logo_description"
+                    android:scaleType="centerInside"
                     android:src="@drawable/logo"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.2" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signIn_username_layout"
@@ -44,8 +46,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="50dp"
                     android:hint="@string/prompt_username"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -94,6 +96,7 @@
 
                 <Button
                     android:id="@+id/signIn_redirect"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -102,8 +105,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/signIn_submit"
-                    style="@style/Widget.MaterialComponents.Button.TextButton" />
+                    app:layout_constraintTop_toBottomOf="@+id/signIn_submit" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>

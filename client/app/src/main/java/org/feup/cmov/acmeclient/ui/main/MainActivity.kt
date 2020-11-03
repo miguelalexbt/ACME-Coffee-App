@@ -19,6 +19,9 @@ import org.feup.cmov.acmeclient.databinding.ActivityMainBinding
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private val nfcAdapter: NfcAdapter? = NfcAdapter.getDefaultAdapter(context)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
@@ -36,13 +39,15 @@ class MainActivity : AppCompatActivity() {
         println("MainActivity onResume")
         // foreground dispatch should be enabled here, as onResume is the guaranteed place where app
         // is in the foreground
-        enableForegroundDispatch(this, NfcAdapter.getDefaultAdapter(context))
-        receiveMessageFromDevice(intent)
+        if (nfcAdapter != null) {
+            enableForegroundDispatch(this, nfcAdapter)
+            receiveMessageFromDevice(intent)
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        NfcAdapter.getDefaultAdapter(context).disableForegroundDispatch(this)
+        nfcAdapter?.disableForegroundDispatch(this)
     }
 
     override fun onNewIntent(intent: Intent?) {

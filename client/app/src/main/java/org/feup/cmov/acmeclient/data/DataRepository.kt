@@ -124,13 +124,13 @@ class DataRepository @Inject constructor(
 
     fun getOrder(): Flow<CachedOrder> = Cache.cachedOrder.flowOn(Dispatchers.IO)
 
-    suspend fun addItemToOrder(item: Item, quantity: Int) {
+    suspend fun addItemToOrder(item: Item, quantityChange: Int) {
         val order: CachedOrder = Cache.cachedOrder.first()
         val items = order.items.toMutableMap()
 
         items.compute(item.id) { _, v ->
-            v ?: return@compute quantity
-            if (v + quantity == 0) null else v + quantity
+            v ?: return@compute quantityChange
+            if (v + quantityChange == 0) null else v + quantityChange
         }
 
         Cache.cacheOrder(order.copy(items = items))

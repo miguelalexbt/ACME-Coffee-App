@@ -49,5 +49,11 @@ class HomeViewModel @ViewModelInject constructor(
             dataRepository.addItemToOrder(item.content, if (item.isChosen) -1 else 1)
         }
     }
+
+    fun changeItemQuantity(item: Item?, quantity: Int) {
+        viewModelScope.launch {
+            item?.id?.let { dataRepository.addItemToOrder(item, quantity) }
+        }
+    }
 }
 

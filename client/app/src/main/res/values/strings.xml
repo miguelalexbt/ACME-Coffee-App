@@ -35,7 +35,7 @@
 
     <!--List Item-->
     <string name="add_item">ADD</string>
-    <string name="remove_item">REMOVE</string>
+    <string name="remove_item">ADDED</string>
 
 <!--    <string name="decreaseItem">decreaseItem</string>-->
 <!--    <string name="increaseItem">increaseItem</string>-->
