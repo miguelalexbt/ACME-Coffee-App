@@ -40,6 +40,8 @@ class SignInViewModel @ViewModelInject constructor(
                 }
                 Status.ERROR -> {
                     when (result.message) {
+                        "unknown_user" ->
+                            _uiEvent.value = UiEvent(error = R.string.error_unknown_user)
                         "wrong_credentials" ->
                             _uiEvent.value = UiEvent(error = R.string.error_wrong_credentials)
                         else ->

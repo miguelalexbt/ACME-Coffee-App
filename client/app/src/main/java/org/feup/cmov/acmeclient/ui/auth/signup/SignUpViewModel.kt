@@ -56,8 +56,10 @@ class SignUpViewModel @ViewModelInject constructor(
                 }
                 Status.ERROR -> {
                     when (result.message) {
-//                        "username_taken" ->
-//                            _uiEvent.value = UiEvent(error = R.string.)
+                        "username_taken" ->
+                            _uiEvent.value = UiEvent(error = R.string.error_username_taken)
+                        "weak_password" ->
+                            _uiEvent.value = UiEvent(error = R.string.error_weak_password)
                         else ->
                             _uiEvent.value = UiEvent(error = R.string.error_unknown)
                     }

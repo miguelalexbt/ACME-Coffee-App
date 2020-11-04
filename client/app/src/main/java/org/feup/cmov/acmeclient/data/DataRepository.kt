@@ -33,14 +33,18 @@ class DataRepository @Inject constructor(
     val isLoggedIn = Cache.cachedUser.map { it != null }
 
     suspend fun signIn(username: String, password: String): Resource<Nothing> {
-        val user = userDao.get(username).first()
+        return withContext(Dispatchers.IO) {
+            val user = userDao.get(username).first()
 
-        if (user != null && Crypto.checkPassword(password, user.password)) {
-            Cache.cacheUser(user)
-            return Resource.success(null)
+            user ?: return@withContext Resource.error("unknown_user")
+
+            if (Crypto.checkPassword(password, user.password)) {
+                Cache.cacheUser(user)
+                return@withContext Resource.success(null)
+            }
+
+            Resource.error("wrong_credentials")
         }
-
-        return Resource.error("wrong_credentials")
     }
 
     suspend fun signUp(
@@ -48,26 +52,34 @@ class DataRepository @Inject constructor(
         nif: String, ccNumber: String, ccCVV: String, ccExpiration: String,
         username: String, password: String
     ): Resource<Any> {
+        return withContext(Dispatchers.IO) {
+            if (userDao.get(username).first() != null)
+                return@withContext Resource.error("username_taken")
 
-        // Generate RSA key pair
-        val publicKey = Crypto.generateRSAKeyPair(username)
+            val passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$".toRegex()
+            if (!passwordRegex.matches(password))
+                return@withContext Resource.error("weak_password")
 
-        // Create request
-        val request = SignUpRequest(name, nif, ccNumber, ccCVV, ccExpiration, publicKey)
-        val response = webService.signUp(request)
+            // Generate RSA key pair
+            val publicKey = Crypto.generateRSAKeyPair(username)
 
-        if (response is ApiResponse.Success) {
-            val id = response.data!!.userId
+            // Create request
+            val request = SignUpRequest(name, nif, ccNumber, ccCVV, ccExpiration, publicKey)
+            val response = webService.signUp(request)
 
-            // Hash password and create user
-            val hashedPassword = Crypto.hashPassword(password)
-            val user = User(id, name, nif, ccNumber, ccCVV, ccExpiration, username, hashedPassword)
+            if (response is ApiResponse.Success) {
+                val id = response.data!!.userId
 
-            userDao.insert(user)
-            Cache.cacheUser(user)
+                // Hash password and create user
+                val hashedPassword = Crypto.hashPassword(password)
+                val user = User(id, name, nif, ccNumber, ccCVV, ccExpiration, username, hashedPassword)
+
+                userDao.insert(user)
+                Cache.cacheUser(user)
+            }
+
+            mapToResource(response)
         }
-
-        return mapToResource(response)
     }
 
     // Items

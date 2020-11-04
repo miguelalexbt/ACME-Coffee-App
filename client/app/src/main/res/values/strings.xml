@@ -6,15 +6,13 @@
 
     <string name="empty_string"></string>
 
-    <!--API-->
-    <string name="error_unknown">An error has occurred</string>
-    <string name="error_wrong_credentials">Username/password combination is incorrect</string>
-
     <!--Sign in-->
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_sign_in">Sign in</string>
     <string name="prompt_redirect_sign_up">I don\'t have an account</string>
+    <string name="error_unknown_user">Username/password combination is incorrect</string>
+    <string name="error_wrong_credentials">Username/password combination is incorrect</string>
 
     <!--Sign up-->
     <string name="section_personal">Personal information</string>
@@ -28,8 +26,11 @@
     <string name="section_credentials">Credentials</string>
     <string name="prompt_sign_up">Sign up</string>
     <string name="prompt_redirect_sign_in">I already have an account</string>
+    <string name="error_username_taken">Username is already taken</string>
+    <string name="error_weak_password">Password must be at least 8 characters and have letters and numbers</string>
 
-    <!--Errors-->
+    <!--Gerneric errors-->
+    <string name="error_unknown">An error has occurred</string>
     <string name="error_required">This field is required</string>
     <string name="error_invalid">This field is invalid</string>
 
