@@ -31,7 +31,6 @@
                 <data android:mimeType="application/org.feup.cmov.acmeclient"/>
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

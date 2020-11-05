@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable name="order" type="okio.ByteString" />
 <!--        <variable-->
 <!--            name="viewModel"-->
 <!--            type="org.feup.cmov.acmeclient.ui.main.checkout.CheckoutViewModel" />-->

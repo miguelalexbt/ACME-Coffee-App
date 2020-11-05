@@ -21,7 +21,21 @@ const { User, Item, Voucher } = require('./models');
 //       };
 // };
 
-const authenticateRequest = async (req, res, next) => {
+const verifySignature = async (userId, signature, verifiableData) => {
+    const user = await User.findById(userId).exec();
+
+    if (!user)
+        return false;
+
+    const publicKey = `-----BEGIN PUBLIC KEY-----\n${user.publicKey}\n-----END PUBLIC KEY-----`;
+
+    const verifier = crypto.createVerify('RSA-SHA256');
+    verifier.update(verifiableData, 'utf-8');
+
+    return verifier.verify(publicKey, signature, 'base64');
+}
+
+const authenticateClientRequest = async (req, res, next) => {
     if (!('user-signature' in req.headers)) {
         res.status(403).json({ error: 'missing_signature' });
         return;
@@ -33,23 +47,9 @@ const authenticateRequest = async (req, res, next) => {
     const authHeader = req.header('User-Signature');
     const [userId, signature] = authHeader.split(':');
 
-    const user = await User.findById(userId).exec();
+    let verifiableData = userId + req.originalUrl + dateHeader + (req.rawBody ? req.rawBody.toString() : '');
 
-    if (!user) {
-        res.status(403).json({ error: 'invalid_signature' });
-        return;
-    }
-
-    const publicKey = `-----BEGIN PUBLIC KEY-----\n${user.publicKey}\n-----END PUBLIC KEY-----`;
-
-    let verifiableData = userId + req.originalUrl + dateHeader + (req.rawBody ? req.rawBody.toString() : "")
-
-    const verifier = crypto.createVerify('RSA-SHA256');
-    verifier.update(verifiableData, 'utf-8');
-
-    const isValid = verifier.verify(publicKey, signature, 'base64');
-
-    if (!isValid) {
+    if (!verifySignature(userId, signature, verifiableData)) {
         res.status(403).json({ error: 'invalid_signature' });
         return;
     }
@@ -63,8 +63,27 @@ const authenticateRequest = async (req, res, next) => {
     next();
 }
 
+const authenticateTerminalRequest = async (req, res, next) => {
+    if (!('user-signature' in req.headers)) {
+        res.status(403).json({ error: 'missing_signature' });
+        return;
+    }
+
+    const authHeader = req.header('User-Signature');
+    const [userId, signature] = authHeader.split(':');
+
+    let verifiableData = req.body.order + '#' + userId;
+
+    if (!verifySignature(userId, signature, verifiableData)) {
+        res.status(403).json({ error: 'invalid_signature' });
+        return;
+    }
+
+    next()
+}
+
 // Auth
-let authRouter = express.Router()
+let authRouter = express.Router();
 
 authRouter.post('/signUp', async (req, res) => {
     const body = req.body;
@@ -86,7 +105,7 @@ authRouter.post('/signUp', async (req, res) => {
 
 // Items
 
-let itemRouter = express.Router()
+let itemRouter = express.Router();
 
 itemRouter.get('/populate', async (req, res) => {
     await new Item({ name: 'Sandwich', type: 'food', price: 4.50 }).save();
@@ -103,7 +122,7 @@ itemRouter.get('/populate', async (req, res) => {
     res.sendStatus(200);
 })
 
-itemRouter.get('/', authenticateRequest, async (req, res) => {
+itemRouter.get('/', authenticateClientRequest, async (req, res) => {
     let lastUpdateQuery = {};
 
     if (req.query.lastUpdate) {
@@ -117,32 +136,51 @@ itemRouter.get('/', authenticateRequest, async (req, res) => {
         }
     }
 
-    const items = await Item.find(lastUpdateQuery).exec() 
+    const items = await Item.find(lastUpdateQuery).exec();
     
     res.json(items);
 })
 
 // Vouchers
 
-let voucherRouter = express.Router()
+let voucherRouter = express.Router();
 
 voucherRouter.get('/populate', async (req, res) => {
     await new Voucher({
         _id: uuidv4(),
-        userId: 'e289241a-f5ed-42db-87b1-6e52eac5b3de',
+        userId: '0a8b6dc8-d0c2-4233-8dd9-6d0d8cac4536',
         type: 'o'
     }).save();
 
     res.sendStatus(200);
 })
 
-voucherRouter.get('/', authenticateRequest, async (req, res) => {
+voucherRouter.get('/', authenticateClientRequest, async (req, res) => {
     const vouchers = await Voucher.find({
         userId: req.query.userId,
         used: false
     }).exec()
 
     res.json(vouchers);
+});
+
+// Orders
+
+let orderRouter = express.Router();
+
+orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
+    const order = req.body.order;
+
+    console.log("ORDER ", order)
+
+    // Validate items
+
+    // Validate vouchers
+    // - Check non applicable -> ignore
+    // - Check invalid -> delete
+    
+
+    res.json("HELLo");
 });
 
 // Images
@@ -184,5 +222,6 @@ module.exports = {
     authRouter: authRouter,
     itemRouter: itemRouter,
     voucherRouter: voucherRouter,
+    orderRouter: orderRouter,
     imageRouter: imageRouter
 };

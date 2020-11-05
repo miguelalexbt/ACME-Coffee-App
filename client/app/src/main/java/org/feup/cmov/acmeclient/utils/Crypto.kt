@@ -11,6 +11,7 @@ import java.math.BigInteger
 import java.nio.charset.Charset
 import java.security.KeyPairGenerator
 import java.security.KeyStore
+import java.security.PrivateKey
 import java.security.Signature
 import java.util.*
 import javax.security.auth.x500.X500Principal
@@ -50,8 +51,9 @@ class Crypto {
                 load(null)
             }
 
-            val entry = keyStore.getEntry(alias, null)
-            val privateKey = (entry as KeyStore.PrivateKeyEntry).privateKey
+//            val entry = keyStore.getEntry(alias, null)
+//            val privateKey = (entry as KeyStore.PrivateKeyEntry).privateKey
+            val privateKey = keyStore.getKey(alias, null) as PrivateKey
 
             val signature = Signature.getInstance("SHA256withRSA").run {
                 initSign(privateKey)

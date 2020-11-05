@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 
-const { authRouter, itemRouter, voucherRouter, imageRouter } = require('./api/routes');
+const { authRouter, itemRouter, voucherRouter, orderRouter, imageRouter } = require('./api/routes');
 
 let isDbReady = false;
 
@@ -32,6 +32,7 @@ app.use((req, res, next) => {
 app.use('/', authRouter);
 app.use('/items', itemRouter);
 app.use('/vouchers', voucherRouter);
+app.use('/orders', orderRouter);
 app.use('/image', imageRouter);
 
 // Listen

@@ -40,6 +40,7 @@ const itemSchema = new Schema({
     }
 });
 
+// Voucher schema
 const voucherSchema = new Schema({
     _id: String,
     userId: { type: String, required: true },
@@ -58,10 +59,25 @@ const voucherSchema = new Schema({
             return ret;
         }
     }
-})
+});
+
+// Order schema
+const orderSchema = new Schema({
+
+}, {
+    toJSON: {
+        transform: (doc, ret) => {
+            ret.id = ret._id;
+            delete ret._id;
+            delete ret.__v;
+            return ret;
+        }
+    }
+});
 
 module.exports = {
     User: mongoose.model('User', userSchema),
     Item: mongoose.model('Item', itemSchema),
-    Voucher: mongoose.model('Voucher', voucherSchema)
+    Voucher: mongoose.model('Voucher', voucherSchema),
+    Order: mongoose.model('Order', orderSchema)
 };

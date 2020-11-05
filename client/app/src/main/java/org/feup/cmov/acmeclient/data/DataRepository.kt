@@ -5,6 +5,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import okio.Buffer
+import okio.ByteString
 import org.feup.cmov.acmeclient.utils.Crypto
 import org.feup.cmov.acmeclient.data.api.*
 import org.feup.cmov.acmeclient.data.db.ItemDao
@@ -17,6 +19,10 @@ import org.feup.cmov.acmeclient.data.model.User
 import org.feup.cmov.acmeclient.data.model.Voucher
 import org.feup.cmov.acmeclient.utils.Cache
 import java.io.IOException
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 import javax.inject.Inject
 
@@ -137,30 +143,79 @@ class DataRepository @Inject constructor(
     fun getOrder(): Flow<CachedOrder> = Cache.cachedOrder.flowOn(Dispatchers.IO)
 
     suspend fun addItemToOrder(item: Item, quantityChange: Int) {
-        val order: CachedOrder = Cache.cachedOrder.first()
-        val items = order.items.toMutableMap()
+        withContext(Dispatchers.IO) {
+            val order: CachedOrder = Cache.cachedOrder.first()
+            val items = order.items.toMutableMap()
 
-        items.compute(item.id) { _, v ->
-            v ?: return@compute quantityChange
-            if (v + quantityChange == 0) null else v + quantityChange
+            items.compute(item.id) { _, v ->
+                v ?: return@compute quantityChange
+                if (v + quantityChange == 0) null else v + quantityChange
+            }
+
+            Cache.cacheOrder(order.copy(items = items))
         }
-
-        Cache.cacheOrder(order.copy(items = items))
     }
 
     suspend fun addVoucherToOrder(voucher: Voucher) {
-        val order: CachedOrder = Cache.cachedOrder.first()
+        withContext(Dispatchers.IO) {
+            val order: CachedOrder = Cache.cachedOrder.first()
 
-        if (voucher.type == 'o')  {
-            val offerVouchers = order.offerVouchers.toMutableSet()
+            if (voucher.type == 'o') {
+                val offerVouchers = order.offerVouchers.toMutableSet()
 
-            if (!offerVouchers.removeIf { id -> id == voucher.id })
-                offerVouchers.add(voucher.id)
+                if (!offerVouchers.removeIf { id -> id == voucher.id })
+                    offerVouchers.add(voucher.id)
 
-            Cache.cacheOrder(order.copy(offerVouchers = offerVouchers))
-        } else {
-            val discountVoucher = if (order.discountVoucher == voucher.id) null else voucher.id
-            Cache.cacheOrder(order.copy(discountVoucher = discountVoucher))
+                Cache.cacheOrder(order.copy(offerVouchers = offerVouchers))
+            } else {
+                val discountVoucher = if (order.discountVoucher == voucher.id) null else voucher.id
+                Cache.cacheOrder(order.copy(discountVoucher = discountVoucher))
+            }
+        }
+    }
+
+    fun generateOrderString(): Flow<Resource<ByteString>> = Cache.cachedOrder
+        .combine(Cache.cachedUser) { order, user -> orderToString(order, user!!) }
+        .filter { it != ByteString.EMPTY }
+        .map { Resource.success(it) }
+        .flowOn(Dispatchers.IO)
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    private suspend fun orderToString(order: CachedOrder, user: CachedUser): ByteString {
+        return withContext(Dispatchers.IO) {
+            if (order.items.isEmpty()) return@withContext ByteString.EMPTY
+
+            val dataBuffer = Buffer()
+
+            var firstItem = true
+            order.items.forEach { (k, v) ->
+                val content = (if (firstItem.also { firstItem = false }) "" else ";") + "$k:$v"
+                dataBuffer.write(content.toByteArray())
+            }
+
+            var firstVoucher = true
+            order.offerVouchers.forEach { v ->
+                val content = (if (firstVoucher.also { firstVoucher = false }) "" else ";") + v
+                dataBuffer.write(content.toByteArray())
+            }
+
+            if (order.discountVoucher != null) {
+                val content = (if (firstVoucher.also { firstVoucher = false }) "" else ";") + order.discountVoucher
+                dataBuffer.write(content.toByteArray())
+            }
+
+            dataBuffer.write("#${user.userId}".toByteArray())
+
+            val signBuffer = dataBuffer.clone()
+
+            Crypto.sign(user.username, signBuffer).also {
+                signBuffer.close()
+                dataBuffer.write(":$it".toByteArray())
+            }
+
+            dataBuffer.readByteString().also {
+                dataBuffer.close()
+            }
         }
     }
 
