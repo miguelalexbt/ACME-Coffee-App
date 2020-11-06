@@ -148,9 +148,29 @@ let voucherRouter = express.Router();
 voucherRouter.get('/populate', async (req, res) => {
     await new Voucher({
         _id: uuidv4(),
-        userId: '0a8b6dc8-d0c2-4233-8dd9-6d0d8cac4536',
+        userId: '7894f856-eb6c-4057-8b20-3db0221fc273',
         type: 'o'
     }).save();
+
+    await new Voucher({
+        _id: uuidv4(),
+        userId: '7894f856-eb6c-4057-8b20-3db0221fc273',
+        type: 'o'
+    }).save();
+
+
+    await new Voucher({
+        _id: uuidv4(),
+        userId: '7894f856-eb6c-4057-8b20-3db0221fc273',
+        type: 'd'
+    }).save();
+
+    await new Voucher({
+        _id: uuidv4(),
+        userId: '7894f856-eb6c-4057-8b20-3db0221fc273',
+        type: 'd'
+    }).save();
+
 
     res.sendStatus(200);
 })
@@ -173,7 +193,18 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
 
     console.log("ORDER ", order)
 
+    let items = {};
+    let vouchers = [];
+
+    order.split(';').forEach(i => {
+        const [a, b] = i.split(':')
+        b !== undefined ? items[a] = parseInt(b) : vouchers.push(a)
+    });
+
+    console.log(items, vouchers)
+
     // Validate items
+    // Item.find
 
     // Validate vouchers
     // - Check non applicable -> ignore

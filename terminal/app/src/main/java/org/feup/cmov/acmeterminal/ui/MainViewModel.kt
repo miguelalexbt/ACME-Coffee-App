@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.feup.cmov.acmeterminal.data.DataRepository
 
-class QrViewModel @ViewModelInject constructor(
+class MainViewModel @ViewModelInject constructor(
     private val dataRepository: DataRepository
 ) : ViewModel() {
 

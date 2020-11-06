@@ -51,7 +51,7 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
             val order = it ?: return@observe
 
             if (order.status == Status.SUCCESS) {
-//                println("GOT ${order.data!!.utf8()}")
+                println("GOT ${order.data!!.utf8()}")
                 binding.order = order.data!!
             }
         })

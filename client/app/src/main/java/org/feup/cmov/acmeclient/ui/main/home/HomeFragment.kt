@@ -1,6 +1,5 @@
 package org.feup.cmov.acmeclient.ui.main.home
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.transition.ChangeBounds
 import android.transition.TransitionManager
@@ -11,15 +10,19 @@ import android.view.animation.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.android.material.snackbar.Snackbar
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.adapter.ClickListener
 import org.feup.cmov.acmeclient.adapter.ItemListAdapter
 import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.databinding.FragmentHomeBinding
-
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -40,11 +43,17 @@ class HomeFragment : Fragment() {
 
         val adapter = ItemListAdapter(
             object : ClickListener<Item> {
-                override fun onClick(target: Item) {
-                    val previousQuantity = viewModel.getItemQuantity(target.id)
-                    ItemDialogFragment(target, previousQuantity) { item, quantity ->
-                        viewModel.saveItemToOrder(item, quantity)
-                    }.show(requireActivity().supportFragmentManager, ItemDialogFragment.TAG)
+                override fun onClick(content: Item) {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val order = viewModel.order.asFlow().first()
+                        val previousQuantity = order.items.getOrDefault(content.id, 0)
+
+                        withContext(Dispatchers.Main) {
+                            ItemDialogFragment(content, previousQuantity) { item, quantity ->
+                                viewModel.saveItemToOrder(item, quantity)
+                            }.show(requireActivity().supportFragmentManager, ItemDialogFragment.TAG)
+                        }
+                    }
                 }
             }
         )
@@ -53,19 +62,8 @@ class HomeFragment : Fragment() {
         binding.homeRefreshLayout.setOnRefreshListener { viewModel.fetchItems() }
 
         subscribeUi(adapter)
-        observeOrder()
 
         return binding.root
-    }
-
-    private fun showCartAnimation() {
-        if (!isViewCartVisible)
-            animationViewCart(true)
-    }
-
-    private fun concealCartAnimation() {
-        if (isViewCartVisible)
-            animationViewCart(false)
     }
 
     private fun animationViewCart(show: Boolean) {
@@ -101,6 +99,15 @@ class HomeFragment : Fragment() {
             binding.homeRefreshLayout.isRefreshing = refreshing
         })
 
+        viewModel.cardState.observe(viewLifecycleOwner, {
+            val cardState = it ?: return@observe
+
+            binding.cartPrice = cardState.price.toFloat()
+            binding.cartItemsCount = cardState.itemsCount
+
+            animationViewCart(cardState.show)
+        })
+
         viewModel.items.observe(viewLifecycleOwner) {
             val items = it ?: return@observe
 
@@ -110,20 +117,4 @@ class HomeFragment : Fragment() {
                 adapter.submitList(items.data)
         }
     }
-
-    private fun observeOrder() {
-        viewModel.order.observe(viewLifecycleOwner) {
-            it ?: return@observe
-
-            binding.cartPrice = 103.99f
-            binding.cartItemsCount = it.items.values.sum()
-
-            // TODO MICHAEL VERIFY PLS
-            if (it.items.values.all { it == 0 })
-                concealCartAnimation()
-            else
-                showCartAnimation()
-        }
-    }
-
 }

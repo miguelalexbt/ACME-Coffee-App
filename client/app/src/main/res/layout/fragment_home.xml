@@ -37,7 +37,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            android:clickable="true"
+            android:focusable="true">
 
             <TextView
                 android:id="@+id/cart_price_view"

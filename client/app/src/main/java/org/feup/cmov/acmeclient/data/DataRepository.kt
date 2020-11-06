@@ -142,30 +142,18 @@ class DataRepository @Inject constructor(
 
     fun getOrder(): Flow<CachedOrder> = Cache.cachedOrder.flowOn(Dispatchers.IO)
 
-    suspend fun addItemToOrder(item: Item, quantityChange: Int) {
+    suspend fun saveItemToOrder(item: Item, quantity: Int) {
         withContext(Dispatchers.IO) {
             val order: CachedOrder = Cache.cachedOrder.first()
             val items = order.items.toMutableMap()
 
             items.compute(item.id) { _, v ->
-                v ?: return@compute quantityChange
-                if (v + quantityChange == 0) null else v + quantityChange
+                v ?: return@compute quantity
+                if (quantity == 0) null else quantity
             }
 
             Cache.cacheOrder(order.copy(items = items))
         }
-    }
-
-    suspend fun saveItemToOrder(item: Item, quantity: Int) {
-        val order: CachedOrder = Cache.cachedOrder.first()
-        val items = order.items.toMutableMap()
-
-        items.compute(item.id) { _, v ->
-            v ?: return@compute quantity
-            if (quantity == 0) null else quantity
-        }
-
-        Cache.cacheOrder(order.copy(items = items))
     }
 
     suspend fun addVoucherToOrder(voucher: Voucher) {
@@ -205,16 +193,15 @@ class DataRepository @Inject constructor(
                 dataBuffer.write(content.toByteArray())
             }
 
-            var firstVoucher = true
             order.offerVouchers.forEach { v ->
-                val content = (if (firstVoucher.also { firstVoucher = false }) "" else ";") + v
-                dataBuffer.write(content.toByteArray())
+                dataBuffer.write(";$v".toByteArray())
             }
 
-            if (order.discountVoucher != null) {
-                val content = (if (firstVoucher.also { firstVoucher = false }) "" else ";") + order.discountVoucher
-                dataBuffer.write(content.toByteArray())
-            }
+            if (order.discountVoucher != null)
+                dataBuffer.write(";${order.discountVoucher}".toByteArray())
+
+            println("OFFER ${order.offerVouchers}")
+            println("DISCOUNT ${order.discountVoucher}")
 
             dataBuffer.write("#${user.userId}".toByteArray())
 

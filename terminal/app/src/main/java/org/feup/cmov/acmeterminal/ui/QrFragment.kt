@@ -1,7 +1,6 @@
 package org.feup.cmov.acmeterminal.ui
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -21,7 +20,7 @@ class QrFragment : Fragment() {
 
     private lateinit var binding: FragmentQrBinding
 
-    private val viewModel: QrViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,24 +31,27 @@ class QrFragment : Fragment() {
         binding.lifecycleOwner = this
 
         binding.qrScan.setOnClickListener {
-            readQRCode()
+            scanQRCode()
         }
 
         return binding.root
     }
 
-    private fun readQRCode() {
+    private fun scanQRCode() {
         // For testing purposes
 //        val data = "5fa42ddbe729e501461d53cf:2#0b358717-0c20-405d-b056-b0afd2088793:JgBivAWMV9Y4mFHr89oEOvXVw25fiE0+w5h7/kbh/OD8TJbLAdiRaY5CaDvssAkJ7BAuYYUQUXLt9ZwWvw0kmQ=="
 //        viewModel.handleData(data)
 
-        try {
-            val intent = Intent("com.google.zxing.client.android.SCAN")
-            intent.putExtra("SCAN_MODE", "QR_CODE_MODE")
-            startActivityForResult(intent, 1)
-        } catch (e: ActivityNotFoundException) {
-            showDialog().show()
-        }
+        val data = "5fa48e61c0f2be001264d8eb:2;5fa48e61c0f2be001264d8ec:5;22cff775-bd93-4b10-baa7-97fe05214ab0;da8306e1-bdee-444f-ab17-a9de4486c062#7894f856-eb6c-4057-8b20-3db0221fc273:dZlXk5Sy/g7h9enwreDiZ3SH4bPT4D1OzGwbGwT46QJmbJ20f9e3FFF8mSdIiSG+sZJHwmQK24I19hTL2Mruvg=="
+        viewModel.handleData(data)
+
+//        try {
+//            val intent = Intent("com.google.zxing.client.android.SCAN")
+//            intent.putExtra("SCAN_MODE", "QR_CODE_MODE")
+//            startActivityForResult(intent, 1)
+//        } catch (e: ActivityNotFoundException) {
+//            showDialog().show()
+//        }
     }
 
     private fun showDialog(): AlertDialog {

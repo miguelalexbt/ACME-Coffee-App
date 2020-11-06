@@ -2,9 +2,7 @@ package org.feup.cmov.acmeclient.ui.main.home
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.feup.cmov.acmeclient.adapter.Content
@@ -18,6 +16,12 @@ class HomeViewModel @ViewModelInject constructor(
 //    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
+
+    data class CartState(
+        val show: Boolean = false,
+        val price: Double = 0.0,
+        val itemsCount: Int = 0
+    )
 
     val items: LiveData<Resource<List<Content<Item>>>> = dataRepository.getItems()
         .combine(dataRepository.getOrder()) { items, order ->
@@ -37,7 +41,28 @@ class HomeViewModel @ViewModelInject constructor(
         }
         .asLiveData()
 
-    val order: LiveData<CachedOrder> = dataRepository.getOrder().asLiveData().distinctUntilChanged()
+    val order: LiveData<CachedOrder> = dataRepository.getOrder()
+        .distinctUntilChanged()
+        .asLiveData()
+
+    val cardState: LiveData<CartState> = dataRepository.getItems()
+        .combine(dataRepository.getOrder()) { items, order ->
+            when (items.status) {
+                Status.SUCCESS -> {
+                    var cartPrice = 0.0
+
+                    items.data?.forEach {
+                        cartPrice += it.price!! * order.items.getOrDefault(it.id, 0)
+                    }
+
+                    CartState(order.items.isNotEmpty(), cartPrice, order.items.count())
+                }
+                else -> {
+                    CartState()
+                }
+            }
+        }
+        .asLiveData()
 
     private val _refreshing = MutableLiveData<Boolean>()
     val refreshing: LiveData<Boolean> =_refreshing
@@ -50,23 +75,10 @@ class HomeViewModel @ViewModelInject constructor(
         }
     }
 
-    fun toggleItem(item: Content<Item>) {
+    fun saveItemToOrder(item: Item, quantity: Int) {
         viewModelScope.launch {
-            dataRepository.addItemToOrder(item.content, if (item.isChosen) -1 else 1)
+            dataRepository.saveItemToOrder(item, quantity)
         }
     }
-
-    fun saveItemToOrder(item: Item?, quantity: Int) {
-        viewModelScope.launch {
-            item?.id?.let { dataRepository.saveItemToOrder(item, quantity) }
-        }
-    }
-
-    fun getItemQuantity(itemId: String) : Int {
-        return runBlocking {
-            dataRepository.getOrder().first().items[itemId] ?: 0
-        }
-    }
-
 }
 

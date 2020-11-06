@@ -51,8 +51,6 @@ class Crypto {
                 load(null)
             }
 
-//            val entry = keyStore.getEntry(alias, null)
-//            val privateKey = (entry as KeyStore.PrivateKeyEntry).privateKey
             val privateKey = keyStore.getKey(alias, null) as PrivateKey
 
             val signature = Signature.getInstance("SHA256withRSA").run {
