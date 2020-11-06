@@ -44,9 +44,9 @@ class VouchersViewModel @ViewModelInject constructor(
         }
     }
 
-    fun toggleVoucher(voucher: Content<Voucher>) {
+    fun saveVoucherToOrder(voucher: Voucher) {
         viewModelScope.launch {
-            dataRepository.addVoucherToOrder(voucher.content)
+            dataRepository.saveVoucherToOrder(voucher)
         }
     }
 }

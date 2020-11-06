@@ -31,7 +31,7 @@ class VouchersFragment : Fragment() {
 
         val adapter = VoucherListAdapter(object: ClickListener<Content<Voucher>> {
             override fun onClick(content: Content<Voucher>) {
-                viewModel.toggleVoucher(content)
+                viewModel.saveVoucherToOrder(content.content)
             }
         })
 

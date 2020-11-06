@@ -156,7 +156,7 @@ class DataRepository @Inject constructor(
         }
     }
 
-    suspend fun addVoucherToOrder(voucher: Voucher) {
+    suspend fun saveVoucherToOrder(voucher: Voucher) {
         withContext(Dispatchers.IO) {
             val order: CachedOrder = Cache.cachedOrder.first()
 

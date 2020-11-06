@@ -189,6 +189,7 @@ voucherRouter.get('/', authenticateClientRequest, async (req, res) => {
 let orderRouter = express.Router();
 
 orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
+    const userId = req.header('User-Signature').split(':')[0]
     const order = req.body.order;
 
     console.log("ORDER ", order)
@@ -196,21 +197,45 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
     let items = {};
     let vouchers = [];
 
+    // Parse items and vouchers
     order.split(';').forEach(i => {
         const [a, b] = i.split(':')
         b !== undefined ? items[a] = parseInt(b) : vouchers.push(a)
     });
 
-    console.log(items, vouchers)
+    // Check items validity
+    let validItems = await Item
+        .where('_id').in(Object.keys(items))
+        .select('_id type price');
 
-    // Validate items
-    // Item.find
+    console.log("VALID ITEMS", validItems)
 
-    // Validate vouchers
-    // - Check non applicable -> ignore
-    // - Check invalid -> delete
+    // Check vouchers validity
+    let validVouchers = await Voucher
+        .where('_id').in(vouchers)
+        .where('userId').equals(userId)
+        .where('used').equals(false)
+        .select('_id type');
+
+    console.log("VOUCHERS", validVouchers)
+
+    // Check vouchers applicability (ignore if not applicable)
+
+    // - Only one discount voucher can be used
+    let hasDiscountVoucher = false;
+    validVouchers = validVouchers.filter(voucher =>
+        voucher.type !== 'd' || !hasDiscountVoucher && (hasDiscountVoucher = true, true)
+    );
+
+    // - One offer voucher per coffee
+    const coffeeItems = validItems.reduce((a, b) => a + (b.type === 'coffee' ? 1 : 0), 0);
+    let coffeeVouchers = 0;
+    validVouchers = validVouchers.filter(voucher =>
+        voucher.type !== 'o' || coffeeVouchers < coffeeItems && (coffeeVouchers++, true)
+    );
+
+    console.log("VALID VOUCHERS", validVouchers)
     
-
     res.json("HELLo");
 });
 
