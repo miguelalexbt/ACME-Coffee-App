@@ -1,18 +1,25 @@
 package org.feup.cmov.acmeclient.ui.main.home
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.transition.ChangeBounds
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.*
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.adapter.ClickListener
-import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.adapter.ItemListAdapter
 import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.databinding.FragmentHomeBinding
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -20,6 +27,8 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
 
     private val viewModel: HomeViewModel by viewModels()
+
+    private var isViewCartVisible: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,20 +39,12 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = this
 
         val adapter = ItemListAdapter(
-//            object : ClickListener<Item> {
-//                override fun onClick(target: Item) {
-//                    viewModel.toggleItem(target)
-//                }
-//            },
-            object : ClickListener<Item?> {
-                override fun onClick(target: Item?) {
-                    ItemDialogFragment(target) { item, quantity ->
-                        viewModel.changeItemQuantity(
-                            item,
-                            quantity
-                        )
+            object : ClickListener<Item> {
+                override fun onClick(target: Item) {
+                    val previousQuantity = viewModel.getItemQuantity(target.id)
+                    ItemDialogFragment(target, previousQuantity) { item, quantity ->
+                        viewModel.saveItemToOrder(item, quantity)
                     }.show(requireActivity().supportFragmentManager, ItemDialogFragment.TAG)
-//                    showDialog(target)
                 }
             }
         )
@@ -52,8 +53,46 @@ class HomeFragment : Fragment() {
         binding.homeRefreshLayout.setOnRefreshListener { viewModel.fetchItems() }
 
         subscribeUi(adapter)
+        observeOrder()
 
         return binding.root
+    }
+
+    private fun showCartAnimation() {
+        if (!isViewCartVisible)
+            animationViewCart(true)
+    }
+
+    private fun concealCartAnimation() {
+        if (isViewCartVisible)
+            animationViewCart(false)
+    }
+
+    private fun animationViewCart(show: Boolean) {
+        isViewCartVisible = show
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(binding.viewCartFlowLayout)
+        if (show)
+            constraintSet.connect(
+                R.id.view_cart_flow,
+                ConstraintSet.TOP,
+                R.id.view_cart_flow_layout,
+                ConstraintSet.TOP,
+                0
+            )
+        else
+            constraintSet.connect(
+                R.id.view_cart_flow,
+                ConstraintSet.TOP,
+                R.id.view_cart_flow_layout,
+                ConstraintSet.BOTTOM,
+                0
+            )
+        val transition = ChangeBounds()
+        transition.interpolator = DecelerateInterpolator()
+        transition.duration = 500
+        TransitionManager.beginDelayedTransition(binding.homeConstraintLayout, transition)
+        constraintSet.applyTo(binding.viewCartFlowLayout)
     }
 
     private fun subscribeUi(adapter: ItemListAdapter) {
@@ -72,38 +111,19 @@ class HomeFragment : Fragment() {
         }
     }
 
-//    private fun showDialog(item: Item?) {
-//        val downloadDialog = AlertDialog.Builder(requireActivity())
-//        downloadDialog.setTitle(title)
-//        downloadDialog.setMessage(message)
-//        downloadDialog.setPositiveButton(buttonYes) { di: DialogInterface?, i: Int ->
-//            val uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android")
-//            val intent = Intent(Intent.ACTION_VIEW, uri)
-//            act.startActivity(intent)
-//        }
-//        downloadDialog.setNegativeButton(buttonNo, null)
-//        return downloadDialog.show()
-//        val inflater = requireActivity().layoutInflater
+    private fun observeOrder() {
+        viewModel.order.observe(viewLifecycleOwner) {
+            it ?: return@observe
 
-//        val bundle = Bundle()
-//        bundle.putString("name", "This is name")
-//        val dialogBuilder = MaterialAlertDialogBuilder(requireContext())
-//            .setTitle("Select quantity")
-////            .setMessage(item?.price.toString())
-////            .setIcon(R.drawable.ic_baseline_star_outline_24)
-//            .setView(R.layout.number_picker_dialog)
-//
-////            .setNeutralButton("Neutral") { dialog, which ->
-////                // Respond to neutral button press
-////            }
-////            .setNegativeButton("Decline") { dialog, which ->
-////                // Respond to negative button press
-////            }
-//            .setPositiveButton("Save") { dialog, which ->
-//                // Respond to positive button press
-//                if (BUTTON_POSITIVE == which) {
-//                    dialog.findViewById<NumberPickerWithXml>(R.id.number_picker)
-//                }
-//            }
-//    }
+            binding.cartPrice = 103.99f
+            binding.cartItemsCount = it.items.values.sum()
+
+            // TODO MICHAEL VERIFY PLS
+            if (it.items.values.all { it == 0 })
+                concealCartAnimation()
+            else
+                showCartAnimation()
+        }
+    }
+
 }

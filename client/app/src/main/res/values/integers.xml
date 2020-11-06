@@ -3,5 +3,5 @@
     <integer name="home_grid_columns">2</integer>
 
     <!-- Duration (in milliseconds) for slide transition animation -->
-    <integer name="slide">3000</integer>
+    <integer name="slide">500</integer>
 </resources>

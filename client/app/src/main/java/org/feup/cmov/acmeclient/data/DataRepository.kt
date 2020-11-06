@@ -156,6 +156,18 @@ class DataRepository @Inject constructor(
         }
     }
 
+    suspend fun saveItemToOrder(item: Item, quantity: Int) {
+        val order: CachedOrder = Cache.cachedOrder.first()
+        val items = order.items.toMutableMap()
+
+        items.compute(item.id) { _, v ->
+            v ?: return@compute quantity
+            if (quantity == 0) null else quantity
+        }
+
+        Cache.cacheOrder(order.copy(items = items))
+    }
+
     suspend fun addVoucherToOrder(voucher: Voucher) {
         withContext(Dispatchers.IO) {
             val order: CachedOrder = Cache.cachedOrder.first()

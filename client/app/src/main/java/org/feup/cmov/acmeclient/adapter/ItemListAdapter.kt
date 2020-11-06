@@ -19,7 +19,7 @@ import org.feup.cmov.acmeclient.databinding.HomeListItemBinding
 import org.feup.cmov.acmeclient.utils.WEB_SERVICE_URL
 
 class ItemListAdapter(
-    private val cardListener: ClickListener<Item?>
+    private val cardListener: ClickListener<Item>
 ) : ListAdapter<Content<Item>, RecyclerView.ViewHolder>(ListItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -35,35 +35,29 @@ class ItemListAdapter(
 
     class ItemViewHolder(
         private val binding: HomeListItemBinding,
-        private val cardListener: ClickListener<Item?>
+        private val cardListener: ClickListener<Item>
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.setClickListener {
-                cardListener.onClick(binding.item)
-            }
-        }
+//        init {
+//
+//        }
 
         fun bind(contentItem: Content<Item>) {
             binding.apply {
                 item = contentItem.content
                 isChosen = contentItem.isChosen
 
-//                println(listItemImage.drawable)
-//                if (listItemImage.drawable == null) {
-//                    print("Picasso")
-                    Picasso.get()
-                        .load(WEB_SERVICE_URL + "/image/" + contentItem.content.name)
+                Picasso.get()
+                    .load(WEB_SERVICE_URL + "/image/" + contentItem.content.name)
 //                    .placeholder(R.drawable.logo)
-                        .error(R.drawable.ic_baseline_image_not_supported_24)
-                        .fit()
-                        .centerCrop()
-                        .into(listItemImage);
-//                }
+                    .error(R.drawable.ic_baseline_image_not_supported_24)
+                    .fit()
+                    .centerCrop()
+                    .into(listItemImage);
 
-//                listItemAdd.setOnClickListener {
-//                    listener.onClick(contentItem.content)
-//                }
+                setClickListener {
+                    cardListener.onClick(contentItem.content)
+                }
 
                 executePendingBindings()
             }

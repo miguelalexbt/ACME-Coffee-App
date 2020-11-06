@@ -7,14 +7,17 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.databinding.NumberPickerDialogBinding
 
 @AndroidEntryPoint
 class ItemDialogFragment(
-    private val dialogItem: Item?,
-    private val numberPickerMethod: (item: Item?, quantity: Int) -> Unit
+    private val dialogItem: Item,
+    private val initialItemQuantity: Int,
+    private val saveOperation: (item: Item, quantity: Int) -> Unit
 ) : DialogFragment() {
 
     companion object {
@@ -31,15 +34,13 @@ class ItemDialogFragment(
         binding = NumberPickerDialogBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         return binding.root
-//        return inflater.inflate(R.layout.fragment_item_dialog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.numberPicker.setOnValueChangedListener(NumberPicker.OnValueChangeListener { numberPicker, oldVal, newVal -> numberPickerMethod(dialogItem, newVal) })
-        //        binding.item = dialogItem
-//        setupView(view)
-//        setupClickListeners(view)
+        binding.numberPicker.value = initialItemQuantity
+        binding.numberPicker.wrapSelectorWheel = false;
+        setupClickListeners()
     }
 
     override fun onStart() {
@@ -50,20 +51,20 @@ class ItemDialogFragment(
         )
     }
 
-//    private fun setupView(view: View) {
-//        view.tvTitle.text = arguments?.getString(KEY_TITLE)
-//        view.tvSubTitle.text = arguments?.getString(KEY_SUBTITLE)
-//    }
-
-//    private fun setupClickListeners(view: View) {
-//        view.btnPositive.setOnClickListener {
-//            // TODO: Do some task here
-//            dismiss()
-//        }
-//        view.btnNegative.setOnClickListener {
-//            // TODO: Do some task here
-//            dismiss()
-//        }
-//    }
+    private fun setupClickListeners() {
+        binding.itemDialogCancelButton.setOnClickListener {
+            dismiss()
+        }
+        binding.itemDialogSaveButton.setOnClickListener {
+            saveOperation(dialogItem, binding.numberPicker.value)
+//            println(requireView().rootView)
+//            Snackbar.make(requireView().rootView, "Item added to cart", Snackbar.LENGTH_SHORT)
+//                .setAction("UNDO") {
+//                    saveOperation(dialogItem, initialItemQuantity)
+//                }
+//                .show()
+            dismiss()
+        }
+    }
 
 }

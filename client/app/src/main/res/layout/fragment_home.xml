@@ -3,21 +3,93 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/home_refresh_layout"
+    <data>
+        <variable name="cartPrice" type="Float" />
+        <variable name="cartItemsCount" type="Integer" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/home_constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/home_recycler_view"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/home_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/itemCardMargin"
-            android:layout_marginTop="@dimen/itemCardMargin"
-            android:layout_marginEnd="@dimen/itemCardMargin"
-            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-            app:spanCount="@integer/home_grid_columns"
-            tools:listitem="@layout/home_list_item" />
+            android:layout_height="match_parent">
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/home_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/itemCardMargin"
+                android:layout_marginTop="@dimen/itemCardMargin"
+                android:layout_marginEnd="@dimen/itemCardMargin"
+                app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                app:spanCount="@integer/home_grid_columns"
+                tools:listitem="@layout/home_list_item" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/view_cart_flow_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/cart_price_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="5dp"
+                android:text="@{String.valueOf(cartPrice) + `€`}"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textColor="@color/cardview_light_background"
+                android:translationZ="1dp" />
+
+            <TextView
+                android:id="@+id/cart_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="5dp"
+                android:text="@string/view_cart"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textColor="@color/cardview_light_background"
+                android:translationZ="1dp" />
+
+            <TextView
+                android:id="@+id/cart_items_count_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/white_rectangle_background"
+                android:gravity="center"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="5dp"
+                android:text="@{String.valueOf(cartItemsCount)}"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textColor="@color/colorSecondary"
+                android:translationZ="1dp" />
+
+            <androidx.constraintlayout.helper.widget.Flow
+                android:id="@+id/view_cart_flow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorSecondary"
+                android:padding="10dp"
+                app:constraint_referenced_ids="cart_price_view,cart_text_view,cart_items_count_view"
+                app:flow_horizontalStyle="spread_inside"
+                app:flow_maxElementsWrap="3"
+                app:flow_wrapMode="chain"
+                app:layout_constraintTop_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+            </androidx.constraintlayout.helper.widget.Flow>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

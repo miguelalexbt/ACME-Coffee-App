@@ -9,6 +9,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -16,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.MainApplication.Companion.context
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.databinding.ActivityMainBinding
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -32,6 +36,12 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_content)
         NavigationUI.setupWithNavController(navView, navHostFragment!!.findNavController())
+    }
+
+    override fun onBackPressed() {
+        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        navView.menu.getItem(0).isChecked = true
+        super.onBackPressed()
     }
 
     override fun onResume() {

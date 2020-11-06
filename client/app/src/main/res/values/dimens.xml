@@ -6,4 +6,6 @@
     <dimen name="itemCardMargin">4dp</dimen>
     <dimen name="itemCardElevation">5dp</dimen>
     <dimen name="itemCardElevationSelected">10dp</dimen>
+    <dimen name="itemCardStrokeWidth">0dp</dimen>
+    <dimen name="itemCardStrokeWidthSelected">1dp</dimen>
 </resources>

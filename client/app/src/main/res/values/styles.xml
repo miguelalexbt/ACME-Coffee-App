@@ -10,10 +10,10 @@
         <item name="android:navigationBarColor">@color/colorNavBar</item>
     </style>
 
-    <style name="ShapeAppearanceOverlayExtended" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">0dp</item>
-    </style>
+<!--    <style name="ShapeAppearanceOverlayExtended" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">-->
+<!--        <item name="cornerFamily">cut</item>-->
+<!--        <item name="cornerSize">0dp</item>-->
+<!--    </style>-->
 
     <style name="Widget.App.Button.IconOnly" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="iconPadding">0dp</item>
@@ -29,6 +29,5 @@
     <style name="Widget.App.Button.SelectedButton" parent="Widget.MaterialComponents.Button">
         <item name="iconPadding">0dp</item>
     </style>
-
 
 </resources>

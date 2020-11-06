@@ -2,12 +2,16 @@ package org.feup.cmov.acmeclient.ui.main.home
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.data.DataRepository
 import org.feup.cmov.acmeclient.data.Resource
 import org.feup.cmov.acmeclient.data.Status
+import org.feup.cmov.acmeclient.data.cache.CachedOrder
 import org.feup.cmov.acmeclient.data.model.Item
 
 class HomeViewModel @ViewModelInject constructor(
@@ -33,6 +37,8 @@ class HomeViewModel @ViewModelInject constructor(
         }
         .asLiveData()
 
+    val order: LiveData<CachedOrder> = dataRepository.getOrder().asLiveData().distinctUntilChanged()
+
     private val _refreshing = MutableLiveData<Boolean>()
     val refreshing: LiveData<Boolean> =_refreshing
 
@@ -50,10 +56,17 @@ class HomeViewModel @ViewModelInject constructor(
         }
     }
 
-    fun changeItemQuantity(item: Item?, quantity: Int) {
+    fun saveItemToOrder(item: Item?, quantity: Int) {
         viewModelScope.launch {
-            item?.id?.let { dataRepository.addItemToOrder(item, quantity) }
+            item?.id?.let { dataRepository.saveItemToOrder(item, quantity) }
         }
     }
+
+    fun getItemQuantity(itemId: String) : Int {
+        return runBlocking {
+            dataRepository.getOrder().first().items[itemId] ?: 0
+        }
+    }
+
 }
 
