@@ -38,12 +38,6 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(navView, navHostFragment!!.findNavController())
     }
 
-    override fun onBackPressed() {
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
-        navView.menu.getItem(0).isChecked = true
-        super.onBackPressed()
-    }
-
     override fun onResume() {
         super.onResume()
         println("MainActivity onResume")
