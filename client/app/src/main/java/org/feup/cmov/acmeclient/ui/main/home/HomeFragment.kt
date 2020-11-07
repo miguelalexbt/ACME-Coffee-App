@@ -1,13 +1,17 @@
 package org.feup.cmov.acmeclient.ui.main.home
 
+import android.content.Context
 import android.os.Bundle
 import android.transition.ChangeBounds
 import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.*
+import android.view.animation.DecelerateInterpolator
+import android.view.inputmethod.InputMethodManager
+import android.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asFlow
@@ -23,6 +27,7 @@ import org.feup.cmov.acmeclient.adapter.ItemListAdapter
 import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.databinding.FragmentHomeBinding
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -44,6 +49,7 @@ class HomeFragment : Fragment() {
         val adapter = ItemListAdapter(
             object : ClickListener<Item> {
                 override fun onClick(content: Item) {
+                    binding.searchBox.clearFocus()
                     lifecycleScope.launch(Dispatchers.IO) {
                         val order = viewModel.order.asFlow().first()
                         val previousQuantity = order.items.getOrDefault(content.id, 0)
@@ -62,14 +68,27 @@ class HomeFragment : Fragment() {
         binding.homeRefreshLayout.setOnRefreshListener { viewModel.fetchItems() }
 
         subscribeUi(adapter)
+        watchSearchBox()
 
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.searchBox.clearFocus()
+    }
+
     private fun animationViewCart(show: Boolean) {
+        if (isViewCartVisible == show)
+            return
+
         isViewCartVisible = show
         val constraintSet = ConstraintSet()
         constraintSet.clone(binding.viewCartFlowLayout)
+
+//        val constraintSetRefresh = ConstraintSet()
+//        constraintSet.clone(binding.viewCartFlowLayout)
+
         if (show)
             constraintSet.connect(
                 R.id.view_cart_flow,
@@ -99,13 +118,13 @@ class HomeFragment : Fragment() {
             binding.homeRefreshLayout.isRefreshing = refreshing
         })
 
-        viewModel.cardState.observe(viewLifecycleOwner, {
-            val cardState = it ?: return@observe
+        viewModel.cartState.observe(viewLifecycleOwner, {
+            val cartState = it ?: return@observe
 
-            binding.cartPrice = cardState.price.toFloat()
-            binding.cartItemsCount = cardState.itemsCount
+            binding.cartPrice = cartState.price.toFloat()
+            binding.cartItemsCount = cartState.itemsCount
 
-            animationViewCart(cardState.show)
+            animationViewCart(cartState.show)
         })
 
         viewModel.items.observe(viewLifecycleOwner) {
@@ -116,5 +135,30 @@ class HomeFragment : Fragment() {
             if (items.status == Status.SUCCESS)
                 adapter.submitList(items.data)
         }
+    }
+
+    private fun watchSearchBox() {
+        binding.searchBox.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                val filteredList = viewModel.items.value?.data?.filter {
+                    it.content.name!!.toLowerCase().contains(p0.toString().toLowerCase())
+                }
+
+                val adapter = binding.homeRecyclerView.adapter as ItemListAdapter
+                adapter.submitList(filteredList)
+
+                // Action was handled by listener so returns true
+                return true
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                if (p0 == "") {
+                    val adapter = binding.homeRecyclerView.adapter as ItemListAdapter
+                    adapter.submitList(viewModel.items.value?.data)
+                }
+                return true
+            }
+
+        })
     }
 }

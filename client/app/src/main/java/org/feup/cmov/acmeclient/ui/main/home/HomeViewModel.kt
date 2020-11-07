@@ -44,7 +44,7 @@ class HomeViewModel @ViewModelInject constructor(
         .distinctUntilChanged()
         .asLiveData()
 
-    val cardState: LiveData<CartState> = dataRepository.getItems()
+    val cartState: LiveData<CartState> = dataRepository.getItems()
         .combine(dataRepository.getOrder()) { items, order ->
             when (items.status) {
                 Status.SUCCESS -> {
@@ -54,7 +54,7 @@ class HomeViewModel @ViewModelInject constructor(
                         cartPrice += it.price!! * order.items.getOrDefault(it.id, 0)
                     }
 
-                    CartState(order.items.isNotEmpty(), cartPrice, order.items.count())
+                    CartState(order.items.isNotEmpty(), cartPrice, order.items.values.sum())
                 }
                 else -> {
                     CartState()

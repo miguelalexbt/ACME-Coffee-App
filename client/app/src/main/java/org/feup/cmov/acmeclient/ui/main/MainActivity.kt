@@ -1,13 +1,16 @@
 package org.feup.cmov.acmeclient.ui.main
 
 import android.app.PendingIntent
+import android.app.SearchManager
 import android.content.Intent
 import android.content.IntentFilter
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -26,6 +29,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         setupNavigation()
+
+        supportActionBar?.hide()
+//        supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
     private fun setupNavigation() {
@@ -43,6 +49,16 @@ class MainActivity : AppCompatActivity() {
             enableForegroundDispatch(this, nfcAdapter)
             receiveMessageFromDevice(intent)
         }
+
+        // Verify the action and get the query
+//        if (Intent.ACTION_SEARCH == intent.action) {
+//            println("action_search")
+//            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+////                doMySearch(query)
+//                println(query)
+//                Toast.makeText(context, query, Toast.LENGTH_LONG).show()
+//            }
+//        }
     }
 
     override fun onPause() {

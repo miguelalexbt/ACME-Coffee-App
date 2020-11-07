@@ -10,6 +10,7 @@
     <color name="colorSecondary">#036635</color>
     <color name="colorAccent">#ffe6a7</color>
     <color name="colorLightGray">#D3D3D3</color>
+    <color name="colorLighterGray">#EDEDED</color>
 
     <color name="colorError">#ED4337</color>
     <color name="colorNavBar">#000000</color>

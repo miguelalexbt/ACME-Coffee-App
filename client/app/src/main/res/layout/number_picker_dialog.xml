@@ -26,6 +26,7 @@
             custom:defaultValue="0"
             custom:maxValue="20"
             custom:minValue="0"
+            android:descendantFocusability="blocksDescendants"
             android:id="@+id/number_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
