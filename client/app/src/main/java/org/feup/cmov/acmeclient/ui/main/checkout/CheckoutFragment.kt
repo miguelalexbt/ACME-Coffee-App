@@ -106,6 +106,13 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
                 voucherAdapter.submitList(vouchers.data)
             }
         })
+
+        viewModel.total.observe(viewLifecycleOwner, {
+            val total = it ?: return@observe
+
+            if (total.status == Status.SUCCESS)
+                binding.total = total.data
+        })
     }
 
 

@@ -97,6 +97,14 @@ class DataRepository @Inject constructor(
         .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
         .flowOn(Dispatchers.IO)
 
+    fun getItemsAsMap(): Flow<Resource<Map<String, Item>>> = getItems(fetch = false)
+        .map { items ->
+            when (items.status) {
+                Status.SUCCESS -> Resource.success(items.data!!.associateBy({ it.id }, { it }))
+                else -> items as Resource<Map<String, Item>>
+            }
+        }
+
     suspend fun fetchItems() {
         withContext(Dispatchers.IO) {
             // Check if menu is updated
@@ -121,6 +129,14 @@ class DataRepository @Inject constructor(
         .catch { emit(Resource.error(it.message!!)) }
         .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
         .flowOn(Dispatchers.IO)
+
+    fun getVouchersAsMap(): Flow<Resource<Map<String, Voucher>>> = getVouchers(fetch = false)
+        .map {vouchers ->
+            when (vouchers.status) {
+                Status.SUCCESS -> Resource.success(vouchers.data!!.associateBy({ it.id }, { it }))
+                else -> vouchers as Resource<Map<String, Voucher>>
+            }
+        }
 
     suspend fun fetchVouchers() {
         withContext(Dispatchers.IO) {

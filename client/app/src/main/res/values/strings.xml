@@ -4,7 +4,7 @@
     <string name="title_activity_nav">MainActivity</string>
     <string name="home_title">Home</string>
 
-    <string name="empty_string"></string>
+    <string name="empty_string"/>
 
     <!--Sign in-->
     <string name="prompt_username">Username</string>
@@ -29,7 +29,7 @@
     <string name="error_username_taken">Username is already taken</string>
     <string name="error_weak_password">Password must be at least 8 characters and have letters and numbers</string>
 
-    <!--Gerneric errors-->
+    <!--Generic errors-->
     <string name="error_unknown">An error has occurred</string>
     <string name="error_required">This field is required</string>
     <string name="error_invalid">This field is invalid</string>
@@ -40,6 +40,16 @@
 
 <!--    <string name="decreaseItem">decreaseItem</string>-->
 <!--    <string name="increaseItem">increaseItem</string>-->
+
+    <!--Checkout-->
+    <string name="title_checkout">Checkout</string>
+    <string name="section_items">Items</string>
+    <string name="checkout_item_price">%2$d x %1$1.2f€ = %3$1.2f€</string>
+    <string name="section_vouchers">Vouchers</string>
+    <string name="checkout_total_description">Total</string>
+    <string name="checkout_total_price">%1$1.2f€</string>
+    <string name="prompt_checkout">Checkout</string>
+
 
     <string name="error_no_items">No items available</string>
     <string name="error_fetch_items">An error has occurred</string>
