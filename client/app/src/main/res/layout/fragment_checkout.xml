@@ -88,12 +88,13 @@
                     android:layout_marginTop="5dp"
                     android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/checkout_list_voucher"
-                    app:layout_constraintTop_toBottomOf="@+id/checkout_vouchers_section" />
+                    app:layout_constraintTop_toBottomOf="@+id/checkout_vouchers_section"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:listitem="@layout/checkout_list_voucher" />
 
                 <TextView
                     android:id="@+id/checkout_total_description"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/checkout_total_description"
                     android:textAlignment="textStart"
@@ -106,7 +107,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{@string/checkout_total_price(total)}"
-                    android:textAlignment="textEnd"
                     android:textSize="17sp"
                     android:textAppearance="?attr/textAppearanceLargePopupMenu"
                     tools:text="10.00€"
@@ -117,32 +117,39 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
-                    android:layout_marginVertical="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="35dp"
                     app:constraint_referenced_ids="checkout_total_description,checkout_total_price"
                     app:flow_horizontalGap="10dp"
-                    app:flow_wrapMode="chain"
-                    app:flow_horizontalStyle="spread_inside"
-                    app:flow_maxElementsWrap="2"
                     app:adaptiveMarginTop="@{ hasVouchers ? @dimen/listNotEmpty : @dimen/listEmpty }"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/checkout_vouchers_recycler_view" />
-
-                <Button
-                    android:id="@+id/checkout_submit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_marginVertical="20dp"
-                    android:text="@string/prompt_checkout"
-                    android:textSize="17sp"
-                    android:enabled="@{!isLoading}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/checkout_total_flow"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/checkout_vouchers_recycler_view"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/checkout_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:contentDescription="@string/prompt_checkout"
+                android:text="@string/prompt_checkout"
+                android:textColor="#FFFFFF"
+                app:icon="@drawable/ic_baseline_add_24"
+                app:iconTint="#FFFFFF"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                isGone="@{isLoading}" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </FrameLayout>
 
 
