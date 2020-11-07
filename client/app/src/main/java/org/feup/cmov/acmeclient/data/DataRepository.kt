@@ -163,8 +163,7 @@ class DataRepository @Inject constructor(
             val order: CachedOrder = Cache.cachedOrder.first()
             val items = order.items.toMutableMap()
 
-            items.compute(item.id) { _, v ->
-                v ?: return@compute quantity
+            items.compute(item.id) { _, _ ->
                 if (quantity == 0) null else quantity
             }
 
