@@ -84,4 +84,8 @@ class CheckoutViewModel @ViewModelInject constructor(
             Resource.success(total)
         }
         .asLiveData()
+
+    private val isLoadingItems = items.map { it.status == Status.LOADING }.asFlow()
+    private val isLoadingVouchers = vouchers.map { it.status == Status.LOADING }.asFlow()
+    val isLoading = isLoadingItems.zip(isLoadingVouchers) { l1, l2 -> l1 && l2 }.asLiveData()
 }

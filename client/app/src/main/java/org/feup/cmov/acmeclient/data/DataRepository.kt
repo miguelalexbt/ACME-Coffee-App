@@ -90,8 +90,10 @@ class DataRepository @Inject constructor(
         .distinctUntilChanged()
         .map { Resource.success(it) }
         .onStart {
-            emit(Resource.loading(null))
-            if (fetch) fetchItems()
+            if (fetch) {
+                emit(Resource.loading(null))
+                fetchItems()
+            }
         }
         .catch { emit(Resource.error(it.message!!)) }
         .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
@@ -123,8 +125,10 @@ class DataRepository @Inject constructor(
         .distinctUntilChanged()
         .map { Resource.success(it) }
         .onStart {
-            emit(Resource.loading(null))
-            if (fetch) fetchVouchers()
+            if (fetch) {
+                emit(Resource.loading(null))
+                fetchVouchers()
+            }
         }
         .catch { emit(Resource.error(it.message!!)) }
         .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
@@ -143,10 +147,8 @@ class DataRepository @Inject constructor(
             val response = webService.getVouchers(Cache.cachedUser.first()!!.userId)
 
             // Update vouchers if needed
-            if (response is ApiResponse.Success) {
-                voucherDao.deleteAll(loggedInUser!!.userId)
-                voucherDao.insertAll(response.data!!)
-            }
+            if (response is ApiResponse.Success)
+                voucherDao.deleteAndInsert(loggedInUser!!.userId, response.data!!)
         }
     }
 

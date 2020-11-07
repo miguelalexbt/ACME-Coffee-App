@@ -89,11 +89,17 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
         itemAdapter: GenericListAdapter<ItemView, CheckoutListItemBinding>,
         voucherAdapter: GenericListAdapter<VoucherView, CheckoutListVoucherBinding>
     ) {
+        viewModel.isLoading.observe(viewLifecycleOwner, {
+            val isLoading = it ?: return@observe
+
+            binding.isLoading = isLoading
+        })
+
         viewModel.items.observe(viewLifecycleOwner, {
             val items = it ?: return@observe
 
             if (items.status == Status.SUCCESS) {
-                println("ITEMS $items")
+//                println("ITEMS $items")
                 binding.hasItems = items.data!!.isNotEmpty()
                 itemAdapter.submitList(items.data)
             }
@@ -103,7 +109,7 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
             val vouchers = it ?: return@observe
 
             if (vouchers.status == Status.SUCCESS) {
-                println("VOUCHERS $vouchers")
+//                println("VOUCHERS $vouchers")
                 binding.hasVouchers = vouchers.data!!.isNotEmpty()
                 voucherAdapter.submitList(vouchers.data)
             }

@@ -8,4 +8,6 @@
     <dimen name="itemCardElevationSelected">10dp</dimen>
     <dimen name="itemCardStrokeWidth">0dp</dimen>
     <dimen name="itemCardStrokeWidthSelected">1dp</dimen>
+    <dimen name="listEmpty">50dp</dimen>
+    <dimen name="listNotEmpty">20dp</dimen>
 </resources>
