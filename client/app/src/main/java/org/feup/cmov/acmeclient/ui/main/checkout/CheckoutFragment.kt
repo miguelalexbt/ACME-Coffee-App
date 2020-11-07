@@ -94,6 +94,7 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 
             if (items.status == Status.SUCCESS) {
                 println("ITEMS $items")
+                binding.hasItems = items.data!!.isNotEmpty()
                 itemAdapter.submitList(items.data)
             }
         })
@@ -103,6 +104,7 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 
             if (vouchers.status == Status.SUCCESS) {
                 println("VOUCHERS $vouchers")
+                binding.hasVouchers = vouchers.data!!.isNotEmpty()
                 voucherAdapter.submitList(vouchers.data)
             }
         })

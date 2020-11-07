@@ -35,8 +35,12 @@ class CheckoutViewModel @ViewModelInject constructor(
         .combine(dataRepository.getVouchersAsMap()) { order, vouchers ->
             when (vouchers.status) {
                 Status.SUCCESS -> {
-                    Resource.success(
-                        (order.offerVouchers + order.discountVoucher).map {
+                    val orderVouchers = if (order.discountVoucher != null)
+                        order.offerVouchers + order.discountVoucher
+                    else
+                        order.offerVouchers
+
+                    Resource.success(orderVouchers.map {
                             val voucher = vouchers.data!![it] ?: error("no voucher key $it")
                             Content(voucher.id, VoucherView(voucher.type), false)
                         }

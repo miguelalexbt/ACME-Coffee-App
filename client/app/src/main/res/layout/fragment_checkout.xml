@@ -5,6 +5,8 @@
 
     <data>
         <variable name="total" type="Double" />
+        <variable name="hasItems" type="Boolean" />
+        <variable name="hasVouchers" type="Boolean" />
     </data>
 
     <ScrollView
@@ -27,6 +29,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/no_items_selected"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkout_items_section"
+                isGone="@{hasItems}" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/checkout_items_recycler_view"
                 android:layout_width="match_parent"
@@ -47,6 +59,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/checkout_items_recycler_view" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/no_vouchers_selected"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkout_vouchers_section"
+                isGone="@{hasVouchers}" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/checkout_vouchers_recycler_view"
