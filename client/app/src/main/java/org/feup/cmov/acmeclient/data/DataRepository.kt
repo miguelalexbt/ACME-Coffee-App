@@ -19,10 +19,6 @@ import org.feup.cmov.acmeclient.data.model.User
 import org.feup.cmov.acmeclient.data.model.Voucher
 import org.feup.cmov.acmeclient.utils.Cache
 import java.io.IOException
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 import javax.inject.Inject
 
@@ -33,7 +29,7 @@ class DataRepository @Inject constructor(
     private val voucherDao: VoucherDao
 ) {
     // Auth
-    val loggedInUser: CachedUser?
+    private val loggedInUser: CachedUser?
         get() = runBlocking { Cache.cachedUser.first() }
 
     val isLoggedIn = Cache.cachedUser.map { it != null }
@@ -90,12 +86,12 @@ class DataRepository @Inject constructor(
 
     // Items
 
-    fun getItems(): Flow<Resource<List<Item>>> = itemDao.getAll()
+    fun getItems(fetch: Boolean = true): Flow<Resource<List<Item>>> = itemDao.getAll()
         .distinctUntilChanged()
         .map { Resource.success(it) }
         .onStart {
             emit(Resource.loading(null))
-            fetchItems()
+            if (fetch) fetchItems()
         }
         .catch { emit(Resource.error(it.message!!)) }
         .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
@@ -115,12 +111,12 @@ class DataRepository @Inject constructor(
 
     // Vouchers
 
-    fun getVouchers(): Flow<Resource<List<Voucher>>> = voucherDao.getAll(loggedInUser!!.userId)
+    fun getVouchers(fetch: Boolean = true): Flow<Resource<List<Voucher>>> = voucherDao.getAll(loggedInUser!!.userId)
         .distinctUntilChanged()
         .map { Resource.success(it) }
         .onStart {
             emit(Resource.loading(null))
-            fetchVouchers()
+            if (fetch) fetchVouchers()
         }
         .catch { emit(Resource.error(it.message!!)) }
         .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
@@ -140,7 +136,9 @@ class DataRepository @Inject constructor(
 
     // Order
 
-    fun getOrder(): Flow<CachedOrder> = Cache.cachedOrder.flowOn(Dispatchers.IO)
+    fun getOrder(): Flow<CachedOrder> = Cache.cachedOrder
+        .distinctUntilChanged()
+        .flowOn(Dispatchers.IO)
 
     suspend fun saveItemToOrder(item: Item, quantity: Int) {
         withContext(Dispatchers.IO) {
@@ -175,6 +173,7 @@ class DataRepository @Inject constructor(
     }
 
     fun generateOrderString(): Flow<Resource<ByteString>> = Cache.cachedOrder
+        .distinctUntilChanged()
         .combine(Cache.cachedUser) { order, user -> orderToString(order, user!!) }
         .filter { it != ByteString.EMPTY }
         .map { Resource.success(it) }
