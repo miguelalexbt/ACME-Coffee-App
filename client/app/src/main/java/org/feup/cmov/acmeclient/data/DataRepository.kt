@@ -171,19 +171,19 @@ class DataRepository @Inject constructor(
         }
     }
 
-    suspend fun saveVoucherToOrder(voucher: Voucher) {
+    suspend fun saveVoucherToOrder(voucherId: String, voucherType: Char) {
         withContext(Dispatchers.IO) {
             val order: CachedOrder = Cache.cachedOrder.first()
 
-            if (voucher.type == 'o') {
+            if (voucherType == 'o') {
                 val offerVouchers = order.offerVouchers.toMutableSet()
 
-                if (!offerVouchers.removeIf { id -> id == voucher.id })
-                    offerVouchers.add(voucher.id)
+                if (!offerVouchers.removeIf { id -> id == voucherId })
+                    offerVouchers.add(voucherId)
 
                 Cache.cacheOrder(order.copy(offerVouchers = offerVouchers))
             } else {
-                val discountVoucher = if (order.discountVoucher == voucher.id) null else voucher.id
+                val discountVoucher = if (order.discountVoucher == voucherId) null else voucherId
                 Cache.cacheOrder(order.copy(discountVoucher = discountVoucher))
             }
         }

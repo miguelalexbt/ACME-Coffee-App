@@ -4,20 +4,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <variable name="voucher" type="org.feup.cmov.acmeclient.data.model.Voucher" />
-        <variable name="isChosen" type="Boolean" />
+        <variable name="voucher" type="org.feup.cmov.acmeclient.ui.main.vouchers.VoucherView" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
+        android:layout_margin="@dimen/itemCardMargin"
         android:backgroundTint="@color/cardview_light_background"
         android:clickable="false"
         android:longClickable="false"
-        app:cardElevation="0dp"
-        app:strokeColor="@{isChosen ? @color/colorSecondary : @color/colorLightGray}"
-        app:strokeWidth="1dp">
+        app:strokeColor="@{voucher.isSelected ? @color/colorSecondary : @color/colorLightGray}"
+        app:strokeWidth="1dp"
+        app:cardElevation="@{voucher.isSelected ? @dimen/itemCardElevationSelected : @dimen/itemCardElevation}"
+        tools:cardElevation="5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -25,62 +25,104 @@
 
             <ImageView
                 android:id="@+id/list_item_image"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/logo" />
+                app:srcCompat="@drawable/logo"
+                app:layout_constraintHorizontal_weight="1" />
 
-            <TextView
-                android:id="@+id/list_item_name"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/right_side_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:textAppearance="?attr/textAppearanceHeadline6"
-                android:text="@{voucher.id}"
-                tools:text="Latte" />
+                app:layout_constraintHorizontal_weight="1">
 
-            <TextView
-                android:id="@+id/list_item_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:textColor="?android:attr/textColorSecondary"
-                tools:text="2.99 €" />
+                <TextView
+                    android:id="@+id/list_item_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:text="@{voucher.type == 'o' ? @string/vouchers_offer_description : @string/vouchers_discount_description}"
+                    android:textAlignment="center"
+                    tools:text="Free coffee" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/list_item_add"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{voucher.isSelected ? @string/remove_item : @string/add_item}"
+                    app:icon="@{voucher.isSelected ? @drawable/ic_baseline_remove_24 : @drawable/ic_baseline_add_24}"
+                    app:strokeColor="@color/colorPrimary"
+                    app:strokeWidth="1dp"
+                    tools:text="Add"
+                    isGone="@{!voucher.canBeSelected &amp;&amp; !voucher.isSelected}" />
+
+                <TextView
+                    android:id="@+id/list_item_warning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/vouchers_warning"
+                    isGone="@{voucher.canBeSelected || voucher.isSelected}" />
+
+                <androidx.constraintlayout.helper.widget.Flow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="list_item_description,list_item_add,list_item_warning"
+                    app:flow_verticalGap="10dp"
+                    app:flow_wrapMode="chain"
+                    app:flow_verticalStyle="spread_inside"
+                    app:flow_maxElementsWrap="1"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <androidx.constraintlayout.helper.widget.Flow
-                android:id="@+id/list_item_flow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="5dp"
-                android:layout_marginTop="5dp"
-                app:constraint_referenced_ids="list_item_name,list_item_price"
+                app:constraint_referenced_ids="list_item_image,right_side_layout"
+                app:flow_horizontalGap="10dp"
+                app:flow_wrapMode="chain"
                 app:flow_horizontalStyle="spread_inside"
                 app:flow_maxElementsWrap="2"
-                app:flow_wrapMode="chain"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_image" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/list_item_add"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:text="@{isChosen ? @string/remove_item : @string/add_item}"
-                app:icon="@{isChosen ? @drawable/ic_baseline_remove_24 : @drawable/ic_baseline_add_24}"
-
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_flow"
-                app:strokeColor="@color/colorPrimary"
-                app:strokeWidth="1dp"
-                tools:text="ADD" />
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+<!--            <androidx.constraintlayout.helper.widget.Flow-->
+<!--                android:id="@+id/list_item_flow"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginHorizontal="5dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                app:constraint_referenced_ids="list_item_name,list_item_price"-->
+<!--                app:flow_horizontalStyle="spread_inside"-->
+<!--                app:flow_maxElementsWrap="2"-->
+<!--                app:flow_wrapMode="chain"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/list_item_image" />-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/list_item_add"-->
+<!--                style="?attr/materialButtonOutlinedStyle"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginBottom="5dp"-->
+<!--                android:text="@{isChosen ? @string/remove_item : @string/add_item}"-->
+<!--                app:icon="@{isChosen ? @drawable/ic_baseline_remove_24 : @drawable/ic_baseline_add_24}"-->
+
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/list_item_flow"-->
+<!--                app:strokeColor="@color/colorPrimary"-->
+<!--                app:strokeWidth="1dp"-->
+<!--                tools:text="ADD" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

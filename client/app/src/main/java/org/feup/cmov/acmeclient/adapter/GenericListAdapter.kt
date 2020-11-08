@@ -26,6 +26,8 @@ class GenericListAdapter<T, B : ViewDataBinding>(
         private val binding: B,
         private val onBind: ((binding: ViewDataBinding, content: Content<T>) -> Unit)?
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(contentItem: Content<T>) = onBind?.invoke(binding, contentItem)
+        fun bind(contentItem: Content<T>) {
+            onBind?.invoke(binding, contentItem)
+        }
     }
 }

@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import org.feup.cmov.acmeclient.adapter.ClickListener
-import org.feup.cmov.acmeclient.adapter.Content
-import org.feup.cmov.acmeclient.adapter.VoucherListAdapter
+import org.feup.cmov.acmeclient.adapter.GenericListAdapter
 import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.model.Voucher
 import org.feup.cmov.acmeclient.databinding.FragmentVouchersBinding
+import org.feup.cmov.acmeclient.databinding.VouchersListItemBinding
 
 @AndroidEntryPoint
 class VouchersFragment : Fragment() {
@@ -29,11 +29,30 @@ class VouchersFragment : Fragment() {
         binding = FragmentVouchersBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        val adapter = VoucherListAdapter(object: ClickListener<Content<Voucher>> {
-            override fun onClick(content: Content<Voucher>) {
-                viewModel.saveVoucherToOrder(content.content)
+        val adapter = GenericListAdapter<VoucherView, VouchersListItemBinding>(
+            { adapterInflater, parent ->
+                VouchersListItemBinding.inflate(adapterInflater, parent, false)
+            },
+            { binding, voucherContent ->
+                (binding as VouchersListItemBinding).apply {
+                    voucher = voucherContent.content
+
+                    Picasso.get()
+                        .load("https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Acme_Markets_lolo.svg/2560px-Acme_Markets_lolo.svg.png")
+                        .placeholder(org.feup.cmov.acmeclient.R.drawable.ic_baseline_home_24)
+                        .error(org.feup.cmov.acmeclient.R.drawable.ic_baseline_remove_circle_outline_24)
+                        .fit()
+                        .centerCrop()
+                        .into(listItemImage);
+
+                    executePendingBindings()
+
+                    listItemAdd.setOnClickListener {
+                        viewModel.saveVoucherToOrder(voucherContent.content)
+                    }
+                }
             }
-        })
+        )
 
         binding.vouchersRecyclerView.adapter = adapter
         binding.vouchersRefreshLayout.setOnRefreshListener { viewModel.fetchVouchers() }
@@ -43,7 +62,7 @@ class VouchersFragment : Fragment() {
         return binding.root
     }
 
-    private fun subscribeUi(adapter: VoucherListAdapter) {
+    private fun subscribeUi(adapter: GenericListAdapter<VoucherView, VouchersListItemBinding>) {
         viewModel.refreshing.observe(viewLifecycleOwner, {
             val refreshing = it ?: return@observe
             binding.vouchersRefreshLayout.isRefreshing = refreshing

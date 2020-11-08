@@ -1,5 +1,6 @@
 package org.feup.cmov.acmeclient.adapter
 
+import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil
 
 class ListItemDiffCallback<T> : DiffUtil.ItemCallback<Content<T>>() {
@@ -8,7 +9,8 @@ class ListItemDiffCallback<T> : DiffUtil.ItemCallback<Content<T>>() {
         return oldItem.id == newItem.id
     }
 
+    @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: Content<T>, newItem: Content<T>): Boolean {
-        return oldItem.isChosen == newItem.isChosen
+        return oldItem.content == newItem.content
     }
 }

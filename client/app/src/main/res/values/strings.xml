@@ -34,12 +34,12 @@
     <string name="error_required">This field is required</string>
     <string name="error_invalid">This field is invalid</string>
 
-    <!--List Item-->
-    <string name="add_item">ADD</string>
-    <string name="remove_item">ADDED</string>
-
-<!--    <string name="decreaseItem">decreaseItem</string>-->
-<!--    <string name="increaseItem">increaseItem</string>-->
+    <!--List voucher-->
+    <string name="add_item">Add</string>
+    <string name="remove_item">Remove</string>
+    <string name="vouchers_offer_description">Free coffee</string>
+    <string name="vouchers_discount_description">5% discount</string>
+    <string name="vouchers_warning">Can only select one</string>
 
     <!--Checkout-->
     <string name="title_checkout">Checkout</string>

@@ -15,7 +15,7 @@ class VouchersViewModel @ViewModelInject constructor(
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
-    val vouchers: LiveData<Resource<List<Content<Voucher>>>> = dataRepository.getVouchers()
+    val vouchers: LiveData<Resource<List<Content<VoucherView>>>> = dataRepository.getVouchers()
         .combine(dataRepository.getOrder()) { vouchers, order ->
             when (vouchers.status) {
                 Status.LOADING -> {
@@ -23,7 +23,11 @@ class VouchersViewModel @ViewModelInject constructor(
                 }
                 Status.SUCCESS -> {
                     Resource.success(vouchers.data?.map {
-                        Content(it.id, it, it.id in order.offerVouchers || it.id == order.discountVoucher)
+                        val isSelected = it.id in order.offerVouchers || it.id == order.discountVoucher
+                        val canBeSelected = it.type == 'o' || order.discountVoucher == null
+
+                        val voucherView = VoucherView(it.id, it.type, isSelected, canBeSelected)
+                        Content(it.id, voucherView, false)
                     })
                 }
                 Status.ERROR -> {
@@ -44,9 +48,9 @@ class VouchersViewModel @ViewModelInject constructor(
         }
     }
 
-    fun saveVoucherToOrder(voucher: Voucher) {
+    fun saveVoucherToOrder(voucherView: VoucherView) {
         viewModelScope.launch {
-            dataRepository.saveVoucherToOrder(voucher)
+            dataRepository.saveVoucherToOrder(voucherView.id, voucherView.type)
         }
     }
 }
