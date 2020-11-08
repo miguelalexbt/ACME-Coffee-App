@@ -14,8 +14,6 @@ class CheckoutViewModel @ViewModelInject constructor(
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
-//    val order: LiveData<Resource<ByteString>> = dataRepository.generateOrderString().asLiveData()
-
     val items: LiveData<Resource<List<Content<ItemView>>>> = dataRepository.getOrder()
         .combine(dataRepository.getItemsAsMap()) { order, items ->
             when (items.status) {

@@ -189,11 +189,10 @@ class DataRepository @Inject constructor(
         }
     }
 
-    fun generateOrderString(): Flow<Resource<ByteString>> = Cache.cachedOrder
+    fun generateOrderString(): Flow<ByteString> = Cache.cachedOrder
         .distinctUntilChanged()
         .combine(Cache.cachedUser) { order, user -> orderToString(order, user!!) }
         .filter { it != ByteString.EMPTY }
-        .map { Resource.success(it) }
         .flowOn(Dispatchers.IO)
 
     @Suppress("BlockingMethodInNonBlockingContext")
@@ -215,9 +214,6 @@ class DataRepository @Inject constructor(
 
             if (order.discountVoucher != null)
                 dataBuffer.write(";${order.discountVoucher}".toByteArray())
-
-            println("OFFER ${order.offerVouchers}")
-            println("DISCOUNT ${order.discountVoucher}")
 
             dataBuffer.write("#${user.userId}".toByteArray())
 

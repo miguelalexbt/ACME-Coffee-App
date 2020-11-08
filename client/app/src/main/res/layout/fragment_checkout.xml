@@ -146,7 +146,7 @@
                 app:iconTint="#FFFFFF"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                isGone="false" />
+                isGone="@{!hasItems}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

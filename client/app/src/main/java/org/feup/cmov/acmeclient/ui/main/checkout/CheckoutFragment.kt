@@ -19,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
@@ -30,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okio.Buffer
+import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.adapter.ClickListener
 import org.feup.cmov.acmeclient.adapter.GenericListAdapter
 import org.feup.cmov.acmeclient.adapter.ItemListAdapter
@@ -83,7 +85,8 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
         subscribeUi(itemAdapter, voucherAdapter)
 
         binding.checkoutSubmit.setOnClickListener {
-            sendNdefMessage()
+//            sendNdefMessage()
+            findNavController().navigate(R.id.action_checkoutFragment_to_paymentActivity)
         }
 
         return binding.root
@@ -103,7 +106,6 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
             val items = it ?: return@observe
 
             if (items.status == Status.SUCCESS) {
-//                println("ITEMS $items")
                 binding.hasItems = items.data!!.isNotEmpty()
                 itemAdapter.submitList(items.data)
             }
@@ -113,7 +115,6 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
             val vouchers = it ?: return@observe
 
             if (vouchers.status == Status.SUCCESS) {
-//                println("VOUCHERS $vouchers")
                 binding.hasVouchers = vouchers.data!!.isNotEmpty()
                 voucherAdapter.submitList(vouchers.data)
             }
@@ -126,63 +127,6 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
                 binding.total = total.data
         })
     }
-
-
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        binding = FragmentCheckoutBinding.inflate(inflater, container, false)
-//        binding.lifecycleOwner = this
-//
-//        viewModel.order.observe(viewLifecycleOwner, {
-//            val order = it ?: return@observe
-//
-//            if (order.status == Status.SUCCESS) {
-//                println("GOT ${order.data!!.utf8()}")
-//                binding.order = order.data!!
-//            }
-//        })
-//
-//        binding.showQrcode.setOnClickListener {
-//            generateQRCode()
-//        }
-//
-//        binding.sendNdef.setOnClickListener {
-////            startNfcTransfer()
-//            sendNdefMessage()
-//        }
-//
-//        return binding.root
-//    }
-
-//    private fun generateQRCode() {
-//        binding.order ?: return
-//
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            val width = 600
-//            val height = 600
-//            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-//            val codeWriter = MultiFormatWriter()
-//
-//            try {
-//                val bitMatrix = codeWriter.encode(binding.order!!.utf8(), BarcodeFormat.QR_CODE, width, height)
-//                for (x in 0 until width) {
-//                    for (y in 0 until height) {
-//                        bitmap.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)
-//                    }
-//                }
-//            } catch (e: WriterException) {
-//                Log.d(ContentValues.TAG, "generateQRCode: ${e.message}")
-//            }
-//
-//            withContext(Dispatchers.Main) {
-//                binding.imageViewQRCode.setImageBitmap(bitmap)
-//            }
-//        }
-//    }
-
 
 //    fun startNfcTransfer() {
         // Make screen bright

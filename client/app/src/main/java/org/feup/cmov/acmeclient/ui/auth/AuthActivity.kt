@@ -11,7 +11,7 @@ import org.feup.cmov.acmeclient.databinding.ActivityAuthBinding
 class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
         DataBindingUtil.setContentView<ActivityAuthBinding>(this, R.layout.activity_auth)
+        supportActionBar?.hide()
     }
 }

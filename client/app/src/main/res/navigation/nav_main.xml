@@ -18,5 +18,15 @@
     <fragment
         android:id="@+id/checkoutFragment"
         android:name="org.feup.cmov.acmeclient.ui.main.checkout.CheckoutFragment"
-        android:label="fragment_checkout" />
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout" >
+        <action
+            android:id="@+id/action_checkoutFragment_to_paymentActivity"
+            app:destination="@id/paymentActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/paymentActivity"
+        android:name="org.feup.cmov.acmeclient.ui.payment.PaymentActivity"
+        android:label="PaymentActivity"
+        tools:layout="@layout/activity_payment" />
 </navigation>
