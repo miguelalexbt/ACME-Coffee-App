@@ -1,7 +1,7 @@
 package org.feup.cmov.acmeclient.ui.auth
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.R

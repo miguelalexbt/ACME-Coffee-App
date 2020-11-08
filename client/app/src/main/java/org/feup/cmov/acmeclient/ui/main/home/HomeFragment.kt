@@ -26,7 +26,6 @@ import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.databinding.FragmentHomeBinding
 
-
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 

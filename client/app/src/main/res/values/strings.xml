@@ -52,6 +52,16 @@
     <string name="checkout_total_price">%1$1.2f€</string>
     <string name="prompt_checkout">Checkout</string>
 
+    <!--Payment-->
+    <string name="payment_qr_code">QR Code</string>
+    <string name="payment_nfc">NFC</string>
+
+    <string name="payment_qr_code_description">Scan the QR code in the terminal</string>
+    <string name="payment_nfc_description">Hold the phone next to the terminal</string>
+
+    <string name="nfc_not_available">NFC is not available on this device</string>
+    <string name="nfc_disabled">NFC disabled on this device. Turn on to proceed</string>
+
 
     <string name="error_no_items">No items available</string>
     <string name="error_fetch_items">An error has occurred</string>

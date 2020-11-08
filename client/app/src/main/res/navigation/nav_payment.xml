@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_payment.xml"
+    app:startDestination="@id/qrFragment">
+
+    <fragment
+        android:id="@+id/qrFragment"
+        android:name="org.feup.cmov.acmeclient.ui.payment.QrFragment"
+        android:label="QrFragment"
+        tools:layout="@layout/fragment_qr" />
+    <fragment
+        android:id="@+id/nfcFragment"
+        android:name="org.feup.cmov.acmeclient.ui.payment.NfcFragment"
+        android:label="NfcFragment"
+        tools:layout="@layout/fragment_nfc" />
+</navigation>

@@ -29,4 +29,5 @@
         android:name="org.feup.cmov.acmeclient.ui.payment.PaymentActivity"
         android:label="PaymentActivity"
         tools:layout="@layout/activity_payment" />
+    <include app:graph="@navigation/nav_payment" />
 </navigation>
