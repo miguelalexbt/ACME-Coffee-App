@@ -51,6 +51,11 @@ class MainActivity : AppCompatActivity() {
         nfcAdapter?.disableForegroundDispatch(this)
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
+
     private fun receiveMessageFromDevice(intent: Intent) {
         if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
             val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)

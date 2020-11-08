@@ -49,16 +49,6 @@ class MainActivity : AppCompatActivity() {
             enableForegroundDispatch(this, nfcAdapter)
             receiveMessageFromDevice(intent)
         }
-
-        // Verify the action and get the query
-//        if (Intent.ACTION_SEARCH == intent.action) {
-//            println("action_search")
-//            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-////                doMySearch(query)
-//                println(query)
-//                Toast.makeText(context, query, Toast.LENGTH_LONG).show()
-//            }
-//        }
     }
 
     override fun onPause() {

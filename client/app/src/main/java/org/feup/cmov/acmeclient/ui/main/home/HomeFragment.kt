@@ -69,7 +69,7 @@ class HomeFragment : Fragment() {
 
         subscribeUi(adapter)
         watchSearchBox()
-
+        
         return binding.root
     }
 

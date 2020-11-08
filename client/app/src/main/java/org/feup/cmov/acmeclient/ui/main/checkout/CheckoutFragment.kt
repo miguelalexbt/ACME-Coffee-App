@@ -82,6 +82,10 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 
         subscribeUi(itemAdapter, voucherAdapter)
 
+        binding.checkoutSubmit.setOnClickListener {
+            sendNdefMessage()
+        }
+
         return binding.root
     }
 
@@ -124,11 +128,6 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
     }
 
 
-
-
-
-    override fun onNdefPushComplete(p0: NfcEvent?) {}
-
 //    override fun onCreateView(
 //        inflater: LayoutInflater,
 //        container: ViewGroup?,
@@ -157,7 +156,7 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 //
 //        return binding.root
 //    }
-//
+
 //    private fun generateQRCode() {
 //        binding.order ?: return
 //
@@ -183,58 +182,58 @@ class CheckoutFragment : Fragment(), NfcAdapter.OnNdefPushCompleteCallback {
 //            }
 //        }
 //    }
-//
-//
-////    fun startNfcTransfer() {
-//        // Make screen bright
-////        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-////        sendNdefMessage()
-////    }
-//
-//    private fun sendNdefMessage() {
+
+
+//    fun startNfcTransfer() {
+        // Make screen bright
+//        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+//        sendNdefMessage()
+//    }
+
+    private fun sendNdefMessage() {
 //        binding.order ?: return
-//
-//        // Check for available NFC Adapter
-//        val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
-//        if (nfcAdapter == null) {
-//            Toast.makeText(
-//                context,
-//                "NFC is not available on this device.",
-//                Toast.LENGTH_LONG
-//            ).show()
-//            // Nothing to do - go back to checkout
-//            return
-//        }
-//        if (!nfcAdapter?.isEnabled!!) {
-//            Toast.makeText(
-//                context,
-//                "NFC disabled on this device. Turn on to proceed",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//            return
-//        }
-//
-//        val orderString = "abc" //generateOrderString()
-//
-//        println("NFC")
-//        println(orderString)
-//
-//        // Create NDEF message
-//        val msg = NdefMessage(createMimeRecord(orderString.toByteArray()))
-//
-//        // Register a NDEF message to be sent in P2P
-//        println(nfcAdapter.isNdefPushEnabled)
-//        nfcAdapter.setOnNdefPushCompleteCallback(this, activity)
-//        nfcAdapter.setNdefPushMessage(msg, activity)
-//    }
-//
-//    private fun createMimeRecord(payload: ByteArray?): NdefRecord? {
-////        val mimeBytes = "application/org.feup.cmov.acmeclient".toByteArray(Charset.forName("ISO-8859-1"))
-//        return NdefRecord.createMime("application/org.feup.cmov.acmeclient", payload)
-////        return NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, ByteArray(0), payload)
-//    }
-//
-//    override fun onNdefPushComplete(p0: NfcEvent?) {
-//        Toast.makeText(context, "Message sent.", Toast.LENGTH_LONG).show()
-//    }
+
+        // Check for available NFC Adapter
+        val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
+        if (nfcAdapter == null) {
+            Toast.makeText(
+                context,
+                "NFC is not available on this device.",
+                Toast.LENGTH_LONG
+            ).show()
+            // Nothing to do - go back to checkout
+            return
+        }
+        if (!nfcAdapter?.isEnabled!!) {
+            Toast.makeText(
+                context,
+                "NFC disabled on this device. Turn on to proceed",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        val orderString = "abc" //generateOrderString()
+
+        println("NFC")
+        println(orderString)
+
+        // Create NDEF message
+        val msg = NdefMessage(createMimeRecord(orderString.toByteArray()))
+
+        // Register a NDEF message to be sent in P2P
+        println(nfcAdapter.isNdefPushEnabled)
+        nfcAdapter.setOnNdefPushCompleteCallback(this, activity)
+        nfcAdapter.setNdefPushMessage(msg, activity)
+    }
+
+    private fun createMimeRecord(payload: ByteArray?): NdefRecord? {
+//        val mimeBytes = "application/org.feup.cmov.acmeclient".toByteArray(Charset.forName("ISO-8859-1"))
+        return NdefRecord.createMime("application/org.feup.cmov.acmeclient", payload)
+//        return NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, ByteArray(0), payload)
+    }
+
+    override fun onNdefPushComplete(p0: NfcEvent?) {
+        Toast.makeText(context, "Message sent.", Toast.LENGTH_LONG).show()
+    }
 }
