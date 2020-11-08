@@ -1,6 +1,5 @@
 package org.feup.cmov.acmeclient.ui.main.home
 
-import android.content.Context
 import android.os.Bundle
 import android.transition.ChangeBounds
 import android.transition.TransitionManager
@@ -8,14 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.map
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -38,6 +36,8 @@ class HomeFragment : Fragment() {
 
     private var isViewCartVisible: Boolean = false
 
+    private lateinit var filterBottomSheet: FilterBottomDialogFragment
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,6 +45,12 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+
+        // Setup filter bottom sheet
+//        filterBottomSheet = FilterBottomDialogFragment(viewModel.categories)
+//        binding.filterButton.setOnClickListener {
+//            filterBottomSheet.show(requireActivity().supportFragmentManager, FilterBottomDialogFragment.TAG)
+//        }
 
         val adapter = ItemListAdapter(
             object : ClickListener<Item> {
@@ -69,7 +75,7 @@ class HomeFragment : Fragment() {
 
         subscribeUi(adapter)
         watchSearchBox()
-        
+
         return binding.root
     }
 
@@ -85,9 +91,6 @@ class HomeFragment : Fragment() {
         isViewCartVisible = show
         val constraintSet = ConstraintSet()
         constraintSet.clone(binding.viewCartFlowLayout)
-
-//        val constraintSetRefresh = ConstraintSet()
-//        constraintSet.clone(binding.viewCartFlowLayout)
 
         if (show)
             constraintSet.connect(

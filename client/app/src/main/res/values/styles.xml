@@ -7,7 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorLightGray</item>
         <item name="colorSecondary">@color/colorSecondary</item>
+
         <item name="android:navigationBarColor">@color/colorNavBar</item>
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
     </style>
 
     <style name="Widget.App.Button.IconOnly" parent="Widget.MaterialComponents.Button.OutlinedButton">
@@ -23,6 +25,16 @@
 
     <style name="Widget.App.Button.SelectedButton" parent="Widget.MaterialComponents.Button">
         <item name="iconPadding">0dp</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_dialog</item>
     </style>
 
 </resources>

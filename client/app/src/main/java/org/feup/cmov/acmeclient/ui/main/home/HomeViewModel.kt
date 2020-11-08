@@ -40,6 +40,24 @@ class HomeViewModel @ViewModelInject constructor(
         }
         .asLiveData()
 
+    val categories: LiveData<Resource<List<String>>> = dataRepository.getItems()
+        .map { items ->
+            when (items.status) {
+                Status.LOADING -> {
+                    Resource.loading(null)
+                }
+                Status.SUCCESS -> {
+                    Resource.success(items.data!!.map {
+                        it.type!!
+                    }.distinct())
+                }
+                Status.ERROR -> {
+                    Resource.error(items.message!!)
+                }
+            }
+        }
+        .asLiveData()
+
     val order: LiveData<CachedOrder> = dataRepository.getOrder()
         .distinctUntilChanged()
         .asLiveData()
@@ -64,7 +82,7 @@ class HomeViewModel @ViewModelInject constructor(
         .asLiveData()
 
     private val _refreshing = MutableLiveData<Boolean>()
-    val refreshing: LiveData<Boolean> =_refreshing
+    val refreshing: LiveData<Boolean> = _refreshing
 
     fun fetchItems() {
         viewModelScope.launch {

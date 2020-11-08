@@ -55,14 +55,9 @@ class ItemDialogFragment(
         binding.itemDialogCancelButton.setOnClickListener {
             dismiss()
         }
+
         binding.itemDialogSaveButton.setOnClickListener {
             saveOperation(dialogItem, binding.numberPicker.value)
-//            println(requireView().rootView)
-//            Snackbar.make(requireView().rootView, "Item added to cart", Snackbar.LENGTH_SHORT)
-//                .setAction("UNDO") {
-//                    saveOperation(dialogItem, initialItemQuantity)
-//                }
-//                .show()
             dismiss()
         }
     }
