@@ -20,8 +20,8 @@ class CheckoutViewModel @ViewModelInject constructor(
                 Status.SUCCESS -> {
                     Resource.success(order.items.map {
                         val item = items.data!![it.key] ?: error("no item key ${it.key}")
-                        val itemView = ItemView(item.name!!, item.type!!.capitalize(Locale.ENGLISH), item.price!!, it.value)
-                        Content(item.id, itemView, false)
+                        val itemView = ItemView(item.name, item.type.capitalize(Locale.ENGLISH), item.price, it.value)
+                        Content(item.id, itemView)
                     })
                 }
                 else -> items as Resource<List<Content<ItemView>>>
@@ -39,10 +39,9 @@ class CheckoutViewModel @ViewModelInject constructor(
                         order.offerVouchers
 
                     Resource.success(orderVouchers.map {
-                            val voucher = vouchers.data!![it] ?: error("no voucher key $it")
-                            Content(voucher.id, VoucherView(voucher.type), false)
-                        }
-                    )
+                        val voucher = vouchers.data!![it] ?: error("no voucher key $it")
+                        Content(voucher.id, VoucherView(voucher.type))
+                    })
                 }
                 else -> vouchers as Resource<List<Content<VoucherView>>>
             }

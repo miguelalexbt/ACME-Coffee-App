@@ -9,7 +9,7 @@ import org.feup.cmov.acmeclient.data.DataRepository
 import org.feup.cmov.acmeclient.data.Resource
 import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.cache.CachedOrder
-import org.feup.cmov.acmeclient.data.model.Item
+import java.util.*
 
 class HomeViewModel @ViewModelInject constructor(
 //    @Assisted savedStateHandle: SavedStateHandle,
@@ -34,13 +34,13 @@ class HomeViewModel @ViewModelInject constructor(
         categoriesFilter.value = filter
     }
 
-    val itemsQuery: LiveData<Resource<List<Content<Item>>>> = dataRepository.getItems()
+    val itemsQuery: LiveData<Resource<List<Content<ItemView>>>> = dataRepository.getItems()
         .combine(searchQuery.asFlow().distinctUntilChanged()) { items, query ->
             when (items.status) {
                 Status.SUCCESS -> {
                     val filteredItems =
                         items.data?.filter { item ->
-                            item.name!!.toLowerCase().contains(query.toLowerCase())
+                            item.name.toLowerCase().contains(query.toLowerCase())
                         }.takeIf { query != "" }
                     Resource.success(filteredItems ?: items.data)
                 }
@@ -67,7 +67,8 @@ class HomeViewModel @ViewModelInject constructor(
                 }
                 Status.SUCCESS -> {
                     Resource.success(items.data?.map {
-                        Content(it.id, it, it.id in order.items.keys)
+                        val itemView = ItemView(it.id, it.name, it.price, it.id in order.items.keys)
+                        Content(it.id, itemView)
                     })
                 }
                 Status.ERROR -> {
@@ -103,7 +104,7 @@ class HomeViewModel @ViewModelInject constructor(
                 }
                 Status.SUCCESS -> {
                     Resource.success(items.data!!.map {
-                        it.type!!
+                        it.type
                     }.distinct().map {
                         it to (it in filter)
                     }.toMap())
@@ -126,7 +127,7 @@ class HomeViewModel @ViewModelInject constructor(
                     var cartPrice = 0.0
 
                     items.data?.forEach {
-                        cartPrice += it.price!! * order.items.getOrDefault(it.id, 0)
+                        cartPrice += it.price * order.items.getOrDefault(it.id, 0)
                     }
 
                     CartState(order.items.isNotEmpty(), cartPrice, order.items.values.sum())
@@ -149,9 +150,9 @@ class HomeViewModel @ViewModelInject constructor(
         }
     }
 
-    fun saveItemToOrder(item: Item, quantity: Int) {
+    fun saveItemToOrder(item: ItemView, quantity: Int) {
         viewModelScope.launch {
-            dataRepository.saveItemToOrder(item, quantity)
+            dataRepository.saveItemToOrder(item.id, quantity)
         }
     }
 }

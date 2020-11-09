@@ -11,22 +11,21 @@ import android.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.map
 import androidx.navigation.fragment.findNavController
+import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.feup.cmov.acmeclient.R
-import org.feup.cmov.acmeclient.adapter.ClickListener
-import org.feup.cmov.acmeclient.adapter.ItemListAdapter
+import org.feup.cmov.acmeclient.adapter.GenericListAdapter
 import org.feup.cmov.acmeclient.data.Status
-import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.databinding.FragmentHomeBinding
+import org.feup.cmov.acmeclient.databinding.HomeListItemBinding
+import org.feup.cmov.acmeclient.utils.WEB_SERVICE_URL
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -53,20 +52,38 @@ class HomeFragment : Fragment() {
             filterBottomSheet.show(requireActivity().supportFragmentManager, FilterBottomDialogFragment.TAG)
         }
 
-        val adapter = ItemListAdapter(
-            object : ClickListener<Item> {
-                override fun onClick(content: Item) {
-                    binding.searchBox.clearFocus()
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        val order = viewModel.order.asFlow().first()
-                        val previousQuantity = order.items.getOrDefault(content.id, 0)
+        val adapter = GenericListAdapter<ItemView, HomeListItemBinding>(
+            { adapterInflater, parent ->
+                HomeListItemBinding.inflate(adapterInflater, parent, false)
+            },
+            { binding, itemContent ->
+                (binding as HomeListItemBinding).apply {
+                    item = itemContent.content
 
-                        withContext(Dispatchers.Main) {
-                            ItemDialogFragment(content, previousQuantity) { item, quantity ->
-                                viewModel.saveItemToOrder(item, quantity)
-                            }.show(requireActivity().supportFragmentManager, ItemDialogFragment.TAG)
+                    Picasso.get()
+                        .load(WEB_SERVICE_URL + "/image/" + itemContent.content.name)
+//                    .placeholder(R.drawable.logo)
+                        .error(R.drawable.ic_baseline_image_not_supported_24)
+                        .fit()
+                        .centerCrop()
+                        .into(listItemImage);
+
+                    itemCard.setOnClickListener {
+                        this@HomeFragment.binding.searchBox.clearFocus()
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            val item = itemContent.content
+                            val order = viewModel.order.asFlow().first()
+                            val previousQuantity = order.items.getOrDefault(item.id, 0)
+
+                            withContext(Dispatchers.Main) {
+                                ItemDialogFragment(item, previousQuantity) { item, quantity ->
+                                    viewModel.saveItemToOrder(item, quantity)
+                                }.show(requireActivity().supportFragmentManager, ItemDialogFragment.TAG)
+                            }
                         }
                     }
+
+                    executePendingBindings()
                 }
             }
         )
@@ -120,7 +137,7 @@ class HomeFragment : Fragment() {
         constraintSet.applyTo(binding.viewCartFlowLayout)
     }
 
-    private fun subscribeUi(adapter: ItemListAdapter) {
+    private fun subscribeUi(adapter: GenericListAdapter<ItemView, HomeListItemBinding>) {
         viewModel.refreshing.observe(viewLifecycleOwner, {
             val refreshing = it ?: return@observe
             binding.homeRefreshLayout.isRefreshing = refreshing

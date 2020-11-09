@@ -18,17 +18,17 @@ data class Item(
     @ColumnInfo(name = "type")
     @SerializedName("type")
     @Expose
-    val type: String? = null,
+    val type: String = "",
 
     @ColumnInfo(name = "name")
     @SerializedName("name")
     @Expose
-    val name: String? = null,
+    val name: String = "",
 
     @ColumnInfo(name = "price")
     @SerializedName("price")
     @Expose
-    val price: Double? = null,
+    val price: Double = 0.0,
 
     @ColumnInfo(name = "addedAt")
     val addedAt: String? = DateTimeFormatter.ISO_INSTANT.format(Instant.now())

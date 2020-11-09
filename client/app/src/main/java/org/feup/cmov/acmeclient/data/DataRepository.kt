@@ -158,12 +158,12 @@ class DataRepository @Inject constructor(
         .distinctUntilChanged()
         .flowOn(Dispatchers.IO)
 
-    suspend fun saveItemToOrder(item: Item, quantity: Int) {
+    suspend fun saveItemToOrder(itemId: String, quantity: Int) {
         withContext(Dispatchers.IO) {
             val order: CachedOrder = Cache.cachedOrder.first()
             val items = order.items.toMutableMap()
 
-            items.compute(item.id) { _, _ ->
+            items.compute(itemId) { _, _ ->
                 if (quantity == 0) null else quantity
             }
 

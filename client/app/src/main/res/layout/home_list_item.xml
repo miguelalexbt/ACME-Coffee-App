@@ -4,9 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <variable name="item" type="org.feup.cmov.acmeclient.data.model.Item" />
-        <variable name="isChosen" type="Boolean" />
-        <variable name="clickListener" type="android.view.View.OnClickListener"/>
+        <variable name="item" type="org.feup.cmov.acmeclient.ui.main.home.ItemView" />
 <!--        <variable name="isFavorite" type="Boolean" />-->
     </data>
 
@@ -18,10 +16,9 @@
         android:backgroundTint="@color/cardview_light_background"
         android:clickable="true"
         android:focusable="auto"
-        android:onClick="@{clickListener}"
-        app:strokeColor="@{ isChosen ? @color/colorSecondary : @color/colorTransparent }"
+        app:strokeColor="@{ item.isSelected ? @color/colorSecondary : @color/colorTransparent }"
         app:strokeWidth="1dp"
-        app:cardElevation="@{ isChosen ? @dimen/itemCardElevationSelected : @dimen/itemCardElevation }"
+        app:cardElevation="@{ item.isSelected ? @dimen/itemCardElevationSelected : @dimen/itemCardElevation }"
         tools:cardElevation="5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout

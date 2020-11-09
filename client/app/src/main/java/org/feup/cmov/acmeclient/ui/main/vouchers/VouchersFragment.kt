@@ -45,11 +45,11 @@ class VouchersFragment : Fragment() {
                         .centerCrop()
                         .into(listItemImage);
 
-                    executePendingBindings()
-
                     listItemAdd.setOnClickListener {
                         viewModel.saveVoucherToOrder(voucherContent.content)
                     }
+
+                    executePendingBindings()
                 }
             }
         )

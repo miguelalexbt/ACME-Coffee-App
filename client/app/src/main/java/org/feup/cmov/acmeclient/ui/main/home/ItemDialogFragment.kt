@@ -15,9 +15,9 @@ import org.feup.cmov.acmeclient.databinding.NumberPickerDialogBinding
 
 @AndroidEntryPoint
 class ItemDialogFragment(
-    private val dialogItem: Item,
+    private val dialogItem: ItemView,
     private val initialItemQuantity: Int,
-    private val saveOperation: (item: Item, quantity: Int) -> Unit
+    private val saveOperation: (item: ItemView, quantity: Int) -> Unit
 ) : DialogFragment() {
 
     companion object {

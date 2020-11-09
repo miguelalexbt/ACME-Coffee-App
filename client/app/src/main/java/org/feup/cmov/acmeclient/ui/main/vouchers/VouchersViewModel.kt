@@ -27,7 +27,7 @@ class VouchersViewModel @ViewModelInject constructor(
                         val canBeSelected = it.type == 'o' || order.discountVoucher == null
 
                         val voucherView = VoucherView(it.id, it.type, isSelected, canBeSelected)
-                        Content(it.id, voucherView, false)
+                        Content(it.id, voucherView)
                     })
                 }
                 Status.ERROR -> {
