@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -18,12 +17,14 @@ import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.databinding.FragmentNfcBinding
 
+@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class NfcFragment: Fragment() {
 
     private lateinit var binding: FragmentNfcBinding
 
     private val viewModel: PaymentViewModel by activityViewModels()
+    private val nfcAdapter: NfcAdapter? by lazy { NfcAdapter.getDefaultAdapter(context) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,11 +34,13 @@ class NfcFragment: Fragment() {
         binding = FragmentNfcBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
         nfcAdapter?.setOnNdefPushCompleteCallback({
-            println("WTD")
-            Toast.makeText(context, "Message sent.", Toast.LENGTH_LONG).show()
+            println("NFC: message sent")
         }, activity)
+
+        viewModel.setNfcStatus(nfcAdapter?.isEnabled ?: false)
+
+        subscribeUi()
 
         return binding.root
     }
@@ -52,27 +55,27 @@ class NfcFragment: Fragment() {
         sendNdefMessage(cancel = true)
     }
 
+    private fun subscribeUi() {
+        if (nfcAdapter == null) {
+            binding.nfcDescription.text = getString(R.string.nfc_not_available)
+            return
+        }
+
+        viewModel.isNfcActive.observe(viewLifecycleOwner, {
+            val isNfcActive = it ?: return@observe
+
+            binding.nfcDescription.text = if (isNfcActive)
+                getString(R.string.payment_nfc_description)
+            else
+                getString(R.string.nfc_disabled)
+        })
+    }
+
     private fun sendNdefMessage(cancel: Boolean = false) {
         binding.isLoading = true
 
-        val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
-
-        // Check if NFC is available
-        if (nfcAdapter == null) {
-            Toast.makeText(context, R.string.nfc_not_available, Toast.LENGTH_LONG).show()
-            return
-        }
-
-        // Check if NFC is enabled
-        if (!nfcAdapter.isEnabled) {
-            Toast.makeText(context, R.string.nfc_disabled, Toast.LENGTH_LONG).show()
-            return
-        }
-
         lifecycleScope.launch(Dispatchers.IO) {
             val orderString = viewModel.orderString.first()
-
-            println("NFC $orderString")
 
             // Create NDEF message
             val msg = if (!cancel)
@@ -81,7 +84,7 @@ class NfcFragment: Fragment() {
                 null
 
             // Register a NDEF message to be sent in P2P
-            nfcAdapter.setNdefPushMessage(msg, activity)
+            nfcAdapter?.setNdefPushMessage(msg, activity)
         }
 
         binding.isLoading = false
