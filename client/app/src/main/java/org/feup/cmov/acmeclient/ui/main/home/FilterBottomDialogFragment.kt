@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.core.view.children
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.R
+import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.databinding.HomeFilterBottomSheetBinding
 
 @AndroidEntryPoint
@@ -21,9 +24,7 @@ class FilterBottomDialogFragment() : BottomSheetDialogFragment() {
 
     private lateinit var binding: HomeFilterBottomSheetBinding
 
-    private val viewModel: HomeViewModel by viewModels()
-
-//    private var selectedCategories: MutableList<String> = mutableListOf()
+    private val viewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,64 +36,39 @@ class FilterBottomDialogFragment() : BottomSheetDialogFragment() {
 
         viewModel.categories.observe(viewLifecycleOwner, {
             val categories = it ?: return@observe
-            //Todo
+
+            if (categories.status == Status.SUCCESS) {
+                binding.filterChipGroup.removeAllViews()
+                categories.data?.forEach { key, value ->
+                    val chip = inflater.inflate(
+                        R.layout.filter_chip,
+                        binding.filterChipGroup,
+                        false
+                    ) as Chip
+                    chip.id = View.generateViewId()
+                    chip.text = key.capitalize()
+                    chip.isChecked = value
+
+                    binding.filterChipGroup.addView(chip)
+                }
+            }
         })
 
-        for (index in 0..3) {
-            val chip =
-                inflater.inflate(R.layout.filter_chip, binding.filterChipGroup, false) as Chip
-            chip.id = index
-            chip.text = "Chip $index"
-
-//            chip.setOnCheckedChangeListener { p0, p1 ->
-//                println(p0?.text)
-//                println(p1)
-//
-//                categoriesMap[p0?.text as String] = p1
-//
-//                println(categoriesMap)
-//            }
-
-            binding.filterChipGroup.invalidate()
-            binding.filterChipGroup.addView(chip)
-        }
+        binding.filterChipGroup.invalidate()
 
         binding.filterApplyButton.setOnClickListener {
+            val categoriesSelected: List<String> =
+                binding.filterChipGroup.children.filter {
+                    (it as Chip).isChecked
+                }.map {
+                    (it as Chip).text.toString().toLowerCase()
+                }.toList()
+
+            viewModel.setCategoriesFilter(categoriesSelected)
             dismiss()
         }
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-//        for (index in 0..3) {
-//            val chip = inflater.inflate(R.layout.layout_chip_choice, chipGpRow, false) as Chip
-//            chip.text = ("Chip 1")
-//            chipGpRow.addView(chip)
-//
-//            val chip = Chip(binding.filterChipGroup.context)
-////            chip.text= "Item ${tags[index]}"
-//            chip.text= "Item $index"
-////            chip.
-//
-//            // necessary to get single selection working
-//            chip.isClickable = true
-//            chip.isCheckable = true
-////            chip.checkedIconTint = resources.getDrawable(R.drawable.checkbox_selector, )
-//            binding.filterChipGroup.addView(chip)
-//        }
-
-//        val checkedChipId = chipGroup.checkedChipId // Returns View.NO_ID if singleSelection = false
-//        val checkedChipIds = chipGroup.checkedChipIds // Returns a list of the selected chips' IDs, if any
-//
-
-//        binding.filterChipGroup.setOnCheckedChangeListener { group, checkedId ->
-//            // Responds to child chip checked/unchecked
-//            println("hello?")
-//            println(binding.filterChipGroup.checkedChipIds)
-//        }
-
-    }
 }

@@ -26,30 +26,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-<!--        <TextView-->
-<!--            style="@style/TextAppearance.AppCompat.Headline"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="15dp"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:text="Show only favorites"-->
-<!--            android:textStyle="bold" />-->
-
         <Switch
-            android:id="@+id/switch1"
+            android:id="@+id/showOnlyFavoritesSwitch"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
-            style="@style/TextAppearance.AppCompat.Headline"
-            android:textStyle="bold"
-            android:text="@string/show_only_favorites" />
+            android:layout_marginTop="10dp"
+            android:buttonTint="@color/colorPrimary"
+            android:textColor="@color/colorNavBar"
+            android:text="@string/show_only_favorites"
+            android:theme="@style/SwitchCompatTheme"
+            android:textStyle="bold" />
 
         <TextView
-            style="@style/TextAppearance.AppCompat.Headline"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/colorNavBar"
             android:text="@string/filter_by_category"
             android:textStyle="bold" />
 
@@ -65,10 +61,15 @@
 
         <Button
             android:id="@+id/filterApplyButton"
+            style="@style/Widget.MaterialComponents.Button"
+            android:backgroundTint="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
             android:layout_marginHorizontal="10dp"
-            android:text="Apply" />
+            android:enabled="true"
+            android:text="@string/apply_filter" />
 
     </LinearLayout>
 

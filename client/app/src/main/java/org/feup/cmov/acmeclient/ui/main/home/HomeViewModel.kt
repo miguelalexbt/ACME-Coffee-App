@@ -22,7 +22,44 @@ class HomeViewModel @ViewModelInject constructor(
         val itemsCount: Int = 0
     )
 
-    val items: LiveData<Resource<List<Content<Item>>>> = dataRepository.getItems()
+    private val searchQuery = MutableLiveData("")
+
+    fun setQuery(query: String) {
+        searchQuery.value = query
+    }
+
+    private val categoriesFilter = MutableLiveData<List<String>>(emptyList())
+
+    fun setCategoriesFilter(filter: List<String>) {
+        categoriesFilter.value = filter
+    }
+
+    val itemsQuery: LiveData<Resource<List<Content<Item>>>> = dataRepository.getItems()
+        .combine(searchQuery.asFlow().distinctUntilChanged()) { items, query ->
+            when (items.status) {
+                Status.SUCCESS -> {
+                    val filteredItems =
+                        items.data?.filter { item ->
+                            item.name!!.toLowerCase().contains(query.toLowerCase())
+                        }.takeIf { query != "" }
+                    Resource.success(filteredItems ?: items.data)
+                }
+                else -> items
+            }
+        }
+        .combine(categoriesFilter.asFlow().distinctUntilChanged()) { items, categories ->
+            println(categories)
+            when (items.status) {
+                Status.SUCCESS -> {
+                    val filteredItems =
+                        items.data?.filter { item ->
+                            item.type in categories
+                        }.takeIf { categories.isNotEmpty() }
+                    Resource.success(filteredItems ?: items.data)
+                }
+                else -> items
+            }
+        }
         .combine(dataRepository.getOrder()) { items, order ->
             when (items.status) {
                 Status.LOADING -> {
@@ -40,8 +77,26 @@ class HomeViewModel @ViewModelInject constructor(
         }
         .asLiveData()
 
-    val categories: LiveData<Resource<List<String>>> = dataRepository.getItems()
-        .map { items ->
+//    val items: LiveData<Resource<List<Content<Item>>>> = dataRepository.getItems()
+//        .combine(dataRepository.getOrder()) { items, order ->
+//            when (items.status) {
+//                Status.LOADING -> {
+//                    Resource.loading(null)
+//                }
+//                Status.SUCCESS -> {
+//                    Resource.success(items.data?.map {
+//                        Content(it.id, it, it.id in order.items.keys)
+//                    })
+//                }
+//                Status.ERROR -> {
+//                    Resource.error(items.message!!)
+//                }
+//            }
+//        }
+//        .asLiveData()
+
+    val categories: LiveData<Resource<Map<String, Boolean>>> = dataRepository.getItems()
+        .combine(categoriesFilter.asFlow().distinctUntilChanged()) { items, filter ->
             when (items.status) {
                 Status.LOADING -> {
                     Resource.loading(null)
@@ -49,7 +104,9 @@ class HomeViewModel @ViewModelInject constructor(
                 Status.SUCCESS -> {
                     Resource.success(items.data!!.map {
                         it.type!!
-                    }.distinct())
+                    }.distinct().map {
+                        it to (it in filter)
+                    }.toMap())
                 }
                 Status.ERROR -> {
                     Resource.error(items.message!!)

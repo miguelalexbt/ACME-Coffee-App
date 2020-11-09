@@ -73,4 +73,5 @@
     <string name="search_hint">Search for items</string>
     <string name="filter_by_category">Filter by Category</string>
     <string name="show_only_favorites">Show only favorites</string>
+    <string name="apply_filter">Apply</string>
 </resources>

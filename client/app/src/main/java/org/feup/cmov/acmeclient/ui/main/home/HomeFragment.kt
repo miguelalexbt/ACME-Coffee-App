@@ -10,10 +10,12 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.map
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -31,7 +33,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
 
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
 
     private var isViewCartVisible: Boolean = false
 
@@ -46,10 +48,10 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = this
 
         // Setup filter bottom sheet
-//        filterBottomSheet = FilterBottomDialogFragment(viewModel.categories)
-//        binding.filterButton.setOnClickListener {
-//            filterBottomSheet.show(requireActivity().supportFragmentManager, FilterBottomDialogFragment.TAG)
-//        }
+        filterBottomSheet = FilterBottomDialogFragment()
+        binding.filterButton.setOnClickListener {
+            filterBottomSheet.show(requireActivity().supportFragmentManager, FilterBottomDialogFragment.TAG)
+        }
 
         val adapter = ItemListAdapter(
             object : ClickListener<Item> {
@@ -71,6 +73,10 @@ class HomeFragment : Fragment() {
 
         binding.homeRecyclerView.adapter = adapter
         binding.homeRefreshLayout.setOnRefreshListener { viewModel.fetchItems() }
+
+        binding.viewCartFlowLayout.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_checkoutFragment)
+        }
 
         subscribeUi(adapter)
         watchSearchBox()
@@ -129,7 +135,7 @@ class HomeFragment : Fragment() {
             animationViewCart(cartState.show)
         })
 
-        viewModel.items.observe(viewLifecycleOwner) {
+        viewModel.itemsQuery.observe(viewLifecycleOwner) {
             val items = it ?: return@observe
 
             binding.homeRefreshLayout.isRefreshing = items.status == Status.LOADING
@@ -142,12 +148,16 @@ class HomeFragment : Fragment() {
     private fun watchSearchBox() {
         binding.searchBox.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
-                val filteredList = viewModel.items.value?.data?.filter {
-                    it.content.name!!.toLowerCase().contains(p0.toString().toLowerCase())
-                }
+//                val filteredList = viewModel.items.value?.data?.filter {
+//                    it.content.name!!.toLowerCase().contains(p0.toString().toLowerCase())
+//                }
+//
+//                val adapter = binding.homeRecyclerView.adapter as ItemListAdapter
+//                adapter.submitList(filteredList)
 
-                val adapter = binding.homeRecyclerView.adapter as ItemListAdapter
-                adapter.submitList(filteredList)
+                p0?.let {
+                    viewModel.setQuery(it)
+                }
 
                 // Action was handled by listener so returns true
                 return true
@@ -155,8 +165,9 @@ class HomeFragment : Fragment() {
 
             override fun onQueryTextChange(p0: String?): Boolean {
                 if (p0 == "") {
-                    val adapter = binding.homeRecyclerView.adapter as ItemListAdapter
-                    adapter.submitList(viewModel.items.value?.data)
+                    viewModel.setQuery("")
+//                    val adapter = binding.homeRecyclerView.adapter as ItemListAdapter
+//                    adapter.submitList(viewModel.items.value?.data)
                 }
                 return true
             }
