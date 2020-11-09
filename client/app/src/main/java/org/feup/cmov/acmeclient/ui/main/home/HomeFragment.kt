@@ -11,6 +11,7 @@ import android.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -49,7 +50,11 @@ class HomeFragment : Fragment() {
         // Setup filter bottom sheet
         filterBottomSheet = FilterBottomDialogFragment()
         binding.filterButton.setOnClickListener {
-            filterBottomSheet.show(requireActivity().supportFragmentManager, FilterBottomDialogFragment.TAG)
+            binding.searchBox.clearFocus()
+            filterBottomSheet.show(
+                requireActivity().supportFragmentManager,
+                FilterBottomDialogFragment.TAG
+            )
         }
 
         val adapter = GenericListAdapter<ItemView, HomeListItemBinding>(
@@ -78,9 +83,16 @@ class HomeFragment : Fragment() {
                             withContext(Dispatchers.Main) {
                                 ItemDialogFragment(item, previousQuantity) { item, quantity ->
                                     viewModel.saveItemToOrder(item, quantity)
-                                }.show(requireActivity().supportFragmentManager, ItemDialogFragment.TAG)
+                                }.show(
+                                    requireActivity().supportFragmentManager,
+                                    ItemDialogFragment.TAG
+                                )
                             }
                         }
+                    }
+
+                    listItemFavorite.setOnClickListener {
+                        viewModel.toggleFavoriteItem(itemContent.content)
                     }
 
                     executePendingBindings()
@@ -97,6 +109,7 @@ class HomeFragment : Fragment() {
 
         subscribeUi(adapter)
         watchSearchBox()
+        watchFilters()
 
         return binding.root
     }
@@ -165,13 +178,6 @@ class HomeFragment : Fragment() {
     private fun watchSearchBox() {
         binding.searchBox.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
-//                val filteredList = viewModel.items.value?.data?.filter {
-//                    it.content.name!!.toLowerCase().contains(p0.toString().toLowerCase())
-//                }
-//
-//                val adapter = binding.homeRecyclerView.adapter as ItemListAdapter
-//                adapter.submitList(filteredList)
-
                 p0?.let {
                     viewModel.setQuery(it)
                 }
@@ -183,12 +189,17 @@ class HomeFragment : Fragment() {
             override fun onQueryTextChange(p0: String?): Boolean {
                 if (p0 == "") {
                     viewModel.setQuery("")
-//                    val adapter = binding.homeRecyclerView.adapter as ItemListAdapter
-//                    adapter.submitList(viewModel.items.value?.data)
                 }
+
                 return true
             }
 
         })
+    }
+
+    private fun watchFilters() {
+        viewModel.areFiltersActive.observe(viewLifecycleOwner) {
+            binding.areFiltersActive = it
+        }
     }
 }

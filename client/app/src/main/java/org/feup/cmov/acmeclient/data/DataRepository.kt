@@ -1,5 +1,6 @@
 package org.feup.cmov.acmeclient.data
 
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -17,6 +18,7 @@ import org.feup.cmov.acmeclient.data.cache.CachedOrder
 import org.feup.cmov.acmeclient.data.cache.CachedUser
 import org.feup.cmov.acmeclient.data.model.User
 import org.feup.cmov.acmeclient.data.model.Voucher
+import org.feup.cmov.acmeclient.ui.main.home.ItemView
 import org.feup.cmov.acmeclient.utils.Cache
 import java.io.IOException
 
@@ -29,7 +31,7 @@ class DataRepository @Inject constructor(
     private val voucherDao: VoucherDao
 ) {
     // Auth
-    private val loggedInUser: CachedUser?
+    val loggedInUser: CachedUser?
         get() = runBlocking { Cache.cachedUser.first() }
 
     val isLoggedIn = Cache.cachedUser.map { it != null }
@@ -106,6 +108,17 @@ class DataRepository @Inject constructor(
                 else -> items as Resource<Map<String, Item>>
             }
         }
+
+    suspend fun toggleFavoriteItem(item: ItemView) {
+        withContext(Dispatchers.IO) {
+            val usersFavorite = item.usersFavorite.toMutableSet()
+
+            if (!usersFavorite.removeIf { id -> id == loggedInUser!!.userId })
+                usersFavorite.add(loggedInUser!!.userId)
+
+            itemDao.setFavoriteItems(item.id, Gson().toJson(usersFavorite))
+        }
+    }
 
     suspend fun fetchItems() {
         withContext(Dispatchers.IO) {

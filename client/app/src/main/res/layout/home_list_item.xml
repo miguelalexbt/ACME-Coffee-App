@@ -5,7 +5,6 @@
 
     <data>
         <variable name="item" type="org.feup.cmov.acmeclient.ui.main.home.ItemView" />
-<!--        <variable name="isFavorite" type="Boolean" />-->
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -54,7 +53,7 @@
                 android:background="@drawable/checkbox_selector"
                 android:backgroundTint="#FDCC0D"
                 android:button="@null"
-                android:checked="false"
+                android:checked="@{item.isFavorite}"
                 android:enabled="true"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:translationZ="1dp"

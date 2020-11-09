@@ -31,4 +31,5 @@ object DatabaseModule {
 
     @Provides
     fun provideVoucherDao(db: AppDatabase): VoucherDao = db.voucherDao()
+
 }

@@ -6,6 +6,7 @@
     <data>
         <variable name="cartPrice" type="Float" />
         <variable name="cartItemsCount" type="Integer" />
+        <variable name="areFiltersActive" type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,8 +31,11 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:background="@drawable/white_rectangle_background"
-            android:backgroundTint="@color/colorLighterGray"
-            android:src="@drawable/ic_baseline_tune_24" />
+            android:backgroundTint="@{ areFiltersActive ? @color/colorPrimary : @color/colorLighterGray }"
+            android:tint="@{ areFiltersActive ? @color/cardview_light_background : @color/colorPrimary }"
+            android:src="@drawable/ic_baseline_tune_24"
+            tools:tint="@color/colorPrimary"
+            tools:backgroundTint="@color/colorLighterGray"/>
 
         <androidx.constraintlayout.helper.widget.Flow
             android:id="@+id/search_filter_flow"
@@ -115,7 +119,7 @@
                     android:background="@drawable/white_rectangle_background"
                     android:padding="5dp"
                     android:text="@{String.valueOf(cartItemsCount)}"
-                    android:textAlignment="textEnd"
+                    android:textAlignment="center"
                     android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:textColor="@color/colorSecondary"
                     app:layout_constraintTop_toTopOf="parent"

@@ -1,9 +1,7 @@
 package org.feup.cmov.acmeclient.data.db
 
-import androidx.room.Dao
-import androidx.room.Insert
+import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
-import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import org.feup.cmov.acmeclient.data.model.Item
 
@@ -17,4 +15,7 @@ interface ItemDao {
 
     @Query("SELECT * FROM item ORDER BY addedAt DESC LIMIT 1")
     fun getLastAdded() : Flow<Item?>
+
+    @Query("UPDATE item SET usersFavorite = :users WHERE id = :itemId")
+    fun setFavoriteItems(itemId: String, users: String)
 }

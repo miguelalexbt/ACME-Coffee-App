@@ -65,6 +65,8 @@ class FilterBottomDialogFragment() : BottomSheetDialogFragment() {
                 }.toList()
 
             viewModel.setCategoriesFilter(categoriesSelected)
+            viewModel.setShowOnlyFavorites(binding.showOnlyFavoritesSwitch.isChecked)
+
             dismiss()
         }
 

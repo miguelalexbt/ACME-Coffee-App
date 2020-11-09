@@ -2,14 +2,18 @@ package org.feup.cmov.acmeclient.ui.main.home
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import kotlinx.coroutines.flow.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.data.DataRepository
 import org.feup.cmov.acmeclient.data.Resource
 import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.cache.CachedOrder
-import java.util.*
+
 
 class HomeViewModel @ViewModelInject constructor(
 //    @Assisted savedStateHandle: SavedStateHandle,
@@ -22,20 +26,32 @@ class HomeViewModel @ViewModelInject constructor(
         val itemsCount: Int = 0
     )
 
-    private val searchQuery = MutableLiveData("")
+    private val _searchQuery = MutableLiveData("")
 
     fun setQuery(query: String) {
-        searchQuery.value = query
+        _searchQuery.value = query
     }
 
-    private val categoriesFilter = MutableLiveData<List<String>>(emptyList())
+    private val _categoriesFilter = MutableLiveData<List<String>>(emptyList())
 
     fun setCategoriesFilter(filter: List<String>) {
-        categoriesFilter.value = filter
+        _categoriesFilter.value = filter
     }
 
+    private val _showOnlyFavorites = MutableLiveData<Boolean>(false)
+
+    fun setShowOnlyFavorites(show: Boolean) {
+        _showOnlyFavorites.value = show
+    }
+
+    val areFiltersActive: LiveData<Boolean> =
+        _categoriesFilter.asFlow().combine(_showOnlyFavorites.asFlow()) { categoriesFilter, show ->
+            categoriesFilter.isNotEmpty() || show
+        }.asLiveData()
+
     val itemsQuery: LiveData<Resource<List<Content<ItemView>>>> = dataRepository.getItems()
-        .combine(searchQuery.asFlow().distinctUntilChanged()) { items, query ->
+        .combine(_searchQuery.asFlow().distinctUntilChanged()) { items, query ->
+            println("items -> $items")
             when (items.status) {
                 Status.SUCCESS -> {
                     val filteredItems =
@@ -47,14 +63,28 @@ class HomeViewModel @ViewModelInject constructor(
                 else -> items
             }
         }
-        .combine(categoriesFilter.asFlow().distinctUntilChanged()) { items, categories ->
-            println(categories)
+        .combine(_categoriesFilter.asFlow().distinctUntilChanged()) { items, categories ->
             when (items.status) {
                 Status.SUCCESS -> {
                     val filteredItems =
                         items.data?.filter { item ->
                             item.type in categories
                         }.takeIf { categories.isNotEmpty() }
+                    Resource.success(filteredItems ?: items.data)
+                }
+                else -> items
+            }
+        }
+        .combine(_showOnlyFavorites.asFlow().distinctUntilChanged()) { items, showOnlyFavorites ->
+            when (items.status) {
+                Status.SUCCESS -> {
+                    val filteredItems =
+                        items.data?.filter { item ->
+                            dataRepository.loggedInUser?.userId in Gson().fromJson(
+                                item.usersFavorite,
+                                object : TypeToken<Set<String>>() {}.type
+                            ) as Set<String>
+                        }.takeIf { showOnlyFavorites }
                     Resource.success(filteredItems ?: items.data)
                 }
                 else -> items
@@ -67,7 +97,17 @@ class HomeViewModel @ViewModelInject constructor(
                 }
                 Status.SUCCESS -> {
                     Resource.success(items.data?.map {
-                        val itemView = ItemView(it.id, it.name, it.price, it.id in order.items.keys)
+                        val itemView = ItemView(
+                            it.id,
+                            it.name,
+                            it.price,
+                            it.id in order.items.keys,
+                            dataRepository.loggedInUser!!.userId in it.usersFavorite,
+                            Gson().fromJson(
+                                it.usersFavorite,
+                                object : TypeToken<Set<String?>>() {}.type
+                            )
+                        )
                         Content(it.id, itemView)
                     })
                 }
@@ -78,26 +118,8 @@ class HomeViewModel @ViewModelInject constructor(
         }
         .asLiveData()
 
-//    val items: LiveData<Resource<List<Content<Item>>>> = dataRepository.getItems()
-//        .combine(dataRepository.getOrder()) { items, order ->
-//            when (items.status) {
-//                Status.LOADING -> {
-//                    Resource.loading(null)
-//                }
-//                Status.SUCCESS -> {
-//                    Resource.success(items.data?.map {
-//                        Content(it.id, it, it.id in order.items.keys)
-//                    })
-//                }
-//                Status.ERROR -> {
-//                    Resource.error(items.message!!)
-//                }
-//            }
-//        }
-//        .asLiveData()
-
     val categories: LiveData<Resource<Map<String, Boolean>>> = dataRepository.getItems()
-        .combine(categoriesFilter.asFlow().distinctUntilChanged()) { items, filter ->
+        .combine(_categoriesFilter.asFlow().distinctUntilChanged()) { items, filter ->
             when (items.status) {
                 Status.LOADING -> {
                     Resource.loading(null)
@@ -155,5 +177,12 @@ class HomeViewModel @ViewModelInject constructor(
             dataRepository.saveItemToOrder(item.id, quantity)
         }
     }
+
+    fun toggleFavoriteItem(item: ItemView) {
+        viewModelScope.launch {
+            dataRepository.toggleFavoriteItem(item)
+        }
+    }
+
 }
 

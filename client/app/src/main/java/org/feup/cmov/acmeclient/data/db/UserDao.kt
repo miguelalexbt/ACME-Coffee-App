@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import org.feup.cmov.acmeclient.data.model.User
 
@@ -13,5 +14,6 @@ interface UserDao {
     suspend fun insert(user: User)
 
     @Query("SELECT * FROM user WHERE username = :username")
-    fun get(username: String) : Flow<User?>
+    fun get(username: String): Flow<User?>
+
 }
