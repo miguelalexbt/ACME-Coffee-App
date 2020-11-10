@@ -121,7 +121,7 @@ itemRouter.get('/populate', async (req, res) => {
     await new Item({ name: 'Expresso', type: 'drink', price: 0.70 }).save();
 
     res.sendStatus(200);
-})
+});
 
 itemRouter.get('/', authenticateClientRequest, async (req, res) => {
     let lastUpdateQuery = {};
@@ -140,7 +140,7 @@ itemRouter.get('/', authenticateClientRequest, async (req, res) => {
     const items = await Item.find(lastUpdateQuery).exec();
     
     res.json(items);
-})
+});
 
 // Vouchers
 
@@ -177,7 +177,7 @@ voucherRouter.get('/populate', async (req, res) => {
 
 
     res.sendStatus(200);
-})
+});
 
 voucherRouter.get('/', authenticateClientRequest, async (req, res) => {
     const vouchers = await Voucher.find({
@@ -191,6 +191,22 @@ voucherRouter.get('/', authenticateClientRequest, async (req, res) => {
 // Orders
 
 let orderRouter = express.Router();
+
+orderRouter.get('/:userId', authenticateClientRequest, async (req, res) => {
+    const orders = await Order.find({
+        userId: req.params.userId
+    })
+    .select('id total createdAt').exec();
+
+    res.json(orders);
+});
+
+orderRouter.get('/:orderId/receipt', authenticateClientRequest, async (req, res) => {
+    const order = await Order.findById({ _id: req.params.orderId }).exec();
+    const user = await User.findById({ _id: order.userId }).exec();
+
+    res.json({ ...JSON.parse(JSON.stringify(order)), nif: user.nif, ccNumber: user.ccNumber });
+});
 
 orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
     const userId = req.header('User-Signature').split(':')[0]
@@ -326,7 +342,7 @@ imageRouter.get('/:imagePath', async (req, res, next) => {
             })
         }
     })
-})
+});
 
 module.exports = { 
     authRouter: authRouter,
