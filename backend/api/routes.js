@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 let express = require('express')
 const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
@@ -5,7 +6,7 @@ const crypto = require('crypto')
 
 const fs = require("fs");
 const path = require("path")
-const { User, Item, Voucher } = require('./models');
+const { User, Item, Voucher, Order } = require('./models');
 
 // Validation
 // const validate = validations => {
@@ -146,28 +147,31 @@ itemRouter.get('/', authenticateClientRequest, async (req, res) => {
 let voucherRouter = express.Router();
 
 voucherRouter.get('/populate', async (req, res) => {
+
+    const userId = 'a22b6777-c05b-48a2-9c55-862ab16f093d';
+
     await new Voucher({
         _id: uuidv4(),
-        userId: '7894f856-eb6c-4057-8b20-3db0221fc273',
+        userId: userId,
         type: 'o'
     }).save();
 
     await new Voucher({
         _id: uuidv4(),
-        userId: '7894f856-eb6c-4057-8b20-3db0221fc273',
+        userId: userId,
         type: 'o'
     }).save();
 
 
     await new Voucher({
         _id: uuidv4(),
-        userId: '7894f856-eb6c-4057-8b20-3db0221fc273',
+        userId: userId,
         type: 'd'
     }).save();
 
     await new Voucher({
         _id: uuidv4(),
-        userId: '7894f856-eb6c-4057-8b20-3db0221fc273',
+        userId: userId,
         type: 'd'
     }).save();
 
@@ -192,32 +196,39 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
     const userId = req.header('User-Signature').split(':')[0]
     const order = req.body.order;
 
-    console.log("ORDER ", order)
-
-    let items = {};
-    let vouchers = [];
+    let itemsOrder = {};
+    let vouchersOrder = [];
 
     // Parse items and vouchers
     order.split(';').forEach(i => {
         const [a, b] = i.split(':')
-        b !== undefined ? items[a] = parseInt(b) : vouchers.push(a)
+        b !== undefined ? itemsOrder[a] = parseInt(b) : vouchersOrder.push(a)
     });
 
     // Check items validity
-    let validItems = await Item
-        .where('_id').in(Object.keys(items))
-        .select('_id type price');
+    let validItems = (await Item
+        .where('_id').in(Object.keys(itemsOrder))
+        .select('_id type price'))
+        .map(item => 
+            ({ _id: item._id, type: item.type, price: item.price, quantity: itemsOrder[item.id] })    
+        );
 
-    console.log("VALID ITEMS", validItems)
+    if (Object.keys(itemsOrder).length !== validItems.length)  {
+        res.status(422).json({ error: 'invalid_items' });
+        return;
+    }
 
     // Check vouchers validity
     let validVouchers = await Voucher
-        .where('_id').in(vouchers)
+        .where('_id').in(vouchersOrder)
         .where('userId').equals(userId)
         .where('used').equals(false)
         .select('_id type');
 
-    console.log("VOUCHERS", validVouchers)
+    if (vouchersOrder.length !== validVouchers.length) {
+        res.status(422).json({ error: 'invalid_vouchers' });
+        return;
+    }
 
     // Check vouchers applicability (ignore if not applicable)
 
@@ -228,16 +239,59 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
     );
 
     // - One offer voucher per coffee
-    const coffeeItems = validItems.reduce((a, b) => a + (b.type === 'coffee' ? 1 : 0), 0);
+    const coffeeItems = validItems.reduce((a, b) => a + (b.type === 'coffee'), 0);
     let coffeeVouchers = 0;
     validVouchers = validVouchers.filter(voucher =>
         voucher.type !== 'o' || coffeeVouchers < coffeeItems && (coffeeVouchers++, true)
     );
 
-    console.log("VALID VOUCHERS", validVouchers)
-    
-    res.json("HELLo");
+    await createOrder(userId, validItems, validVouchers);
+
+    res.json('success');
 });
+
+const createOrder = async (userId, items, vouchers) =>  {
+
+    // console.log("ITEMS:", items)
+    // console.log("VOUCHERS:", vouchers)
+
+    const coffeeVouchers = vouchers.filter(voucher => voucher.type === 'o').length;
+    const hasDiscountVoucher = vouchers.some(voucher => voucher.type === 'd');
+
+    // Ignore as many coffee items as coffee vouchers and calculate total
+    let total = items
+        .filter(item => (item !== "coffee" || (!(coffeeVouchers > 0) || (coffeeVouchers--, false))))
+        .reduce((acc, item) => acc + item.price * item.quantity, 0.0);
+
+    // Apply discount voucher
+    if (hasDiscountVoucher)
+        total *= 0.95;
+
+    const itemsMap = items.reduce((acc, item) => { acc[item._id] = item.quantity; return acc;}, {});
+    const vouchersArr = vouchers.map(voucher => voucher.id);
+
+    // Start transaction, create order and update vouchers
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    const order = new Order({
+        userId: userId,
+        items: itemsMap,
+        vouchers: vouchersArr,
+        total: total.toFixed(2)
+    });
+
+    await order.save();
+
+    await Voucher
+        .where('_id').in(vouchersArr)
+        .updateMany({ 'used': true });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    console.log("ORDER", order)
+}
 
 // Images
 

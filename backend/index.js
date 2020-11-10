@@ -9,7 +9,7 @@ let isDbReady = false;
 // Connect to MongoDB
 mongoose
     .connect(`mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@mongo:27017/${process.env.MONGO_DB}`, 
-        { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
+        { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false }
     )
     .then(() => isDbReady = true)
     .catch((err) => console.log(err));

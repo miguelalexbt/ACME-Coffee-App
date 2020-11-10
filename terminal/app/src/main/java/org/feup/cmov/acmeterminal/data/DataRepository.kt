@@ -2,6 +2,7 @@ package org.feup.cmov.acmeterminal.data
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.feup.cmov.acmeterminal.data.api.ApiResponse
 import org.feup.cmov.acmeterminal.data.api.ValidateVoucherRequest
 import javax.inject.Inject
 
@@ -21,7 +22,19 @@ class DataRepository @Inject constructor(
 
             // Create request
             val request = ValidateVoucherRequest(order = order)
-            val response = webService.validateVoucher("$userId:$signature", request)
+            val response = webService.submitOrder("$userId:$signature", request)
+
+            when (response) {
+                is ApiResponse.Success -> {
+                    println("RESPONSE: ${response.data}")
+                }
+                is ApiResponse.ApiError -> {
+                    println("API ERROR: ${response.error}")
+                }
+                is ApiResponse.NetworkError -> {
+                    println("NETWORK ERROR: ${response.error}")
+                }
+            }
         }
     }
 }

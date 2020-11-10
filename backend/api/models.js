@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 const { Schema } = mongoose;
 
 // User schema
@@ -63,17 +64,24 @@ const voucherSchema = new Schema({
 
 // Order schema
 const orderSchema = new Schema({
-
+    userId: { type: String, required: true },
+    items: { type: Map, of: Number, required: true },
+    vouchers: { type: Array, of: String, required: true },
+    total: { type: Number, required: true }
 }, {
+    timestamps: true,
     toJSON: {
         transform: (doc, ret) => {
             ret.id = ret._id;
             delete ret._id;
             delete ret.__v;
+            delete ret.updatedAt;
             return ret;
         }
     }
 });
+
+orderSchema.plugin(AutoIncrement, { inc_field: 'number' })
 
 module.exports = {
     User: mongoose.model('User', userSchema),

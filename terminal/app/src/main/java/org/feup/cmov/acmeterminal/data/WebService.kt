@@ -9,7 +9,7 @@ import retrofit2.http.PUT
 interface WebService {
 
     @PUT("/orders")
-    suspend fun validateVoucher(
+    suspend fun submitOrder(
         @Header("User-Signature") userSignature: String,
         @Body request: ValidateVoucherRequest
     ) : ApiResponse<String>
