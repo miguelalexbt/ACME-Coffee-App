@@ -195,17 +195,16 @@ let orderRouter = express.Router();
 orderRouter.get('/:userId', authenticateClientRequest, async (req, res) => {
     const orders = await Order.find({
         userId: req.params.userId
-    })
-    .select('id total createdAt').exec();
+    }).exec();
 
     res.json(orders);
 });
 
 orderRouter.get('/:orderId/receipt', authenticateClientRequest, async (req, res) => {
-    const order = await Order.findById({ _id: req.params.orderId }).exec();
-    const user = await User.findById({ _id: order.userId }).exec();
+    const order = await Order.findById(req.params.orderId).exec();
+    const user = await User.findById(order.userId).exec();
 
-    res.json({ ...JSON.parse(JSON.stringify(order)), nif: user.nif, ccNumber: user.ccNumber });
+    res.json({ nif: user.nif, ccNumber: user.ccNumber });
 });
 
 orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
