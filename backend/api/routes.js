@@ -254,7 +254,7 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
     );
 
     // - One offer voucher per coffee
-    const coffeeItems = validItems.reduce((a, b) => a + (b.type === 'coffee'), 0);
+    const coffeeItems = validItems.reduce((acc, items) => acc + (items.type === 'coffee'), 0);
     let coffeeVouchers = 0;
     validVouchers = validVouchers.filter(voucher =>
         voucher.type !== 'o' || coffeeVouchers < coffeeItems && (coffeeVouchers++, true)
@@ -266,10 +266,6 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
 });
 
 const createOrder = async (userId, items, vouchers) =>  {
-
-    // console.log("ITEMS:", items)
-    // console.log("VOUCHERS:", vouchers)
-
     const coffeeVouchers = vouchers.filter(voucher => voucher.type === 'o').length;
     const hasDiscountVoucher = vouchers.some(voucher => voucher.type === 'd');
 
@@ -289,6 +285,9 @@ const createOrder = async (userId, items, vouchers) =>  {
     const session = await mongoose.startSession();
     session.startTransaction();
 
+    const user = await User.findById(userId);
+
+    // - Create order
     const order = new Order({
         userId: userId,
         items: itemsMap,
@@ -298,14 +297,52 @@ const createOrder = async (userId, items, vouchers) =>  {
 
     await order.save();
 
+    // - Remove used vouchers
     await Voucher
         .where('_id').in(vouchersArr)
         .updateMany({ 'used': true });
 
+    // - Add new vouchers
+    const coffeeItems = items.reduce((acc, item) => acc + (item.type === 'coffee'), 0);
+    user.consumedCoffees += coffeeItems;
+    user.accumulatedPayedValue += total.toFixed(2);
+
+    // -- Offer vouchers
+    const newCoffeeVouchers = floor(user.consumedCoffees / 3);
+    user.consumedCoffees -= newCoffeeVouchers * 3;
+
+    await Promise.all([...Array(newCoffeeVouchers).keys()].map(_ => {
+        return new Voucher({ _id: uuidv4(), userId: userId, type: 'o' }).save();
+    }))
+
+    // for (let _ in [...Array(newCoffeeVouchers).keys()]) {
+    //     await new Voucher({
+    //         _id: uuidv4(),
+    //         userId: userId,
+    //         type: 'o'
+    //     }).save();
+    // }
+
+    // -- Discount vouchers
+    const newDiscountVouchers = floor(user.accumulatedPayedValue / 100);
+    user.accumulatedPayedValue -= newDiscountVouchers * 100;
+
+    await Promise.all([...Array(newDiscountVouchers).keys()].map(_ => {
+        return new Voucher({ _id: uuidv4(), userId: userId, type: 'd' }).save();
+    }))
+
+    // for (let _ in [...Array(newDiscountVouchers).keys()]) {
+    //     await new Voucher({
+    //         _id: uuidv4(),
+    //         userId: userId,
+    //         type: 'd'
+    //     }).save();
+    // }
+
+    await user.save();
+
     await session.commitTransaction();
     session.endSession();
-
-    console.log("ORDER", order)
 }
 
 // Images

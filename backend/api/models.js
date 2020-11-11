@@ -11,12 +11,16 @@ const userSchema = new Schema({
     ccCVV: { type: String, required: true },
     ccExpiration: { type: String, required: true },
     publicKey: { type: String, required: true },
+    consumedCoffees: { type: Number,  default: 0, required: true },
+    accumulatedPayedValue: { type: Number, default: 0, required: true }
 }, {
     toJSON: {
         transform: (doc, ret) => {
             ret.id = ret._id;
             delete ret._id;
             delete ret.__v;
+            delete ret.consumedCoffees;
+            delete ret.accumulatedPayedValue;
             return ret;
         }
     }
