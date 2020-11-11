@@ -163,7 +163,7 @@ class DataRepository @Inject constructor(
         }
     }
 
-    // Order
+    // Past orders
 
     fun getPastOrders(fetch: Boolean = true): Flow<Resource<List<PastOrder>>> = pastOrderDao.getAll(loggedInUser!!.userId)
         .distinctUntilChanged()
@@ -197,6 +197,8 @@ class DataRepository @Inject constructor(
                 pastOrderDao.insertAll(response.data!!)
         }
     }
+
+    // Order
 
     fun getOrder(): Flow<CachedOrder> = Cache.cachedOrder
         .distinctUntilChanged()
@@ -271,6 +273,12 @@ class DataRepository @Inject constructor(
             dataBuffer.readByteString().also {
                 dataBuffer.close()
             }
+        }
+    }
+
+    suspend fun clearOrder() {
+        withContext(Dispatchers.IO) {
+            Cache.cacheOrder(null)
         }
     }
 

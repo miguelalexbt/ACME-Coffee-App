@@ -47,6 +47,11 @@ class PaymentActivity : AppCompatActivity() {
 
         val filter = IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
         registerReceiver(broadcastReceiver, filter)
+
+        binding.paymentComplete.setOnClickListener {
+            viewModel.clearOrder()
+            finish()
+        }
     }
 
     override fun onDestroy() {

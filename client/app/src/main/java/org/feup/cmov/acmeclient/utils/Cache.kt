@@ -41,14 +41,13 @@ class Cache {
 
         suspend fun cacheUser(user: User?) {
             dataStore.edit {
-                val cache = if (user == null) null else CachedUser(user.id, user.username)
-                it[USER] = Gson().toJson(cache ?: "")
+                it[USER] = if (user == null) "" else Gson().toJson(CachedUser(user.id, user.username))
             }
         }
 
-        suspend fun cacheOrder(order: CachedOrder) {
+        suspend fun cacheOrder(order: CachedOrder?) {
             dataStore.edit {
-                it[ORDER] = Gson().toJson(order)
+                it[ORDER] = if (order == null) "" else Gson().toJson(order)
             }
         }
     }

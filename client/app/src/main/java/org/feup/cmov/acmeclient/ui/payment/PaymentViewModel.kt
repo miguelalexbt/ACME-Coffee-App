@@ -1,16 +1,14 @@
 package org.feup.cmov.acmeclient.ui.payment
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import okio.ByteString
 import org.feup.cmov.acmeclient.data.DataRepository
 
 class PaymentViewModel @ViewModelInject constructor(
-    dataRepository: DataRepository
+    private val dataRepository: DataRepository
 ) : ViewModel() {
 
     private val _isNfcActive = MutableLiveData<Boolean>()
@@ -22,4 +20,9 @@ class PaymentViewModel @ViewModelInject constructor(
         _isNfcActive.value = active
     }
 
+    fun clearOrder() {
+        viewModelScope.launch {
+            dataRepository.clearOrder()
+        }
+    }
 }
