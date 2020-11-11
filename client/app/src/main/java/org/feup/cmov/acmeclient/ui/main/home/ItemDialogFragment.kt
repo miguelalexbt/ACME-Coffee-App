@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.R
@@ -15,9 +16,7 @@ import org.feup.cmov.acmeclient.databinding.NumberPickerDialogBinding
 
 @AndroidEntryPoint
 class ItemDialogFragment(
-    private val dialogItem: ItemView,
-    private val initialItemQuantity: Int,
-    private val saveOperation: (item: ItemView, quantity: Int) -> Unit
+    private val dialogItem: ItemView
 ) : DialogFragment() {
 
     companion object {
@@ -26,9 +25,7 @@ class ItemDialogFragment(
 
     private lateinit var binding: NumberPickerDialogBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val viewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,9 +39,9 @@ class ItemDialogFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.numberPicker.value = initialItemQuantity
         binding.numberPicker.wrapSelectorWheel = false;
         setupClickListeners()
+        subscribeUi()
     }
 
     override fun onStart() {
@@ -61,9 +58,15 @@ class ItemDialogFragment(
         }
 
         binding.itemDialogSaveButton.setOnClickListener {
-            saveOperation(dialogItem, binding.numberPicker.value)
+            viewModel.saveItemToOrder(dialogItem, binding.numberPicker.value)
             dismiss()
         }
     }
 
+    private fun subscribeUi() {
+        viewModel.order.observe(viewLifecycleOwner, {
+            val order = it ?: return@observe
+            binding.numberPicker.value = order.items.getOrDefault(dialogItem.id, 0)
+        })
+    }
 }

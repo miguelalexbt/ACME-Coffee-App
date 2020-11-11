@@ -35,7 +35,8 @@ class NfcFragment: Fragment() {
         binding.lifecycleOwner = this
 
         nfcAdapter?.setOnNdefPushCompleteCallback({
-            println("NFC: message sent")
+            viewModel.clearOrder()
+            activity?.finish()
         }, activity)
 
         viewModel.setNfcStatus(nfcAdapter?.isEnabled ?: false)
@@ -72,16 +73,18 @@ class NfcFragment: Fragment() {
     }
 
     private fun sendNdefMessage(cancel: Boolean = false) {
+        if (cancel) {
+            nfcAdapter?.setNdefPushMessage(null, activity)
+            return
+        }
+
         binding.isLoading = true
 
         lifecycleScope.launch(Dispatchers.IO) {
             val orderString = viewModel.orderString.first()
 
             // Create NDEF message
-            val msg = if (!cancel)
-                NdefMessage(createMimeRecord(orderString.toByteArray()))
-            else
-                null
+            val msg = NdefMessage(createMimeRecord(orderString.toByteArray()))
 
             // Register a NDEF message to be sent in P2P
             nfcAdapter?.setNdefPushMessage(msg, activity)

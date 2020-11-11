@@ -111,14 +111,14 @@ let itemRouter = express.Router();
 itemRouter.get('/populate', async (req, res) => {
     await new Item({ name: 'Sandwich', type: 'food', price: 4.50 }).save();
     await new Item({ name: 'Pastry', type: 'food', price: 2.30 }).save();
-    await new Item({ name: 'Americano', type: 'drink', price: 0.80 }).save();
+    await new Item({ name: 'Americano', type: 'coffee', price: 0.80 }).save();
     await new Item({ name: 'Coca-Cola', type: 'drink', price: 1.00 }).save();
-    await new Item({ name: 'Latte', type: 'drink', price: 3.99 }).save();
-    await new Item({ name: 'Mochaccino', type: 'drink', price: 4.99 }).save();
-    await new Item({ name: 'Cappuccino', type: 'drink', price: 2.99 }).save();
-    await new Item({ name: 'Croissant', type: 'drink', price: 2.50 }).save();
+    await new Item({ name: 'Latte', type: 'coffee', price: 3.99 }).save();
+    await new Item({ name: 'Mochaccino', type: 'coffee', price: 4.99 }).save();
+    await new Item({ name: 'Cappuccino', type: 'coffee', price: 2.99 }).save();
+    await new Item({ name: 'Croissant', type: 'food', price: 2.50 }).save();
     await new Item({ name: 'Water', type: 'drink', price: 0.99 }).save();
-    await new Item({ name: 'Expresso', type: 'drink', price: 0.70 }).save();
+    await new Item({ name: 'Expresso', type: 'coffee', price: 0.70 }).save();
 
     res.sendStatus(200);
 });
@@ -260,9 +260,9 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
         voucher.type !== 'o' || coffeeVouchers < coffeeItems && (coffeeVouchers++, true)
     );
 
-    await createOrder(userId, validItems, validVouchers);
+    const newOrder = await createOrder(userId, validItems, validVouchers);
 
-    res.json('success');
+    res.json({ orderNr: newOrder.number });
 });
 
 const createOrder = async (userId, items, vouchers) =>  {
@@ -292,7 +292,7 @@ const createOrder = async (userId, items, vouchers) =>  {
         userId: userId,
         items: itemsMap,
         vouchers: vouchersArr,
-        total: total.toFixed(2)
+        total: parseFloat(total.toFixed(2))
     });
 
     await order.save();
@@ -303,46 +303,31 @@ const createOrder = async (userId, items, vouchers) =>  {
         .updateMany({ 'used': true });
 
     // - Add new vouchers
-    const coffeeItems = items.reduce((acc, item) => acc + (item.type === 'coffee'), 0);
-    user.consumedCoffees += coffeeItems;
-    user.accumulatedPayedValue += total.toFixed(2);
+    user.consumedCoffees += items.reduce((acc, item) => acc + (item.type === 'coffee'), 0);
+    user.accumulatedPayedValue = parseFloat((user.accumulatedPayedValue + total).toFixed(2));
 
     // -- Offer vouchers
-    const newCoffeeVouchers = floor(user.consumedCoffees / 3);
+    const newCoffeeVouchers = Math.floor(user.consumedCoffees / 3);
     user.consumedCoffees -= newCoffeeVouchers * 3;
 
     await Promise.all([...Array(newCoffeeVouchers).keys()].map(_ => {
-        return new Voucher({ _id: uuidv4(), userId: userId, type: 'o' }).save();
-    }))
-
-    // for (let _ in [...Array(newCoffeeVouchers).keys()]) {
-    //     await new Voucher({
-    //         _id: uuidv4(),
-    //         userId: userId,
-    //         type: 'o'
-    //     }).save();
-    // }
+        return (new Voucher({ _id: uuidv4(), userId: userId, type: 'o' })).save();
+    }));
 
     // -- Discount vouchers
-    const newDiscountVouchers = floor(user.accumulatedPayedValue / 100);
+    const newDiscountVouchers = Math.floor(user.accumulatedPayedValue / 100);
     user.accumulatedPayedValue -= newDiscountVouchers * 100;
 
     await Promise.all([...Array(newDiscountVouchers).keys()].map(_ => {
-        return new Voucher({ _id: uuidv4(), userId: userId, type: 'd' }).save();
-    }))
-
-    // for (let _ in [...Array(newDiscountVouchers).keys()]) {
-    //     await new Voucher({
-    //         _id: uuidv4(),
-    //         userId: userId,
-    //         type: 'd'
-    //     }).save();
-    // }
+        return (new Voucher({ _id: uuidv4(), userId: userId, type: 'd' })).save();
+    }));
 
     await user.save();
 
     await session.commitTransaction();
     session.endSession();
+
+    return order;
 }
 
 // Images

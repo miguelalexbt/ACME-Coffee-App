@@ -77,13 +77,8 @@ class HomeFragment : Fragment() {
                         this@HomeFragment.binding.searchBox.clearFocus()
                         lifecycleScope.launch(Dispatchers.IO) {
                             val item = itemContent.content
-                            val order = viewModel.order.asFlow().first()
-                            val previousQuantity = order.items.getOrDefault(item.id, 0)
-
                             withContext(Dispatchers.Main) {
-                                ItemDialogFragment(item, previousQuantity) { item, quantity ->
-                                    viewModel.saveItemToOrder(item, quantity)
-                                }.show(
+                                ItemDialogFragment(item).show(
                                     requireActivity().supportFragmentManager,
                                     ItemDialogFragment.TAG
                                 )

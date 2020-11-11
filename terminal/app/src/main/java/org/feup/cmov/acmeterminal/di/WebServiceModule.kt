@@ -1,18 +1,13 @@
 package org.feup.cmov.acmeterminal.di
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import okhttp3.OkHttpClient
-import okio.Buffer
 import org.feup.cmov.acmeterminal.data.WebService
-import org.feup.cmov.acmeterminal.data.api.ValidateVoucherRequest
 import org.feup.cmov.acmeterminal.data.api.details.ApiResponseAdapterFactory
 import org.feup.cmov.acmeterminal.utils.WEB_SERVICE_URL
-import retrofit2.Invocation
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton

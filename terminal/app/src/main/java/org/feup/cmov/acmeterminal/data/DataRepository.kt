@@ -3,14 +3,15 @@ package org.feup.cmov.acmeterminal.data
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.feup.cmov.acmeterminal.data.api.ApiResponse
-import org.feup.cmov.acmeterminal.data.api.ValidateVoucherRequest
+import org.feup.cmov.acmeterminal.data.api.SubmitOrderRequest
+import org.feup.cmov.acmeterminal.data.api.SubmitOrderResponse
 import javax.inject.Inject
 
 class DataRepository @Inject constructor(
     private val webService: WebService
 ) {
 
-    suspend fun submitOrder(data: String): Resource<String> {
+    suspend fun submitOrder(data: String): Resource<SubmitOrderResponse> {
         return withContext(Dispatchers.IO) {
             val split = data.split('#')
 
@@ -21,7 +22,7 @@ class DataRepository @Inject constructor(
             val signature = userSignature[1]
 
             // Create request
-            val request = ValidateVoucherRequest(order = order)
+            val request = SubmitOrderRequest(order = order)
             val response = webService.submitOrder("$userId:$signature", request)
 
             when (response) {

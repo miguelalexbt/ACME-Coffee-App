@@ -34,7 +34,7 @@
             android:id="@+id/checkout_list_item_price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{@string/checkout_item_price(item.price, item.quantity, item.price * item.quantity)}"
+            android:text="@{@string/checkout_item_price(item.quantity, item.price * item.quantity)}"
             android:textAlignment="textEnd"
             android:textAppearance="?attr/textAppearanceBody2"
             android:textColor="?android:attr/textColorSecondary"
