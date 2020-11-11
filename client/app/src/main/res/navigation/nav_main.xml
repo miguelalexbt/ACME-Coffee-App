@@ -33,5 +33,9 @@
         android:name="org.feup.cmov.acmeclient.ui.payment.PaymentActivity"
         android:label="PaymentActivity"
         tools:layout="@layout/activity_payment" />
-    <include app:graph="@navigation/nav_payment" />
+    <fragment
+        android:id="@+id/pastOrdersFragment"
+        android:name="org.feup.cmov.acmeclient.ui.main.pastOrders.PastOrdersFragment"
+        android:label="PastOrdersFragment"
+        tools:layout="@layout/fragment_past_orders"/>
 </navigation>

@@ -10,14 +10,10 @@ import okio.Buffer
 import okio.ByteString
 import org.feup.cmov.acmeclient.utils.Crypto
 import org.feup.cmov.acmeclient.data.api.*
-import org.feup.cmov.acmeclient.data.db.ItemDao
-import org.feup.cmov.acmeclient.data.db.UserDao
-import org.feup.cmov.acmeclient.data.db.VoucherDao
-import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.cache.CachedOrder
 import org.feup.cmov.acmeclient.data.cache.CachedUser
-import org.feup.cmov.acmeclient.data.model.User
-import org.feup.cmov.acmeclient.data.model.Voucher
+import org.feup.cmov.acmeclient.data.db.*
+import org.feup.cmov.acmeclient.data.model.*
 import org.feup.cmov.acmeclient.ui.main.home.ItemView
 import org.feup.cmov.acmeclient.utils.Cache
 import java.io.IOException
@@ -28,7 +24,9 @@ class DataRepository @Inject constructor(
     private val webService: WebService,
     private val userDao: UserDao,
     private val itemDao: ItemDao,
-    private val voucherDao: VoucherDao
+    private val voucherDao: VoucherDao,
+    private val pastOrderDao: PastOrderDao,
+    private val receiptDao: ReceiptDao
 ) {
     // Auth
     val loggedInUser: CachedUser?
@@ -157,7 +155,7 @@ class DataRepository @Inject constructor(
 
     suspend fun fetchVouchers() {
         withContext(Dispatchers.IO) {
-            val response = webService.getVouchers(Cache.cachedUser.first()!!.userId)
+            val response = webService.getVouchers(loggedInUser!!.userId)
 
             // Update vouchers if needed
             if (response is ApiResponse.Success)
@@ -166,6 +164,39 @@ class DataRepository @Inject constructor(
     }
 
     // Order
+
+    fun getPastOrders(fetch: Boolean = true): Flow<Resource<List<PastOrder>>> = pastOrderDao.getAll(loggedInUser!!.userId)
+        .distinctUntilChanged()
+        .map { Resource.success(it) }
+        .onStart {
+            if (fetch) {
+                emit(Resource.loading(null))
+                fetchPastOrders()
+            }
+        }
+        .catch { emit(Resource.error(it.message!!)) }
+        .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
+        .flowOn(Dispatchers.IO)
+
+    fun getPastOrdersAsMap(): Flow<Resource<Map<String, PastOrder>>> = getPastOrders(fetch = false)
+        .map { orders ->
+            when (orders.status) {
+                Status.SUCCESS -> Resource.success(orders.data!!.associateBy({ it.id }, { it }))
+                else -> orders as Resource<Map<String, PastOrder>>
+            }
+        }
+
+    suspend fun fetchPastOrders() {
+        withContext(Dispatchers.IO) {
+            val response = webService.getPastOrders(loggedInUser!!.userId)
+
+            println(response)
+
+            // Update vouchers if needed
+            if (response is ApiResponse.Success)
+                pastOrderDao.insertAll(response.data!!)
+        }
+    }
 
     fun getOrder(): Flow<CachedOrder> = Cache.cachedOrder
         .distinctUntilChanged()
@@ -240,6 +271,32 @@ class DataRepository @Inject constructor(
             dataBuffer.readByteString().also {
                 dataBuffer.close()
             }
+        }
+    }
+
+    // Receipt
+
+    fun getReceipt(orderId: String, fetch: Boolean = true): Flow<Resource<Receipt>> = receiptDao.get(orderId)
+        .distinctUntilChanged()
+        .map { Resource.success(it) }
+        .onStart {
+            if (fetch) {
+                emit(Resource.loading(null))
+                fetchReceipt(orderId)
+            }
+        }
+        .catch { emit(Resource.error(it.message!!)) }
+        .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
+        .flowOn(Dispatchers.IO)
+
+    suspend fun fetchReceipt(orderId: String) {
+        println("fetching Receipt")
+        withContext(Dispatchers.IO) {
+            val response = webService.getOrderReceipt(orderId)
+
+            // Update vouchers if needed
+            if (response is ApiResponse.Success)
+                receiptDao.insert(response.data!!)
         }
     }
 

@@ -196,7 +196,7 @@ orderRouter.get('/:userId', authenticateClientRequest, async (req, res) => {
     const orders = await Order.find({
         userId: req.params.userId
     }).exec();
-
+    
     res.json(orders);
 });
 

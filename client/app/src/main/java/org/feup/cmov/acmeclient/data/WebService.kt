@@ -4,6 +4,8 @@ import org.feup.cmov.acmeclient.data.api.ApiResponse
 import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.api.SignUpRequest
 import org.feup.cmov.acmeclient.data.api.SignUpResponse
+import org.feup.cmov.acmeclient.data.model.PastOrder
+import org.feup.cmov.acmeclient.data.model.Receipt
 import org.feup.cmov.acmeclient.data.model.Voucher
 import retrofit2.http.*
 
@@ -21,6 +23,16 @@ interface WebService {
     @AuthenticatedRequest
     @GET("/vouchers")
     suspend fun getVouchers(@Query("userId") userId: String): ApiResponse<List<Voucher>>
+
+    // Orders
+    @AuthenticatedRequest
+    @GET("/orders/{userId}")
+    suspend fun getPastOrders(@Path("userId") userId: String): ApiResponse<List<PastOrder>>
+
+    // Receipts
+    @AuthenticatedRequest
+    @GET("/orders/{orderId}/receipt")
+    suspend fun getOrderReceipt(@Path("orderId") orderId: String): ApiResponse<Receipt>
 
     companion object {
         @Target(AnnotationTarget.FUNCTION)

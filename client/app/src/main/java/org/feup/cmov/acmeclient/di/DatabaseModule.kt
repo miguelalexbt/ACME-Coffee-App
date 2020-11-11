@@ -7,10 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.feup.cmov.acmeclient.data.db.AppDatabase
-import org.feup.cmov.acmeclient.data.db.ItemDao
-import org.feup.cmov.acmeclient.data.db.UserDao
-import org.feup.cmov.acmeclient.data.db.VoucherDao
+import org.feup.cmov.acmeclient.data.db.*
 import javax.inject.Singleton
 
 @Module
@@ -31,5 +28,11 @@ object DatabaseModule {
 
     @Provides
     fun provideVoucherDao(db: AppDatabase): VoucherDao = db.voucherDao()
+
+    @Provides
+    fun providePastOrderDao(db: AppDatabase): PastOrderDao = db.pastOrderDao()
+
+    @Provides
+    fun provideReceiptDao(db: AppDatabase): ReceiptDao = db.receiptDao()
 
 }
