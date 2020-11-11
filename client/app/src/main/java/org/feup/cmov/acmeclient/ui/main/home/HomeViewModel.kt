@@ -51,7 +51,6 @@ class HomeViewModel @ViewModelInject constructor(
 
     val itemsQuery: LiveData<Resource<List<Content<ItemView>>>> = dataRepository.getItems()
         .combine(_searchQuery.asFlow().distinctUntilChanged()) { items, query ->
-            println("items -> $items")
             when (items.status) {
                 Status.SUCCESS -> {
                     val filteredItems =
@@ -80,10 +79,7 @@ class HomeViewModel @ViewModelInject constructor(
                 Status.SUCCESS -> {
                     val filteredItems =
                         items.data?.filter { item ->
-                            dataRepository.loggedInUser?.userId in Gson().fromJson(
-                                item.usersFavorite,
-                                object : TypeToken<Set<String>>() {}.type
-                            ) as Set<String>
+                            dataRepository.loggedInUser?.userId in item.usersFavorite
                         }.takeIf { showOnlyFavorites }
                     Resource.success(filteredItems ?: items.data)
                 }
@@ -103,10 +99,7 @@ class HomeViewModel @ViewModelInject constructor(
                             it.price,
                             it.id in order.items.keys,
                             dataRepository.loggedInUser!!.userId in it.usersFavorite,
-                            Gson().fromJson(
-                                it.usersFavorite,
-                                object : TypeToken<Set<String?>>() {}.type
-                            )
+                            it.usersFavorite
                         )
                         Content(it.id, itemView)
                     })

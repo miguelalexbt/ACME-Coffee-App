@@ -1,6 +1,5 @@
 package org.feup.cmov.acmeclient.data
 
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -12,6 +11,7 @@ import org.feup.cmov.acmeclient.utils.Crypto
 import org.feup.cmov.acmeclient.data.api.*
 import org.feup.cmov.acmeclient.data.cache.CachedOrder
 import org.feup.cmov.acmeclient.data.cache.CachedUser
+import org.feup.cmov.acmeclient.data.db.details.ItemUpdate
 import org.feup.cmov.acmeclient.data.db.*
 import org.feup.cmov.acmeclient.data.model.*
 import org.feup.cmov.acmeclient.ui.main.home.ItemView
@@ -114,7 +114,7 @@ class DataRepository @Inject constructor(
             if (!usersFavorite.removeIf { id -> id == loggedInUser!!.userId })
                 usersFavorite.add(loggedInUser!!.userId)
 
-            itemDao.setFavoriteItems(item.id, Gson().toJson(usersFavorite))
+            itemDao.setFavoriteItems(ItemUpdate(item.id, usersFavorite))
         }
     }
 
