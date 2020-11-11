@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 //        supportActionBar?.hide()
 
+        // Ignore NFC
+        nfcAdapter?.setNdefPushMessage(null, this)
+
         binding.qrScan.setOnClickListener {
             scanQRCode()
         }

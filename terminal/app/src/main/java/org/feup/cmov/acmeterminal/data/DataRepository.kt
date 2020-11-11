@@ -10,8 +10,8 @@ class DataRepository @Inject constructor(
     private val webService: WebService
 ) {
 
-    suspend fun submitOrder(data: String) {
-        withContext(Dispatchers.IO) {
+    suspend fun submitOrder(data: String): Resource<String> {
+        return withContext(Dispatchers.IO) {
             val split = data.split('#')
 
             val order = split[0]
@@ -25,15 +25,9 @@ class DataRepository @Inject constructor(
             val response = webService.submitOrder("$userId:$signature", request)
 
             when (response) {
-                is ApiResponse.Success -> {
-                    println("RESPONSE: ${response.data}")
-                }
-                is ApiResponse.ApiError -> {
-                    println("API ERROR: ${response.error}")
-                }
-                is ApiResponse.NetworkError -> {
-                    println("NETWORK ERROR: ${response.error}")
-                }
+                is ApiResponse.Success -> Resource.success(response.data!!)
+                is ApiResponse.ApiError -> Resource.error(response.error)
+                is ApiResponse.NetworkError -> Resource.error(response.error)
             }
         }
     }
