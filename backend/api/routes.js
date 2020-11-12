@@ -269,7 +269,7 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
     );
 
     // - One offer voucher per coffee
-    const coffeeItems = validItems.reduce((acc, items) => acc + (items.type === 'coffee'), 0);
+    const coffeeItems = validItems.reduce((acc, item) => acc + (item.type === 'coffee' ? item.quantity : 0), 0);
     let coffeeVouchers = 0;
     validVouchers = validVouchers.filter(voucher =>
         voucher.type !== 'o' || coffeeVouchers < coffeeItems && (coffeeVouchers++, true)
@@ -281,12 +281,12 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
 });
 
 const createOrder = async (userId, items, vouchers) =>  {
-    const coffeeVouchers = vouchers.filter(voucher => voucher.type === 'o').length;
+    let coffeeVouchers = vouchers.filter(voucher => voucher.type === 'o').length;
     const hasDiscountVoucher = vouchers.some(voucher => voucher.type === 'd');
 
     // Ignore as many coffee items as coffee vouchers and calculate total
     let total = items
-        .filter(item => (item !== "coffee" || (!(coffeeVouchers > 0) || (coffeeVouchers--, false))))
+        .filter(item => (item.type !== "coffee" || (!(coffeeVouchers > 0) || (coffeeVouchers--, false))))
         .reduce((acc, item) => acc + item.price * item.quantity, 0.0);
 
     // Apply discount voucher
