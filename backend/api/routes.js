@@ -307,6 +307,7 @@ const createOrder = async (userId, items, vouchers) =>  {
         userId: userId,
         items: itemsMap,
         vouchers: vouchersArr,
+        vouchersType: vouchers.map(voucher => voucher.type),
         total: parseFloat(total.toFixed(2))
     });
 

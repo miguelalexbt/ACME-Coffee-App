@@ -71,14 +71,17 @@ const orderSchema = new Schema({
     userId: { type: String, required: true },
     items: { type: Map, of: Number, required: true },
     vouchers: { type: Array, of: String, required: true },
+    vouchersType: { type: Array, of: String, required: true },
     total: { type: Number, required: true }
 }, {
     timestamps: true,
     toJSON: {
         transform: (doc, ret) => {
             ret.id = ret._id;
+            ret.vouchers = ret.vouchersType;
             delete ret._id;
             delete ret.__v;
+            delete ret.vouchersType;
             delete ret.updatedAt;
             return ret;
         }
