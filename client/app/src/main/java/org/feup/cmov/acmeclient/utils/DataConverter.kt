@@ -15,4 +15,15 @@ class DataConverter {
     fun setToJson(value: Set<String>): String {
         return Gson().toJson(value)
     }
+
+    @TypeConverter
+    fun jsonToMap(value: String): Map<String, Int> {
+        val type = object : TypeToken<Map<String, Int>>() {}.type
+        return Gson().fromJson(value, type)
+    }
+
+    @TypeConverter
+    fun mapToJson(value: Map<String, Int>): String {
+        return Gson().toJson(value)
+    }
 }

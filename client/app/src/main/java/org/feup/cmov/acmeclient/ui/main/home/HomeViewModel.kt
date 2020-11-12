@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.data.DataRepository
@@ -44,10 +45,7 @@ class HomeViewModel @ViewModelInject constructor(
         _showOnlyFavorites.value = show
     }
 
-    val areFiltersActive: LiveData<Boolean> =
-        _categoriesFilter.asFlow().combine(_showOnlyFavorites.asFlow()) { categoriesFilter, show ->
-            categoriesFilter.isNotEmpty() || show
-        }.asLiveData()
+    val areFiltersActive = _categoriesFilter.asFlow().zip(_showOnlyFavorites.asFlow()) { l1, l2 -> l1.isNotEmpty() || l2 }.asLiveData()
 
     val itemsQuery: LiveData<Resource<List<Content<ItemView>>>> = dataRepository.getItems()
         .combine(_searchQuery.asFlow().distinctUntilChanged()) { items, query ->

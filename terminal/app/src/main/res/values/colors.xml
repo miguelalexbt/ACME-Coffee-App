@@ -11,4 +11,6 @@
     <color name="colorError">#ED4337</color>
     <color name="colorNavBar">#000000</color>
     <color name="colorTransparent">#00000000</color>
+
+    <color name="colorSplashScreenTextMadeBy">#646464</color>
 </resources>

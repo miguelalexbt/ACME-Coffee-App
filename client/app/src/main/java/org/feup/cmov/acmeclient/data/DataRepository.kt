@@ -167,7 +167,7 @@ class DataRepository @Inject constructor(
 
     fun getPastOrders(fetch: Boolean = true): Flow<Resource<List<PastOrder>>> = pastOrderDao.getAll(loggedInUser!!.userId)
         .distinctUntilChanged()
-        .map { Resource.success(it) }
+        .map { Resource.success(it.sortedByDescending { po -> po.number }) }
         .onStart {
             if (fetch) {
                 emit(Resource.loading(null))
@@ -189,8 +189,6 @@ class DataRepository @Inject constructor(
     suspend fun fetchPastOrders() {
         withContext(Dispatchers.IO) {
             val response = webService.getPastOrders(loggedInUser!!.userId)
-
-            println(response)
 
             // Update vouchers if needed
             if (response is ApiResponse.Success)
@@ -298,13 +296,13 @@ class DataRepository @Inject constructor(
         .flowOn(Dispatchers.IO)
 
     suspend fun fetchReceipt(orderId: String) {
-        println("fetching Receipt")
         withContext(Dispatchers.IO) {
             val response = webService.getOrderReceipt(orderId)
 
             // Update vouchers if needed
-            if (response is ApiResponse.Success)
-                receiptDao.insert(response.data!!)
+            if (response is ApiResponse.Success) {
+                receiptDao.insert(response.data!!.copy(orderId = orderId))
+            }
         }
     }
 

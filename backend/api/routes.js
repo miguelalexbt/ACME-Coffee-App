@@ -196,7 +196,7 @@ orderRouter.get('/:userId', authenticateClientRequest, async (req, res) => {
     const orders = await Order.find({
         userId: req.params.userId
     }).exec();
-    
+
     res.json(orders);
 });
 
@@ -301,15 +301,14 @@ const createOrder = async (userId, items, vouchers) =>  {
     await Voucher
         .where('_id').in(vouchersArr)
         .updateMany({ 'used': true });
-
+        
     // - Add new vouchers
-    user.consumedCoffees += items.reduce((acc, item) => acc + (item.type === 'coffee'), 0);
+    user.consumedCoffees += items.reduce((acc, item) => acc + (item.type === 'coffee' ? item.quantity : 0), 0);
     user.accumulatedPayedValue = parseFloat((user.accumulatedPayedValue + total).toFixed(2));
 
     // -- Offer vouchers
     const newCoffeeVouchers = Math.floor(user.consumedCoffees / 3);
     user.consumedCoffees -= newCoffeeVouchers * 3;
-
     await Promise.all([...Array(newCoffeeVouchers).keys()].map(_ => {
         return (new Voucher({ _id: uuidv4(), userId: userId, type: 'o' })).save();
     }));

@@ -25,6 +25,7 @@ import org.feup.cmov.acmeclient.databinding.FragmentVouchersBinding
 import org.feup.cmov.acmeclient.databinding.PastOrdersListItemBinding
 import org.feup.cmov.acmeclient.databinding.VouchersListItemBinding
 import org.feup.cmov.acmeclient.ui.main.home.ItemDialogFragment
+import java.text.SimpleDateFormat
 
 @AndroidEntryPoint
 class PastOrdersFragment : Fragment() {
@@ -48,8 +49,8 @@ class PastOrdersFragment : Fragment() {
             { binding, pastOrderContent ->
                 (binding as PastOrdersListItemBinding).apply {
                     pastOrderView = pastOrderContent.content
-                    order_view_receipt.setOnClickListener {
-                        ReceiptDialogFragment(pastOrderContent.content.id).show(
+                    orderViewReceipt.setOnClickListener {
+                        ReceiptDialogFragment(pastOrderContent.content).show(
                             requireActivity().supportFragmentManager,
                             ReceiptDialogFragment.TAG
                         )

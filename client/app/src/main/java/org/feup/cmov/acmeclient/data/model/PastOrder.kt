@@ -17,6 +17,11 @@ data class PastOrder(
     @Expose
     val userId: String = "",
 
+    @ColumnInfo(name = "number")
+    @SerializedName("number")
+    @Expose
+    val number: Int = -1,
+
     @ColumnInfo(name = "createdAt")
     @SerializedName("createdAt")
     @Expose
@@ -25,12 +30,12 @@ data class PastOrder(
     @ColumnInfo(name = "items")
     @SerializedName("items")
     @Expose
-    val items: String = "{}",
+    val items: Map<String, Int> = emptyMap(),
 
     @ColumnInfo(name = "vouchers")
     @SerializedName("vouchers")
     @Expose
-    val vouchers: String = "[]",
+    val vouchers: Set<String> = emptySet(),
 
     @ColumnInfo(name = "total")
     @SerializedName("total")
