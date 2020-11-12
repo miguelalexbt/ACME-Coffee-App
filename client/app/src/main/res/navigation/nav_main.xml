@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_checkoutFragment"
             app:destination="@id/checkoutFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_authActivity"
+            app:destination="@id/authActivity" />
     </fragment>
     <fragment
         android:id="@+id/vouchersFragment"
@@ -38,4 +41,9 @@
         android:name="org.feup.cmov.acmeclient.ui.main.pastOrders.PastOrdersFragment"
         android:label="PastOrdersFragment"
         tools:layout="@layout/fragment_past_orders"/>
+    <activity
+        android:id="@+id/authActivity"
+        android:name="org.feup.cmov.acmeclient.ui.auth.AuthActivity"
+        android:label="AuthActivity"
+        tools:layout="@layout/activity_auth"/>
 </navigation>

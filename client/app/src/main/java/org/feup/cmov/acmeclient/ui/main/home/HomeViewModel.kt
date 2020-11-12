@@ -175,5 +175,10 @@ class HomeViewModel @ViewModelInject constructor(
         }
     }
 
+    fun signOut() {
+        viewModelScope.launch {
+            dataRepository.signOut()
+        }
+    }
 }
 

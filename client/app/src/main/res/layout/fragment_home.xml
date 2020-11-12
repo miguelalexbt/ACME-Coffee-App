@@ -37,15 +37,26 @@
             tools:tint="@color/colorPrimary"
             tools:backgroundTint="@color/colorLighterGray"/>
 
+        <ImageButton
+            android:id="@+id/sign_out_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/white_rectangle_background"
+            android:backgroundTint="@color/colorLighterGray"
+            android:tint="@color/colorPrimary"
+            android:src="@drawable/ic_baseline_login_24"
+            tools:tint="@color/colorPrimary"
+            tools:backgroundTint="@color/colorLighterGray"/>
+
         <androidx.constraintlayout.helper.widget.Flow
             android:id="@+id/search_filter_flow"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_marginTop="8dp"
             android:layout_marginHorizontal="8dp"
-            app:constraint_referenced_ids="search_box,filter_button"
+            app:constraint_referenced_ids="search_box,filter_button,sign_out_button"
             app:flow_horizontalStyle="spread"
-            app:flow_maxElementsWrap="2"
+            app:flow_maxElementsWrap="3"
             app:flow_wrapMode="chain"
             app:flow_horizontalGap="6dp"
             app:layout_constraintTop_toTopOf="parent"

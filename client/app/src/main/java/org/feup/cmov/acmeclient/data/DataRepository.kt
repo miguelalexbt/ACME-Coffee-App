@@ -84,6 +84,12 @@ class DataRepository @Inject constructor(
         }
     }
 
+    suspend fun signOut() {
+        withContext(Dispatchers.IO) {
+            Cache.cacheUser(null)
+        }
+    }
+
     // Items
 
     fun getItems(fetch: Boolean = true): Flow<Resource<List<Item>>> = itemDao.getAll()

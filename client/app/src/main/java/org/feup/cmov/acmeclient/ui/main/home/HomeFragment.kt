@@ -11,14 +11,12 @@ import android.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.feup.cmov.acmeclient.R
@@ -55,6 +53,19 @@ class HomeFragment : Fragment() {
                 requireActivity().supportFragmentManager,
                 FilterBottomDialogFragment.TAG
             )
+        }
+
+        binding.signOutButton.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Sign out")
+                .setMessage("Are you sure you want to sign out?")
+                .setPositiveButton("Yes") { _, _ ->
+                    viewModel.signOut()
+                    findNavController().navigate(R.id.action_homeFragment_to_authActivity)
+                    activity?.finish()
+                }
+                .setNegativeButton("No") { _, _ -> }
+                .show()
         }
 
         val adapter = GenericListAdapter<ItemView, HomeListItemBinding>(
