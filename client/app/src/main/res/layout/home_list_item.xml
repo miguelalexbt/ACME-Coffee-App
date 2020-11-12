@@ -65,14 +65,17 @@
 
             <TextView
                 android:id="@+id/list_item_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:text="@{item.name}"
+                android:scrollHorizontally="true"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textAppearance="?attr/textAppearanceLargePopupMenu"
                 tools:layout_editor_absoluteX="5dp"
                 tools:layout_editor_absoluteY="105dp"
-                tools:text="Latte" />
+                tools:text="Cinnamon Swirlaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
 
             <TextView
                 android:id="@+id/list_item_price"
@@ -93,6 +96,7 @@
                 app:constraint_referenced_ids="list_item_name,list_item_price"
                 app:flow_horizontalStyle="spread_inside"
                 app:flow_maxElementsWrap="2"
+                app:flow_horizontalGap="5dp"
                 app:flow_wrapMode="chain"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

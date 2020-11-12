@@ -32,7 +32,7 @@
                 android:layout_height="100dp"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/logo"
-                app:layout_constraintHorizontal_weight="0.6"
+                app:layout_constraintHorizontal_weight="0.7"
                 tools:srcCompat="@drawable/logo" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -59,7 +59,7 @@
                     style="?attr/materialButtonOutlinedStyle"
                     android:backgroundTint="@{voucher.isSelected ? @color/colorPrimary : @color/design_default_color_background}"
                     android:textColor="@{voucher.isSelected ? @color/design_default_color_background : @color/colorPrimary}"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     app:layout_constraintHorizontal_weight="0.65"
                     android:text="@{voucher.isSelected ? @string/remove_item : @string/add_item}"
@@ -75,10 +75,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:constraint_referenced_ids="list_item_description,list_item_add"
-                    app:flow_verticalGap="0dp"
+                    android:paddingBottom="5dp"
                     app:flow_verticalStyle="spread_inside"
                     app:flow_wrapMode="chain"
-                    app:flow_maxElementsWrap="2"
+                    app:flow_maxElementsWrap="1"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
@@ -86,7 +86,7 @@
                 <TextView
                     android:id="@+id/list_item_warning"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:text="@string/vouchers_warning"
                     android:textAlignment="center"
                     android:gravity="center"

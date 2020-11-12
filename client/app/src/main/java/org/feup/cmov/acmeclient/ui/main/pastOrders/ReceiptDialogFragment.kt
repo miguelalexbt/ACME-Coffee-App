@@ -48,6 +48,8 @@ class ReceiptDialogFragment(
 
         binding.total = pastOrder.total
         binding.orderNumber = pastOrder.number
+        binding.hasVouchers = pastOrder.vouchers.isNotEmpty()
+
         binding.closeReceiptButton.setOnClickListener {
             dismiss()
         }
