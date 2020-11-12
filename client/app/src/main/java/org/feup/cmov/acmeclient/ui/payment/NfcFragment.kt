@@ -34,10 +34,10 @@ class NfcFragment: Fragment() {
         binding = FragmentNfcBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
-        nfcAdapter?.setOnNdefPushCompleteCallback({
-            viewModel.clearOrder()
-            activity?.finish()
-        }, activity)
+//        nfcAdapter?.setOnNdefPushCompleteCallback({
+//            viewModel.clearOrder()
+//            activity?.finish()
+//        }, activity)
 
         viewModel.setNfcStatus(nfcAdapter?.isEnabled ?: false)
 

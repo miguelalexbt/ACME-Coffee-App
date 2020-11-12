@@ -56,6 +56,7 @@ class VouchersFragment : Fragment() {
 
         binding.vouchersRecyclerView.adapter = adapter
         binding.vouchersRefreshLayout.setOnRefreshListener { viewModel.fetchVouchers() }
+        binding.vouchersRefreshLayoutEmpty.setOnRefreshListener { viewModel.fetchVouchers() }
 
         subscribeUi(adapter)
 
@@ -66,12 +67,15 @@ class VouchersFragment : Fragment() {
         viewModel.refreshing.observe(viewLifecycleOwner, {
             val refreshing = it ?: return@observe
             binding.vouchersRefreshLayout.isRefreshing = refreshing
+            binding.vouchersRefreshLayoutEmpty.isRefreshing = refreshing
         })
 
         viewModel.vouchers.observe(viewLifecycleOwner, {
             val vouchers = it ?: return@observe
 
+            binding.hasVouchers = !vouchers.data.isNullOrEmpty()
             binding.vouchersRefreshLayout.isRefreshing = vouchers.status == Status.LOADING
+            binding.vouchersRefreshLayoutEmpty.isRefreshing = vouchers.status == Status.LOADING
 
             if (vouchers.status == Status.SUCCESS)
                 adapter.submitList(vouchers.data)

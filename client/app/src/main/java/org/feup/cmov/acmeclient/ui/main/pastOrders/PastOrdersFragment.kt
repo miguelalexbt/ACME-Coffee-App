@@ -62,6 +62,7 @@ class PastOrdersFragment : Fragment() {
 
         binding.pastOrdersRecyclerView.adapter = adapter
         binding.pastOrdersRefreshLayout.setOnRefreshListener { viewModel.fetchPastOrders() }
+        binding.pastOrdersRefreshLayoutEmpty.setOnRefreshListener { viewModel.fetchPastOrders() }
 
         subscribeUi(adapter)
 
@@ -72,12 +73,15 @@ class PastOrdersFragment : Fragment() {
         viewModel.refreshing.observe(viewLifecycleOwner, {
             val refreshing = it ?: return@observe
             binding.pastOrdersRefreshLayout.isRefreshing = refreshing
+            binding.pastOrdersRefreshLayoutEmpty.isRefreshing = refreshing
         })
 
         viewModel.pastOrders.observe(viewLifecycleOwner, {
             val pastOrders = it ?: return@observe
 
+            binding.hasOrders = !pastOrders.data.isNullOrEmpty()
             binding.pastOrdersRefreshLayout.isRefreshing = pastOrders.status == Status.LOADING
+            binding.pastOrdersRefreshLayoutEmpty.isRefreshing = pastOrders.status == Status.LOADING
 
             if (pastOrders.status == Status.SUCCESS)
                 adapter.submitList(pastOrders.data)

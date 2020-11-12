@@ -102,7 +102,7 @@ class DataRepository @Inject constructor(
             }
         }
         .catch { emit(Resource.error(it.message!!)) }
-        .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
+//        .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
         .flowOn(Dispatchers.IO)
 
     fun getItemsAsMap(): Flow<Resource<Map<String, Item>>> = getItems(fetch = false)
@@ -181,7 +181,7 @@ class DataRepository @Inject constructor(
             }
         }
         .catch { emit(Resource.error(it.message!!)) }
-        .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
+//        .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
         .flowOn(Dispatchers.IO)
 
     fun getPastOrdersAsMap(): Flow<Resource<Map<String, PastOrder>>> = getPastOrders(fetch = false)

@@ -34,6 +34,10 @@
     <string name="error_required">This field is required</string>
     <string name="error_invalid">This field is invalid</string>
 
+    <string name="no_items_available">No items available</string>
+    <string name="no_vouchers_available">No vouchers available</string>
+    <string name="no_orders_available">No orders available</string>
+
     <!--List voucher-->
     <string name="add_item">Add</string>
     <string name="remove_item">Remove</string>

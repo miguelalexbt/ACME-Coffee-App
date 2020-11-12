@@ -108,6 +108,7 @@ class HomeFragment : Fragment() {
 
         binding.homeRecyclerView.adapter = adapter
         binding.homeRefreshLayout.setOnRefreshListener { viewModel.fetchItems() }
+        binding.homeRefreshLayoutEmpty.setOnRefreshListener { viewModel.fetchItems() }
 
         binding.viewCartFlowLayout.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_checkoutFragment)
@@ -160,6 +161,7 @@ class HomeFragment : Fragment() {
         viewModel.refreshing.observe(viewLifecycleOwner, {
             val refreshing = it ?: return@observe
             binding.homeRefreshLayout.isRefreshing = refreshing
+            binding.homeRefreshLayoutEmpty.isRefreshing = refreshing
         })
 
         viewModel.cartState.observe(viewLifecycleOwner, {
@@ -174,7 +176,9 @@ class HomeFragment : Fragment() {
         viewModel.itemsQuery.observe(viewLifecycleOwner) {
             val items = it ?: return@observe
 
+            binding.hasItems = !items.data.isNullOrEmpty()
             binding.homeRefreshLayout.isRefreshing = items.status == Status.LOADING
+            binding.homeRefreshLayoutEmpty.isRefreshing = items.status == Status.LOADING
 
             if (items.status == Status.SUCCESS)
                 adapter.submitList(items.data)
