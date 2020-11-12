@@ -7,5 +7,5 @@ data class PastOrderView(
     val createdAt: String,
     val total: Double,
     val items: Map<String, Int>,
-    val vouchers: Set<String>
+    val vouchers: List<String>
 )

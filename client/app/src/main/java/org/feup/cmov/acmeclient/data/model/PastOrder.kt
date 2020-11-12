@@ -38,7 +38,7 @@ data class PastOrder(
     @ColumnInfo(name = "vouchers")
     @SerializedName("vouchers")
     @Expose
-    val vouchers: Set<String> = emptySet(),
+    val vouchers: List<String> = emptyList(),
 
     @ColumnInfo(name = "total")
     @SerializedName("total")

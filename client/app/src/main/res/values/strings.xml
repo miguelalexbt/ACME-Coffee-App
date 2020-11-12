@@ -40,9 +40,9 @@
 
     <!--List voucher-->
     <string name="add_item">Add</string>
-    <string name="remove_item">Remove</string>
+    <string name="remove_item">Added</string>
     <string name="vouchers_offer_description">Free coffee</string>
-    <string name="vouchers_discount_description">5% discount</string>
+    <string name="vouchers_discount_description">5% Discount</string>
     <string name="vouchers_warning">Can only select one</string>
 
     <!--Checkout-->
@@ -67,9 +67,10 @@
     <string name="nfc_not_available">NFC is not available on this device</string>
     <string name="nfc_disabled">NFC disabled on this device. Turn on to proceed</string>
 
-    Receipt
+    <!--Receipt-->
     <string name="receipt_tax_no"><small>TAX No.</small></string>
     <string name="cc_number_format">&#8226;&#8226;&#8226;&#8226; %1$s</string>
+    <string name="receipt_title">Receipt - Order #%1$d</string>
 
     <string name="qrcode_content_description">qrcode</string>
     <string name="item_dialog_save_button">SAVE</string>

@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="@string/vouchers_title"
             android:textColor="@color/colorNavBar"
-            android:textStyle="bold"
+            android:layout_marginTop="5dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:gravity="center"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="5dp"
             android:background="@color/colorNavBar"
             app:layout_constraintTop_toBottomOf="@id/vouchers_title" />
 
@@ -37,7 +38,9 @@
             android:id="@+id/vouchers_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="5dp"
             app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintBottom_toBottomOf="parent"
             isGone="@{!hasVouchers}">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -54,7 +57,9 @@
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/vouchers_refresh_layout_empty"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintBottom_toBottomOf="parent"
             isGone="@{hasVouchers}">
 
             <TextView

@@ -26,4 +26,15 @@ class DataConverter {
     fun mapToJson(value: Map<String, Int>): String {
         return Gson().toJson(value)
     }
+
+    @TypeConverter
+    fun jsonToList(value: String): List<String> {
+        val type = object : TypeToken<List<String>>() {}.type
+        return Gson().fromJson(value, type)
+    }
+
+    @TypeConverter
+    fun listToJson(value: List<String>): String {
+        return Gson().toJson(value)
+    }
 }

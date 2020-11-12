@@ -14,6 +14,7 @@ import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.event.EventObserver
 import org.feup.cmov.acmeclient.databinding.FragmentVouchersBinding
 import org.feup.cmov.acmeclient.databinding.VouchersListItemBinding
+import org.feup.cmov.acmeclient.utils.WEB_SERVICE_URL
 
 @AndroidEntryPoint
 class VouchersFragment : Fragment() {
@@ -38,10 +39,15 @@ class VouchersFragment : Fragment() {
                 (binding as VouchersListItemBinding).apply {
                     voucher = voucherContent.content
 
+                    val icon = if (voucherContent.content.type == 'o')
+                        org.feup.cmov.acmeclient.R.drawable.offercoffee
+                    else
+                        org.feup.cmov.acmeclient.R.drawable.discount
+
                     Picasso.get()
-                        .load("https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Acme_Markets_lolo.svg/2560px-Acme_Markets_lolo.svg.png")
-                        .placeholder(org.feup.cmov.acmeclient.R.drawable.ic_baseline_home_24)
-                        .error(org.feup.cmov.acmeclient.R.drawable.ic_baseline_remove_circle_outline_24)
+                        .load(icon)
+                        .placeholder(org.feup.cmov.acmeclient.R.drawable.logo)
+                        .error(org.feup.cmov.acmeclient.R.drawable.ic_baseline_image_not_supported_24)
                         .fit()
                         .centerCrop()
                         .into(listItemImage);

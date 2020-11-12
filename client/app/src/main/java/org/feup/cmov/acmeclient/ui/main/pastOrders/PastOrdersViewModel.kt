@@ -101,47 +101,26 @@ class PastOrdersViewModel @ViewModelInject constructor(
             .asLiveData()
     }
 
-    fun getOrderVouchers(orderVouchers: Set<String>): LiveData<Resource<List<Content<VoucherView>>>> {
-        return flowOf(orderVouchers)
-            .combine(dataRepository.getVouchersAsMap()) { orderItems, allVouchers ->
-                when (allVouchers.status) {
-                    Status.LOADING -> {
-                        Resource.loading(null)
-                    }
-                    Status.SUCCESS -> {
-                        Resource.success(orderItems.map {
-                            val voucher = allVouchers.data!![it] ?: error("no voucher key ${it}")
-                            Content(it, VoucherView(voucher.type))
-                        })
-                    }
-                    Status.ERROR -> {
-                        _uiEvent.value = UiEvent(error = R.string.error_unknown)
-                        Resource.error(allVouchers.message!!)
-                    }
-                }
-            }
-            .asLiveData()
-    }
-
-//
-//    val vouchers: LiveData<Resource<List<Content<VoucherView>>>> = dataRepository.getOrder()
-//        .combine(dataRepository.getVouchersAsMap()) { order, vouchers ->
-//            when (vouchers.status) {
-//                Status.SUCCESS -> {
-//                    val orderVouchers = if (order.discountVoucher != null)
-//                        order.offerVouchers + order.discountVoucher
-//                    else
-//                        order.offerVouchers
-//
-//                    Resource.success(orderVouchers.map {
-//                        val voucher = vouchers.data!![it] ?: error("no voucher key $it")
-//                        Content(voucher.id, VoucherView(voucher.type))
-//                    })
+//    fun getOrderVouchers(orderVouchers: Set<String>): LiveData<Resource<List<Content<VoucherView>>>> {
+//        return flowOf(orderVouchers)
+//            .combine(dataRepository.getVouchersAsMap()) { orderItems, allVouchers ->
+//                when (allVouchers.status) {
+//                    Status.LOADING -> {
+//                        Resource.loading(null)
+//                    }
+//                    Status.SUCCESS -> {
+//                        Resource.success(orderItems.map {
+//                            val voucher = allVouchers.data!![it] ?: error("no voucher key ${it}")
+//                            Content(it, VoucherView(voucher.type))
+//                        })
+//                    }
+//                    Status.ERROR -> {
+//                        _uiEvent.value = UiEvent(error = R.string.error_unknown)
+//                        Resource.error(allVouchers.message!!)
+//                    }
 //                }
-//                else -> vouchers as Resource<List<Content<VoucherView>>>
 //            }
-//        }
-//        .asLiveData()
-
+//            .asLiveData()
+//    }
 
 }

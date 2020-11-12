@@ -9,6 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.R
+import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.adapter.GenericListAdapter
 import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.databinding.CheckoutListItemBinding
@@ -46,6 +47,7 @@ class ReceiptDialogFragment(
         binding.lifecycleOwner = this
 
         binding.total = pastOrder.total
+        binding.orderNumber = pastOrder.number
         binding.closeReceiptButton.setOnClickListener {
             dismiss()
         }
@@ -78,13 +80,6 @@ class ReceiptDialogFragment(
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        binding.numberPicker.value = initialItemQuantity
-//        binding.numberPicker.wrapSelectorWheel = false;
-//        setupClickListeners()
-    }
-
     override fun onStart() {
         super.onStart()
         dialog?.window?.setLayout(
@@ -106,12 +101,6 @@ class ReceiptDialogFragment(
             }
         })
 
-//        viewModel.isLoading.observe(viewLifecycleOwner, {
-//            val isLoading = it ?: return@observe
-//
-//            binding.isLoading = isLoading
-//        })
-
         viewModel.getOrderItems(pastOrder.items).observe(viewLifecycleOwner, {
             val items = it ?: return@observe
 
@@ -119,32 +108,9 @@ class ReceiptDialogFragment(
                 itemAdapter.submitList(items.data)
         })
 
-        viewModel.getOrderVouchers(pastOrder.vouchers).observe(viewLifecycleOwner, {
-            val vouchers = it ?: return@observe
-
-            if (vouchers.status == Status.SUCCESS) {
-                binding.hasVouchers = vouchers.data!!.isNotEmpty()
-                voucherAdapter.submitList(vouchers.data)
-            }
+        voucherAdapter.submitList(pastOrder.vouchers.map {
+            Content(it, VoucherView(it.toCharArray()[0]))
         })
-//
-//        viewModel.total.observe(viewLifecycleOwner, {
-//            val total = it ?: return@observe
-//
-//            if (total.status == Status.SUCCESS)
-//                binding.total = total.data
-//        })
     }
-
-//    private fun setupClickListeners() {
-//        binding.itemDialogCancelButton.setOnClickListener {
-//            dismiss()
-//        }
-//
-//        binding.itemDialogSaveButton.setOnClickListener {
-//            saveOperation(dialogItem, binding.numberPicker.value)
-//            dismiss()
-//        }
-//    }
 
 }

@@ -163,7 +163,7 @@ let voucherRouter = express.Router();
 
 voucherRouter.get('/populate', async (req, res) => {
 
-    const userId = 'a22b6777-c05b-48a2-9c55-862ab16f093d';
+    const userId = '32015c92-8f69-4a99-a2bc-f64796ebfcdf';
 
     await new Voucher({
         _id: uuidv4(),
