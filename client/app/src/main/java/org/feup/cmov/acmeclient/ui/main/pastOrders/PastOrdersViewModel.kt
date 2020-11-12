@@ -4,22 +4,15 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.data.DataRepository
 import org.feup.cmov.acmeclient.data.Resource
 import org.feup.cmov.acmeclient.data.Status
-import org.feup.cmov.acmeclient.data.model.PastOrder
 import org.feup.cmov.acmeclient.data.model.Receipt
 import org.feup.cmov.acmeclient.ui.main.checkout.ItemView
 import org.feup.cmov.acmeclient.ui.main.checkout.VoucherView
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
 class PastOrdersViewModel @ViewModelInject constructor(

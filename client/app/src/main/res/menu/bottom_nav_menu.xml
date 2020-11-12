@@ -4,21 +4,21 @@
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_baseline_home_24"
-        android:title="Home" />
+        android:title="@string/home_title" />
 
     <item
         android:id="@+id/vouchersFragment"
         android:icon="@drawable/ic_baseline_bookmark_24"
-        android:title="Vouchers" />
+        android:title="@string/vouchers_title" />
 
     <item
         android:id="@+id/pastOrdersFragment"
-        android:icon="@drawable/ic_baseline_backpack_24"
-        android:title="Past Orders" />
+        android:icon="@drawable/ic_baseline_receipt_long_24"
+        android:title="@string/past_orders_title" />
 
     <item
         android:id="@+id/checkoutFragment"
-        android:icon="@drawable/ic_baseline_payment_24"
-        android:title="Checkout" />
+        android:icon="@drawable/ic_baseline_payments_24"
+        android:title="@string/checkout_title" />
 
 </menu>

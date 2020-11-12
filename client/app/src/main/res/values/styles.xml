@@ -43,8 +43,6 @@
 
     <style name="FullScreenDialogStyle" parent="AppTheme">
         <item name="android:windowNoTitle">true</item>
-<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
 
         <!-- Set this to true if you want Full Screen without status bar -->
         <item name="android:windowFullscreen">false</item>
@@ -53,10 +51,11 @@
 
         <!-- This is important! Don't forget to set window background -->
         <item name="android:windowBackground">@color/design_default_color_background</item>
+    </style>
 
-        <!-- Additionally if you want animations when dialog opening -->
-<!--        <item name="android:windowEnterAnimation">@anim/slide_up</item>-->
-<!--        <item name="android:windowExitAnimation">@anim/slide_down</item>-->
+    <style name="FullScreenDialogStyleAnim">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
     </style>
 
     <style name="SplashScreenTheme" parent="Theme.AppCompat.NoActionBar">

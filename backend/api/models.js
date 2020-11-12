@@ -28,7 +28,7 @@ const userSchema = new Schema({
 
 // Item schema
 const itemSchema = new Schema({
-    type: { type: String, enum: ['food', 'drink', 'coffee'], required: true },
+    type: { type: String, enum: ['food', 'drink', 'coffee', 'breakfast', 'pastry'], required: true },
     name: { type: String, required: true },
     price: { type: Number, required: true }
 }, {

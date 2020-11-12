@@ -49,6 +49,8 @@ class ReceiptDialogFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        dialog?.window?.attributes?.windowAnimations = R.style.FullScreenDialogStyleAnim
+
         binding = ReceiptDialogBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 

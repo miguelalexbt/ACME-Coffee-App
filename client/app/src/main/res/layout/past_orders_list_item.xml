@@ -28,6 +28,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceSubtitle2"
+                android:textSize="16sp"
                 android:text="@{ `Order #` + String.valueOf(pastOrderView.number) }"
                 android:textAlignment="center"
                 android:gravity="center"
@@ -39,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceCaption"
                 android:text="@{ pastOrderView.createdAt }"
+                android:textSize="13sp"
                 android:textAlignment="center"
                 tools:text="4 Nov 2020, 14:02" />
 
@@ -62,6 +64,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceSubtitle1"
                 android:text="@{ `Total: ` + String.format(`%.2f`, pastOrderView.total) + ` €` }"
+                android:textSize="18sp"
                 android:textAlignment="center"
                 android:gravity="center"
                 tools:text="Total: 41.20 €" />
