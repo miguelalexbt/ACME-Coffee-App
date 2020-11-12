@@ -3,9 +3,7 @@ package org.feup.cmov.acmeterminal.data
 import org.feup.cmov.acmeterminal.data.api.ApiResponse
 import org.feup.cmov.acmeterminal.data.api.SubmitOrderRequest
 import org.feup.cmov.acmeterminal.data.api.SubmitOrderResponse
-import retrofit2.http.Body
-import retrofit2.http.Header
-import retrofit2.http.PUT
+import retrofit2.http.*
 
 interface WebService {
 

@@ -36,6 +36,7 @@ class OrderActivity : AppCompatActivity() {
             intent.getStringExtra("ORDER"),
             type
         )
+
         println(order)
 
         val o = order.data!!
@@ -55,6 +56,10 @@ class OrderActivity : AppCompatActivity() {
 
         binding.orderVouchersRecyclerView.adapter = adapter
         binding.total = o.total
+        binding.hasVouchers = order.data.vouchers.isNotEmpty()
+        binding.dismiss.setOnClickListener {
+            finish()
+        }
 
         adapter.submitList(o.vouchers.map {
             Content(

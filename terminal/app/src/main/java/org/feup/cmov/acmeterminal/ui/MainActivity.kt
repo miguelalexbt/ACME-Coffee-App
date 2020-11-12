@@ -8,12 +8,11 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -23,9 +22,9 @@ import kotlinx.coroutines.launch
 import org.feup.cmov.acmeterminal.MainApplication.Companion.context
 import org.feup.cmov.acmeterminal.R
 import org.feup.cmov.acmeterminal.data.Status
-import org.feup.cmov.acmeterminal.data.event.EventObserver
 import org.feup.cmov.acmeterminal.databinding.ActivityMainBinding
 import org.feup.cmov.acmeterminal.ui.order.OrderActivity
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -153,6 +152,13 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this@MainActivity, OrderActivity::class.java)
                 intent.putExtra("ORDER", Gson().toJson(order))
                 startActivity(intent)
+            } else if (order.status == Status.ERROR) {
+                val builder = AlertDialog.Builder(this@MainActivity)
+                builder.setView(layoutInflater.inflate(R.layout.order_error_dialog, null))
+                    .setPositiveButton("Retry") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
             }
         }
     }

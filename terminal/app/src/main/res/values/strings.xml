@@ -9,5 +9,6 @@
 
     <string name="checkout_total_description">Total:</string>
     <string name="checkout_total_price">%1$1.2f€</string>
+    <string name="dismiss">Dismiss</string>
 
 </resources>

@@ -111,15 +111,15 @@ let itemRouter = express.Router();
 itemRouter.get('/populate', async (req, res) => {
     await new Item({ name: 'Sandwich', type: 'food', price: 4.50 }).save();
     await new Item({ name: 'Vanilla Puff', type: 'pastry', price: 2.30 }).save();
-    await new Item({ name: 'Americano', type: 'coffee', price: 0.80 }).save();
+    await new Item({ name: 'Americano', type: 'coffee drink', price: 0.80 }).save();
     await new Item({ name: 'Coca-Cola', type: 'drink', price: 1.00 }).save();
-    await new Item({ name: 'Latte', type: 'coffee', price: 3.99 }).save();
-    await new Item({ name: 'Mochaccino', type: 'coffee', price: 4.10 }).save();
-    await new Item({ name: 'Cappuccino', type: 'coffee', price: 2.99 }).save();
+    await new Item({ name: 'Latte', type: 'coffee drink', price: 3.99 }).save();
+    await new Item({ name: 'Mochaccino', type: 'coffee drink', price: 4.10 }).save();
+    await new Item({ name: 'Cappuccino', type: 'coffee drink', price: 2.99 }).save();
     await new Item({ name: 'Croissant', type: 'pastry', price: 2.50 }).save();
     await new Item({ name: 'Water', type: 'drink', price: 0.99 }).save();
     await new Item({ name: 'Expresso', type: 'coffee', price: 0.70 }).save();
-    await new Item({ name: 'Nitro Cold Brew', type: 'coffee', price: 2.70 }).save();
+    await new Item({ name: 'Nitro Cold Brew', type: 'coffee drink', price: 2.70 }).save();
     await new Item({ name: 'Pancakes', type: 'breakfast', price: 4.00 }).save();
     await new Item({ name: 'Cinnamon Swirl', type: 'pastry', price: 2.70 }).save();
     await new Item({ name: 'Muffin', type: 'pastry', price: 1.50 }).save();
@@ -133,7 +133,7 @@ itemRouter.get('/populate', async (req, res) => {
     await new Item({ name: 'Chicken Wrap', type: 'food', price: 5.50 }).save();
     await new Item({ name: 'Vegan Wrap', type: 'food', price: 6.00 }).save();
     await new Item({ name: 'Tuna Panini', type: 'food', price: 6.20 }).save();
-    await new Item({ name: 'Frappuccino', type: 'coffee', price: 4.50 }).save();
+    await new Item({ name: 'Frappuccino', type: 'coffee drink', price: 4.50 }).save();
     
     res.sendStatus(200);
 });
