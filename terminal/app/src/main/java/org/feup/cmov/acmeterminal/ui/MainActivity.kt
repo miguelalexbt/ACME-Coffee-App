@@ -14,10 +14,17 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.feup.cmov.acmeterminal.MainApplication.Companion.context
 import org.feup.cmov.acmeterminal.R
+import org.feup.cmov.acmeterminal.data.Status
+import org.feup.cmov.acmeterminal.data.event.EventObserver
 import org.feup.cmov.acmeterminal.databinding.ActivityMainBinding
+import org.feup.cmov.acmeterminal.ui.order.OrderActivity
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -31,7 +38,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-//        supportActionBar?.hide()
+
+        supportActionBar?.hide()
 
         // Ignore NFC
         nfcAdapter?.setNdefPushMessage(null, this)
@@ -77,17 +85,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDialog(): AlertDialog {
-        val downloadDialog = AlertDialog.Builder(this)
-        downloadDialog.setTitle("No Scanner Found")
-        downloadDialog.setMessage("Download a scanner QRcode app?")
-
-        downloadDialog.setPositiveButton("Yes") { _, _ ->
-            val uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android")
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            startActivity(intent)
-        }
-
-        downloadDialog.setNegativeButton("No", null)
+        val downloadDialog = MaterialAlertDialogBuilder(this)
+            .setTitle("No Scanner Found")
+            .setMessage("Download a scanner QRcode app?")
+            .setPositiveButton("Yes") { _, _ ->
+                val uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android")
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            }
+            .setNegativeButton("No", null)
 
         return downloadDialog.show()
     }
@@ -97,7 +103,7 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK)
-                viewModel.handleData(data?.getStringExtra("SCAN_RESULT"))
+                handleData(data?.getStringExtra("SCAN_RESULT"))
             else
                 Toast.makeText(context, R.string.error_qr_code, Toast.LENGTH_LONG).show()
         }
@@ -109,9 +115,7 @@ class MainActivity : AppCompatActivity() {
             val msg = rawMsgs!![0] as NdefMessage
             val messageString = String(msg.records[0].payload)
 
-            viewModel.handleData(messageString)
-//            println(messageString)
-//            Toast.makeText(context, messageString, Toast.LENGTH_LONG).show()
+            handleData(messageString)
         }
     }
 
@@ -136,5 +140,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         adapter?.enableForegroundDispatch(activity, pendingIntent, filters, techList)
+    }
+
+    private fun handleData(data: String?) {
+        data ?: return
+
+        lifecycleScope.launch {
+            val order = viewModel.handleData(data)
+
+            if (order.status == Status.SUCCESS) {
+                val intent = Intent(this@MainActivity, OrderActivity::class.java)
+                intent.putExtra("ORDER", Gson().toJson(order))
+                startActivity(intent)
+            }
+
+        }
     }
 }

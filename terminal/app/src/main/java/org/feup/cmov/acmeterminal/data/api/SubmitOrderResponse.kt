@@ -4,7 +4,15 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class SubmitOrderResponse(
-    @SerializedName("orderNr")
+    @SerializedName("number")
     @Expose
-    val orderNr: Int
+    val number: Int,
+
+    @SerializedName("vouchers")
+    @Expose
+    val vouchers: List<Char>,
+
+    @SerializedName("total")
+    @Expose
+    val total: Double
 )

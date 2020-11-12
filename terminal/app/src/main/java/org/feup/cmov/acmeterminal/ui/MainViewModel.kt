@@ -1,27 +1,19 @@
 package org.feup.cmov.acmeterminal.ui
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import org.feup.cmov.acmeterminal.data.DataRepository
+import org.feup.cmov.acmeterminal.data.Resource
 import org.feup.cmov.acmeterminal.data.Status
+import org.feup.cmov.acmeterminal.data.api.SubmitOrderResponse
+import org.feup.cmov.acmeterminal.data.event.Event
 
 class MainViewModel @ViewModelInject constructor(
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
-    fun handleData(data: String?) {
-        viewModelScope.launch {
-            data ?: return@launch
-            println("GOT $data")
-
-            val result = dataRepository.submitOrder(data)
-            when (result.status) {
-                Status.LOADING -> { }
-                Status.SUCCESS -> println("RES ${result.data}")
-                Status.ERROR -> println("ERROR ${result.message}")
-            }
-        }
+    suspend fun handleData(data: String): Resource<SubmitOrderResponse> {
+        return dataRepository.submitOrder(data)
     }
 }

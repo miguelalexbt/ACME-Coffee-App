@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="total"
+            type="Double" />
+        <variable
+            name="hasVouchers"
+            type="Boolean" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/order_vouchers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Vouchers"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="No vouchers selected"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/order_vouchers"
+                isGone="@{hasVouchers}" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/order_vouchers_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@+id/order_vouchers"
+                tools:layout_editor_absoluteX="0dp"
+                tools:listitem="@layout/order_list_voucher" />
+
+            <TextView
+                android:id="@+id/order_total_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/checkout_total_description"
+                android:textAlignment="textStart"
+                android:textSize="17sp"
+                android:textAppearance="?attr/textAppearanceLargePopupMenu" />
+
+            <TextView
+                android:id="@+id/order_total_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{@string/checkout_total_price(total)}"
+                android:textSize="17sp"
+                android:textAppearance="?attr/textAppearanceLargePopupMenu"
+                tools:text="10.00€" />
+
+            <androidx.constraintlayout.helper.widget.Flow
+                android:id="@+id/checkout_total_flow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="35dp"
+                app:adaptiveMarginTop="@{ hasVouchers ? @dimen/listNotEmpty : @dimen/listEmpty }"
+                app:constraint_referenced_ids="order_total_description,order_total_price"
+                app:flow_horizontalGap="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/order_vouchers_recycler_view"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</layout>

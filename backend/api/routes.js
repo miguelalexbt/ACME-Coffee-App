@@ -277,7 +277,7 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
 
     const newOrder = await createOrder(userId, validItems, validVouchers);
 
-    res.json({ orderNr: newOrder.number });
+    res.json({ number: newOrder.number, vouchers: newOrder.vouchersType, total: newOrder.total });
 });
 
 const createOrder = async (userId, items, vouchers) =>  {

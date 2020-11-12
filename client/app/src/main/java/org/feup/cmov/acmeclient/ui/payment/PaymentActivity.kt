@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import dagger.hilt.android.AndroidEntryPoint
+import org.feup.cmov.acmeclient.MainApplication
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.databinding.ActivityPaymentBinding
 
@@ -47,7 +48,11 @@ class PaymentActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_payment)
         setupNavigation()
 
+        supportActionBar?.title = "Payment"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Ignore NFC
+        NfcAdapter.getDefaultAdapter(MainApplication.context)?.setNdefPushMessage(null, this)
 
         val filter = IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
         registerReceiver(broadcastReceiver, filter)
