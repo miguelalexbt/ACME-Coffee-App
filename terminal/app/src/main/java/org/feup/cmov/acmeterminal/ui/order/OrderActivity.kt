@@ -1,5 +1,6 @@
 package org.feup.cmov.acmeterminal.ui.order
 
+import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
+import org.feup.cmov.acmeterminal.MainApplication.Companion.context
 import org.feup.cmov.acmeterminal.R
 import org.feup.cmov.acmeterminal.adapter.Content
 import org.feup.cmov.acmeterminal.adapter.GenericListAdapter
@@ -25,6 +27,9 @@ class OrderActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_order)
+
+        // Ignore NFC
+        NfcAdapter.getDefaultAdapter(context).setNdefPushMessage(null, this)
 
         val type = object : TypeToken<Resource<SubmitOrderResponse>>() {}.type
         val order: Resource<SubmitOrderResponse> = Gson().fromJson(

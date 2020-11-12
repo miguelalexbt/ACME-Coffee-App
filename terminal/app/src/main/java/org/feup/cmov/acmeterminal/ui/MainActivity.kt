@@ -10,6 +10,7 @@ import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -52,10 +53,8 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        if (nfcAdapter != null) {
+        if (nfcAdapter != null)
             enableForegroundDispatch(this, nfcAdapter)
-            receiveMessageFromDevice(intent)
-        }
     }
 
     override fun onPause() {
@@ -65,7 +64,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        setIntent(intent)
+
+        if (intent != null)
+            receiveMessageFromDevice(intent)
     }
 
     private fun scanQRCode() {
@@ -153,7 +154,6 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("ORDER", Gson().toJson(order))
                 startActivity(intent)
             }
-
         }
     }
 }
