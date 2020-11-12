@@ -109,7 +109,7 @@ class ReceiptDialogFragment(
             val receipt = it ?: return@observe
             if (receipt.status == Status.SUCCESS) {
                 binding.nif = receipt.data!!.nif
-                binding.ccNumberLastFour = receipt.data!!.ccNumber.takeLast(4)
+                binding.ccNumberLastFour = receipt.data.ccNumber.takeLast(4)
             }
         })
 

@@ -4,16 +4,19 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.data.DataRepository
 import org.feup.cmov.acmeclient.data.Resource
 import org.feup.cmov.acmeclient.data.Status
-import org.feup.cmov.acmeclient.data.model.Voucher
+import org.feup.cmov.acmeclient.data.event.UiEvent
 
 class VouchersViewModel @ViewModelInject constructor(
-//    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
+
+    private val _uiEvent = MutableLiveData<UiEvent>()
+    val uiEvent: LiveData<UiEvent> = _uiEvent
 
     val vouchers: LiveData<Resource<List<Content<VoucherView>>>> = dataRepository.getVouchers()
         .combine(dataRepository.getOrder()) { vouchers, order ->
@@ -31,6 +34,7 @@ class VouchersViewModel @ViewModelInject constructor(
                     })
                 }
                 Status.ERROR -> {
+                    _uiEvent.value = UiEvent(error = R.string.error_unknown)
                     Resource.error(vouchers.message!!)
                 }
             }

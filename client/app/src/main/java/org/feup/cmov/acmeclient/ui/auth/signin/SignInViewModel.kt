@@ -8,7 +8,6 @@ import org.feup.cmov.acmeclient.data.*
 import org.feup.cmov.acmeclient.data.event.UiEvent
 
 class SignInViewModel @ViewModelInject constructor(
-//    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
 

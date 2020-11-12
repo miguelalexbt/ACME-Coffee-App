@@ -1,6 +1,5 @@
 package org.feup.cmov.acmeclient.ui.auth.signup
 
-import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
@@ -10,7 +9,6 @@ import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.event.UiEvent
 
 class SignUpViewModel @ViewModelInject constructor(
-//    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
 

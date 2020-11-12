@@ -80,7 +80,11 @@ class DataRepository @Inject constructor(
                 Cache.cacheUser(user)
             }
 
-            mapToResource(response)
+            when (response) {
+                is ApiResponse.Success -> Resource.success(response.data)
+                is ApiResponse.ApiError -> Resource.error(response.error)
+                is ApiResponse.NetworkError -> Resource.error(response.error)
+            }
         }
     }
 
@@ -108,8 +112,9 @@ class DataRepository @Inject constructor(
     fun getItemsAsMap(): Flow<Resource<Map<String, Item>>> = getItems(fetch = false)
         .map { items ->
             when (items.status) {
+                Status.LOADING -> Resource.loading(null)
                 Status.SUCCESS -> Resource.success(items.data!!.associateBy({ it.id }, { it }))
-                else -> items as Resource<Map<String, Item>>
+                Status.ERROR -> Resource.error(items.message!!)
             }
         }
 
@@ -154,8 +159,9 @@ class DataRepository @Inject constructor(
     fun getVouchersAsMap(): Flow<Resource<Map<String, Voucher>>> = getVouchers(fetch = false)
         .map {vouchers ->
             when (vouchers.status) {
+                Status.LOADING -> Resource.loading(null)
                 Status.SUCCESS -> Resource.success(vouchers.data!!.associateBy({ it.id }, { it }))
-                else -> vouchers as Resource<Map<String, Voucher>>
+                Status.ERROR -> Resource.error(vouchers.message!!)
             }
         }
 
@@ -187,8 +193,9 @@ class DataRepository @Inject constructor(
     fun getPastOrdersAsMap(): Flow<Resource<Map<String, PastOrder>>> = getPastOrders(fetch = false)
         .map { orders ->
             when (orders.status) {
+                Status.LOADING -> Resource.loading(null)
                 Status.SUCCESS -> Resource.success(orders.data!!.associateBy({ it.id }, { it }))
-                else -> orders as Resource<Map<String, PastOrder>>
+                Status.ERROR -> Resource.error(orders.message!!)
             }
         }
 
@@ -309,16 +316,6 @@ class DataRepository @Inject constructor(
             if (response is ApiResponse.Success) {
                 receiptDao.insert(response.data!!.copy(orderId = orderId))
             }
-        }
-    }
-
-    // Utils
-
-    private fun <T> mapToResource(apiResponse: ApiResponse<T>): Resource<T> {
-        return when (apiResponse) {
-            is ApiResponse.Success -> Resource.success(apiResponse.data)
-            is ApiResponse.ApiError -> Resource.error(apiResponse.error)
-            is ApiResponse.NetworkError -> Resource.error(apiResponse.error)
         }
     }
 }
