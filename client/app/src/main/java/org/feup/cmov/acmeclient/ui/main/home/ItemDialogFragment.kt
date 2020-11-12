@@ -5,13 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import org.feup.cmov.acmeclient.R
-import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.databinding.NumberPickerDialogBinding
 
 @AndroidEntryPoint

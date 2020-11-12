@@ -4,14 +4,14 @@
     <string name="title_activity_nav">MainActivity</string>
     <string name="home_title">Home</string>
 
-    <string name="empty_string"/>
+    <string name="empty_string" />
 
     <!--Sign in-->
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_sign_in">Sign in</string>
     <string name="prompt_redirect_sign_up">I don\'t have an account</string>
-    <string name="error_unknown_user">Username/password combination is incorrect</string>
+    <string name="error_unknown_user">Username does not exist</string>
     <string name="error_wrong_credentials">Username/password combination is incorrect</string>
 
     <!--Sign up-->
@@ -71,8 +71,6 @@
     <string name="receipt_tax_no"><small>TAX No.</small></string>
     <string name="cc_number_format">&#8226;&#8226;&#8226;&#8226; %1$s</string>
 
-    <string name="error_no_items">No items available</string>
-    <string name="error_fetch_items">An error has occurred</string>
     <string name="qrcode_content_description">qrcode</string>
     <string name="item_dialog_save_button">SAVE</string>
     <string name="item_dialog_cancel_button">CANCEL</string>

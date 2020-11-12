@@ -1,10 +1,11 @@
 package org.feup.cmov.acmeclient.data.model
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.time.Instant
-import java.time.format.DateTimeFormatter
 
 @Entity(tableName = "voucher", indices = [Index(value = ["id", "userId"], unique = true)])
 data class Voucher(

@@ -13,16 +13,34 @@ class NumberPickerWithXml : NumberPicker {
         processXmlAttributes(attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         processXmlAttributes(attrs, defStyleAttr)
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(
+        context,
+        attrs,
+        defStyleAttr,
+        defStyleRes
+    ) {
         processXmlAttributes(attrs, defStyleAttr, defStyleRes)
     }
 
-    private fun processXmlAttributes(attrs: AttributeSet, defStyleAttr: Int = 0, defStyleRes: Int = 0) {
-        val attributes = context.theme.obtainStyledAttributes(attrs, R.styleable.NumberPickerWithXml, defStyleAttr, defStyleRes)
+    private fun processXmlAttributes(
+        attrs: AttributeSet,
+        defStyleAttr: Int = 0,
+        defStyleRes: Int = 0
+    ) {
+        val attributes = context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.NumberPickerWithXml,
+            defStyleAttr,
+            defStyleRes
+        )
 
         try {
             this.minValue = attributes.getInt(R.styleable.NumberPickerWithXml_minValue, 0)

@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="isLoading" type="Boolean" />
+
+        <variable
+            name="isLoading"
+            type="Boolean" />
     </data>
 
     <FrameLayout
@@ -25,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:ignore="MissingConstraints"
-                tools:context=".ui.auth.signup.SignUpFragment" >
+                tools:context=".ui.auth.signup.SignUpFragment">
 
                 <TextView
                     android:id="@+id/signUp_personal_section"
@@ -93,7 +96,7 @@
                         android:ems="10"
                         android:inputType="number"
                         app:errorEnabled="true"
-                        android:maxLength="9"/>
+                        android:maxLength="9" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -112,7 +115,7 @@
                         android:ems="10"
                         android:inputType="number"
                         app:errorEnabled="true"
-                        android:maxLength="16"/>
+                        android:maxLength="16" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -146,8 +149,7 @@
                     app:constraint_referenced_ids="signUp_cc_number_layout,signUp_cc_cvv_layout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/signUp_nif_layout"
-                    />
+                    app:layout_constraintTop_toBottomOf="@+id/signUp_nif_layout" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_cc_month_layout"
@@ -204,7 +206,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/signUp_flow"/>
+                    app:layout_constraintTop_toBottomOf="@+id/signUp_flow" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUp_username_layout"

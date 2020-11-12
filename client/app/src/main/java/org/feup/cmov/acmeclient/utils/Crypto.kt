@@ -8,7 +8,6 @@ import okio.Buffer
 import org.feup.cmov.acmeclient.MainApplication
 import org.mindrot.jbcrypt.BCrypt
 import java.math.BigInteger
-import java.nio.charset.Charset
 import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.PrivateKey

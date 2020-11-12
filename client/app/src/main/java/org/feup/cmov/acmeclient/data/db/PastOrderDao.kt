@@ -13,5 +13,5 @@ interface PastOrderDao {
     fun insertAll(pastOrders: List<PastOrder>)
 
     @Query("SELECT * FROM pastOrder WHERE userId = :userId")
-    fun getAll(userId: String) : Flow<List<PastOrder>>
+    fun getAll(userId: String): Flow<List<PastOrder>>
 }

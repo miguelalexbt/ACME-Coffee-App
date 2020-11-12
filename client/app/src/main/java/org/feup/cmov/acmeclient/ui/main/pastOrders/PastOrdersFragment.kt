@@ -1,31 +1,18 @@
 package org.feup.cmov.acmeclient.ui.main.pastOrders
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asFlow
-import androidx.lifecycle.lifecycleScope
-import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.past_orders_list_item.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.feup.cmov.acmeclient.adapter.GenericListAdapter
-import org.feup.cmov.acmeclient.data.Resource
 import org.feup.cmov.acmeclient.data.Status
-import org.feup.cmov.acmeclient.data.model.PastOrder
-import org.feup.cmov.acmeclient.data.model.Voucher
+import org.feup.cmov.acmeclient.data.event.EventObserver
 import org.feup.cmov.acmeclient.databinding.FragmentPastOrdersBinding
-import org.feup.cmov.acmeclient.databinding.FragmentVouchersBinding
 import org.feup.cmov.acmeclient.databinding.PastOrdersListItemBinding
-import org.feup.cmov.acmeclient.databinding.VouchersListItemBinding
-import org.feup.cmov.acmeclient.ui.main.home.ItemDialogFragment
-import java.text.SimpleDateFormat
 
 @AndroidEntryPoint
 class PastOrdersFragment : Fragment() {
@@ -70,6 +57,10 @@ class PastOrdersFragment : Fragment() {
     }
 
     private fun subscribeUi(adapter: GenericListAdapter<PastOrderView, PastOrdersListItemBinding>) {
+        viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
+            if (it.error != null) Toast.makeText(context, it.error, Toast.LENGTH_LONG).show()
+        })
+
         viewModel.refreshing.observe(viewLifecycleOwner, {
             val refreshing = it ?: return@observe
             binding.pastOrdersRefreshLayout.isRefreshing = refreshing

@@ -4,21 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-<!--        <variable name="isLoading" type="Boolean" />-->
-        <variable name="hasVouchers" type="Boolean" />
-        <variable name="total" type="Double" />
-        <variable name="nif" type="String" />
-        <variable name="ccNumberLastFour" type="String" />
+        <!--        <variable name="isLoading" type="Boolean" />-->
+        <variable
+            name="hasVouchers"
+            type="Boolean" />
+
+        <variable
+            name="total"
+            type="Double" />
+
+        <variable
+            name="nif"
+            type="String" />
+
+        <variable
+            name="ccNumberLastFour"
+            type="String" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-<!--        <include-->
-<!--            android:id="@+id/signIn_loading"-->
-<!--            layout="@layout/partial_loading"-->
-<!--            isGone="@{!isLoading}"/>-->
+        <!--        <include-->
+        <!--            android:id="@+id/signIn_loading"-->
+        <!--            layout="@layout/partial_loading"-->
+        <!--            isGone="@{!isLoading}"/>-->
 
         <ScrollView
             android:layout_width="match_parent"
@@ -128,8 +139,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/checkout_vouchers_recycler_view"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-<!--                app:adaptiveMarginTop="@{ hasVouchers ? @dimen/listNotEmpty : @dimen/listEmpty }"-->
+                    app:layout_constraintBottom_toBottomOf="parent" />
+                <!--                app:adaptiveMarginTop="@{ hasVouchers ? @dimen/listNotEmpty : @dimen/listEmpty }"-->
 
                 <View
                     android:id="@+id/divider"
@@ -138,7 +149,7 @@
                     android:layout_marginHorizontal="15dp"
                     android:background="@color/colorNavBar"
                     android:layout_marginVertical="15dp"
-                    app:layout_constraintTop_toBottomOf="@id/checkout_total_flow"/>
+                    app:layout_constraintTop_toBottomOf="@id/checkout_total_flow" />
 
                 <ImageView
                     android:id="@+id/receipt_card_icon"
@@ -174,7 +185,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    tools:text="TAX No. "/>
+                    tools:text="TAX No. " />
 
                 <TextView
                     android:id="@+id/receipt_nif"
@@ -188,7 +199,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    tools:text="123456789 "/>
+                    tools:text="123456789 " />
 
                 <androidx.constraintlayout.helper.widget.Flow
                     android:id="@+id/receipt_flow"
@@ -201,7 +212,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/divider"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

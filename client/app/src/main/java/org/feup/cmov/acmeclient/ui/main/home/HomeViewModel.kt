@@ -2,22 +2,19 @@ package org.feup.cmov.acmeclient.ui.main.home
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
+import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.data.DataRepository
 import org.feup.cmov.acmeclient.data.Resource
 import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.cache.CachedOrder
-
+import org.feup.cmov.acmeclient.data.event.UiEvent
 
 class HomeViewModel @ViewModelInject constructor(
-//    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
@@ -26,6 +23,9 @@ class HomeViewModel @ViewModelInject constructor(
         val price: Double = 0.0,
         val itemsCount: Int = 0
     )
+
+    private val _uiEvent = MutableLiveData<UiEvent>()
+    val uiEvent: LiveData<UiEvent> = _uiEvent
 
     private val _searchQuery = MutableLiveData("")
 
@@ -45,7 +45,8 @@ class HomeViewModel @ViewModelInject constructor(
         _showOnlyFavorites.value = show
     }
 
-    val areFiltersActive = _categoriesFilter.asFlow().zip(_showOnlyFavorites.asFlow()) { l1, l2 -> l1.isNotEmpty() || l2 }.asLiveData()
+    val areFiltersActive = _categoriesFilter.asFlow()
+        .zip(_showOnlyFavorites.asFlow()) { l1, l2 -> l1.isNotEmpty() || l2 }.asLiveData()
 
     val itemsQuery: LiveData<Resource<List<Content<ItemView>>>> = dataRepository.getItems()
         .combine(_searchQuery.asFlow().distinctUntilChanged()) { items, query ->
@@ -103,39 +104,45 @@ class HomeViewModel @ViewModelInject constructor(
                     })
                 }
                 Status.ERROR -> {
+                    _uiEvent.value = UiEvent(error = R.string.error_unknown)
                     Resource.error(items.message!!)
                 }
             }
         }
         .asLiveData()
 
-    val categories: LiveData<Resource<Map<String, Boolean>>> = dataRepository.getItems()
-        .combine(_categoriesFilter.asFlow().distinctUntilChanged()) { items, filter ->
-            when (items.status) {
-                Status.LOADING -> {
-                    Resource.loading(null)
-                }
-                Status.SUCCESS -> {
-                    Resource.success(items.data!!.map {
-                        it.type
-                    }.distinct().map {
-                        it to (it in filter)
-                    }.toMap())
-                }
-                Status.ERROR -> {
-                    Resource.error(items.message!!)
+    val categories: LiveData<Resource<Map<String, Boolean>>> =
+        dataRepository.getItems(fetch = false)
+            .combine(_categoriesFilter.asFlow().distinctUntilChanged()) { items, filter ->
+                when (items.status) {
+                    Status.LOADING -> {
+                        Resource.loading(null)
+                    }
+                    Status.SUCCESS -> {
+                        Resource.success(items.data!!.map {
+                            it.type
+                        }.distinct().map {
+                            it to (it in filter)
+                        }.toMap())
+                    }
+                    Status.ERROR -> {
+                        _uiEvent.value = UiEvent(error = R.string.error_unknown)
+                        Resource.error(items.message!!)
+                    }
                 }
             }
-        }
-        .asLiveData()
+            .asLiveData()
 
     val order: LiveData<CachedOrder> = dataRepository.getOrder()
         .distinctUntilChanged()
         .asLiveData()
 
-    val cartState: LiveData<CartState> = dataRepository.getItems()
+    val cartState: LiveData<CartState> = dataRepository.getItems(fetch = false)
         .combine(dataRepository.getOrder()) { items, order ->
             when (items.status) {
+                Status.LOADING -> {
+                    CartState()
+                }
                 Status.SUCCESS -> {
                     var cartPrice = 0.0
 
@@ -145,7 +152,8 @@ class HomeViewModel @ViewModelInject constructor(
 
                     CartState(order.items.isNotEmpty(), cartPrice, order.items.values.sum())
                 }
-                else -> {
+                Status.ERROR -> {
+                    _uiEvent.value = UiEvent(error = R.string.error_unknown)
                     CartState()
                 }
             }

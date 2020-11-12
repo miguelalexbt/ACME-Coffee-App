@@ -11,7 +11,7 @@ import retrofit2.Response
 
 internal class ApiResponseCall<T : Any>(private val delegate: Call<T>) : Call<ApiResponse<T>> {
     override fun enqueue(callback: Callback<ApiResponse<T>>) {
-        return delegate.enqueue(object: Callback<T> {
+        return delegate.enqueue(object : Callback<T> {
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 if (response.isSuccessful) {
                     val body = response.body()

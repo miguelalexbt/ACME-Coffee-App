@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 import org.feup.cmov.acmeclient.databinding.FragmentQrBinding
 
 @AndroidEntryPoint
-class QrFragment: Fragment() {
+class QrFragment : Fragment() {
 
     private lateinit var binding: FragmentQrBinding
 
@@ -53,7 +53,8 @@ class QrFragment: Fragment() {
             val codeWriter = MultiFormatWriter()
 
             try {
-                val bitMatrix = codeWriter.encode(orderString.utf8(), BarcodeFormat.QR_CODE, width, height)
+                val bitMatrix =
+                    codeWriter.encode(orderString.utf8(), BarcodeFormat.QR_CODE, width, height)
                 for (x in 0 until width) {
                     for (y in 0 until height) {
                         bitmap.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)

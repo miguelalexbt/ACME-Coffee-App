@@ -7,17 +7,17 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okio.Buffer
 import okio.ByteString
-import org.feup.cmov.acmeclient.utils.Crypto
-import org.feup.cmov.acmeclient.data.api.*
+import org.feup.cmov.acmeclient.data.api.ApiResponse
+import org.feup.cmov.acmeclient.data.api.SignUpRequest
 import org.feup.cmov.acmeclient.data.cache.CachedOrder
 import org.feup.cmov.acmeclient.data.cache.CachedUser
-import org.feup.cmov.acmeclient.data.db.details.ItemUpdate
 import org.feup.cmov.acmeclient.data.db.*
+import org.feup.cmov.acmeclient.data.db.details.ItemUpdate
 import org.feup.cmov.acmeclient.data.model.*
 import org.feup.cmov.acmeclient.ui.main.home.ItemView
 import org.feup.cmov.acmeclient.utils.Cache
+import org.feup.cmov.acmeclient.utils.Crypto
 import java.io.IOException
-
 import javax.inject.Inject
 
 class DataRepository @Inject constructor(
@@ -74,13 +74,18 @@ class DataRepository @Inject constructor(
 
                 // Hash password and create user
                 val hashedPassword = Crypto.hashPassword(password)
-                val user = User(id, name, nif, ccNumber, ccCVV, ccExpiration, username, hashedPassword)
+                val user =
+                    User(id, name, nif, ccNumber, ccCVV, ccExpiration, username, hashedPassword)
 
                 userDao.insert(user)
                 Cache.cacheUser(user)
             }
 
-            mapToResource(response)
+            when (response) {
+                is ApiResponse.Success -> Resource.success(response.data)
+                is ApiResponse.ApiError -> Resource.error(response.error)
+                is ApiResponse.NetworkError -> Resource.error(response.error)
+            }
         }
     }
 
@@ -108,8 +113,9 @@ class DataRepository @Inject constructor(
     fun getItemsAsMap(): Flow<Resource<Map<String, Item>>> = getItems(fetch = false)
         .map { items ->
             when (items.status) {
+                Status.LOADING -> Resource.loading(null)
                 Status.SUCCESS -> Resource.success(items.data!!.associateBy({ it.id }, { it }))
-                else -> items as Resource<Map<String, Item>>
+                Status.ERROR -> Resource.error(items.message!!)
             }
         }
 
@@ -138,24 +144,26 @@ class DataRepository @Inject constructor(
 
     // Vouchers
 
-    fun getVouchers(fetch: Boolean = true): Flow<Resource<List<Voucher>>> = voucherDao.getAll(loggedInUser!!.userId)
-        .distinctUntilChanged()
-        .map { Resource.success(it) }
-        .onStart {
-            if (fetch) {
-                emit(Resource.loading(null))
-                fetchVouchers()
+    fun getVouchers(fetch: Boolean = true): Flow<Resource<List<Voucher>>> =
+        voucherDao.getAll(loggedInUser!!.userId)
+            .distinctUntilChanged()
+            .map { Resource.success(it) }
+            .onStart {
+                if (fetch) {
+                    emit(Resource.loading(null))
+                    fetchVouchers()
+                }
             }
-        }
-        .catch { emit(Resource.error(it.message!!)) }
-        .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
-        .flowOn(Dispatchers.IO)
+            .catch { emit(Resource.error(it.message!!)) }
+            .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
+            .flowOn(Dispatchers.IO)
 
     fun getVouchersAsMap(): Flow<Resource<Map<String, Voucher>>> = getVouchers(fetch = false)
-        .map {vouchers ->
+        .map { vouchers ->
             when (vouchers.status) {
+                Status.LOADING -> Resource.loading(null)
                 Status.SUCCESS -> Resource.success(vouchers.data!!.associateBy({ it.id }, { it }))
-                else -> vouchers as Resource<Map<String, Voucher>>
+                Status.ERROR -> Resource.error(vouchers.message!!)
             }
         }
 
@@ -171,24 +179,26 @@ class DataRepository @Inject constructor(
 
     // Past orders
 
-    fun getPastOrders(fetch: Boolean = true): Flow<Resource<List<PastOrder>>> = pastOrderDao.getAll(loggedInUser!!.userId)
-        .distinctUntilChanged()
-        .map { Resource.success(it.sortedByDescending { po -> po.number }) }
-        .onStart {
-            if (fetch) {
-                emit(Resource.loading(null))
-                fetchPastOrders()
+    fun getPastOrders(fetch: Boolean = true): Flow<Resource<List<PastOrder>>> =
+        pastOrderDao.getAll(loggedInUser!!.userId)
+            .distinctUntilChanged()
+            .map { Resource.success(it.sortedByDescending { po -> po.number }) }
+            .onStart {
+                if (fetch) {
+                    emit(Resource.loading(null))
+                    fetchPastOrders()
+                }
             }
-        }
-        .catch { emit(Resource.error(it.message!!)) }
+            .catch { emit(Resource.error(it.message!!)) }
 //        .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
-        .flowOn(Dispatchers.IO)
+            .flowOn(Dispatchers.IO)
 
     fun getPastOrdersAsMap(): Flow<Resource<Map<String, PastOrder>>> = getPastOrders(fetch = false)
         .map { orders ->
             when (orders.status) {
+                Status.LOADING -> Resource.loading(null)
                 Status.SUCCESS -> Resource.success(orders.data!!.associateBy({ it.id }, { it }))
-                else -> orders as Resource<Map<String, PastOrder>>
+                Status.ERROR -> Resource.error(orders.message!!)
             }
         }
 
@@ -288,18 +298,19 @@ class DataRepository @Inject constructor(
 
     // Receipt
 
-    fun getReceipt(orderId: String, fetch: Boolean = true): Flow<Resource<Receipt>> = receiptDao.get(orderId)
-        .distinctUntilChanged()
-        .map { Resource.success(it) }
-        .onStart {
-            if (fetch) {
-                emit(Resource.loading(null))
-                fetchReceipt(orderId)
+    fun getReceipt(orderId: String, fetch: Boolean = true): Flow<Resource<Receipt>> =
+        receiptDao.get(orderId)
+            .distinctUntilChanged()
+            .map { Resource.success(it) }
+            .onStart {
+                if (fetch) {
+                    emit(Resource.loading(null))
+                    fetchReceipt(orderId)
+                }
             }
-        }
-        .catch { emit(Resource.error(it.message!!)) }
-        .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
-        .flowOn(Dispatchers.IO)
+            .catch { emit(Resource.error(it.message!!)) }
+            .retry(3) { e -> (e is IOException).also { if (it) delay(1000) } }
+            .flowOn(Dispatchers.IO)
 
     suspend fun fetchReceipt(orderId: String) {
         withContext(Dispatchers.IO) {
@@ -309,16 +320,6 @@ class DataRepository @Inject constructor(
             if (response is ApiResponse.Success) {
                 receiptDao.insert(response.data!!.copy(orderId = orderId))
             }
-        }
-    }
-
-    // Utils
-
-    private fun <T> mapToResource(apiResponse: ApiResponse<T>): Resource<T> {
-        return when (apiResponse) {
-            is ApiResponse.Success -> Resource.success(apiResponse.data)
-            is ApiResponse.ApiError -> Resource.error(apiResponse.error)
-            is ApiResponse.NetworkError -> Resource.error(apiResponse.error)
         }
     }
 }

@@ -2,12 +2,16 @@ package org.feup.cmov.acmeclient.ui.main.pastOrders
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.data.DataRepository
 import org.feup.cmov.acmeclient.data.Resource
 import org.feup.cmov.acmeclient.data.Status
+import org.feup.cmov.acmeclient.data.event.UiEvent
 import org.feup.cmov.acmeclient.data.model.Receipt
 import org.feup.cmov.acmeclient.ui.main.checkout.ItemView
 import org.feup.cmov.acmeclient.ui.main.checkout.VoucherView
@@ -16,9 +20,11 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 class PastOrdersViewModel @ViewModelInject constructor(
-//    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
+
+    private val _uiEvent = MutableLiveData<UiEvent>()
+    val uiEvent: LiveData<UiEvent> = _uiEvent
 
     val pastOrders: LiveData<Resource<List<Content<PastOrderView>>>> =
         dataRepository.getPastOrders()
@@ -46,6 +52,7 @@ class PastOrdersViewModel @ViewModelInject constructor(
                         })
                     }
                     Status.ERROR -> {
+                        _uiEvent.value = UiEvent(error = R.string.error_unknown)
                         Resource.error(orders.message!!)
                     }
                 }
@@ -70,6 +77,9 @@ class PastOrdersViewModel @ViewModelInject constructor(
         return flowOf(orderItemMap)
             .combine(dataRepository.getItemsAsMap()) { orderItems, allItems ->
                 when (allItems.status) {
+                    Status.LOADING -> {
+                        Resource.loading(null)
+                    }
                     Status.SUCCESS -> {
                         Resource.success(orderItems.keys.map {
                             val item = allItems.data!![it] ?: error("no item key ${it}")
@@ -82,23 +92,32 @@ class PastOrdersViewModel @ViewModelInject constructor(
                             Content(it, itemView)
                         })
                     }
-                    else -> allItems as Resource<List<Content<ItemView>>>
+                    Status.ERROR -> {
+                        _uiEvent.value = UiEvent(error = R.string.error_unknown)
+                        Resource.error(allItems.message!!)
+                    }
                 }
             }
             .asLiveData()
     }
 
-    fun getOrderVouchers(orderVouchers: Set<String>) : LiveData<Resource<List<Content<VoucherView>>>> {
+    fun getOrderVouchers(orderVouchers: Set<String>): LiveData<Resource<List<Content<VoucherView>>>> {
         return flowOf(orderVouchers)
             .combine(dataRepository.getVouchersAsMap()) { orderItems, allVouchers ->
                 when (allVouchers.status) {
+                    Status.LOADING -> {
+                        Resource.loading(null)
+                    }
                     Status.SUCCESS -> {
                         Resource.success(orderItems.map {
                             val voucher = allVouchers.data!![it] ?: error("no voucher key ${it}")
                             Content(it, VoucherView(voucher.type))
                         })
                     }
-                    else -> allVouchers as Resource<List<Content<VoucherView>>>
+                    Status.ERROR -> {
+                        _uiEvent.value = UiEvent(error = R.string.error_unknown)
+                        Resource.error(allVouchers.message!!)
+                    }
                 }
             }
             .asLiveData()

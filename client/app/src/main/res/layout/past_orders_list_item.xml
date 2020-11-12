@@ -4,7 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <variable name="pastOrderView" type="org.feup.cmov.acmeclient.ui.main.pastOrders.PastOrderView" />
+
+        <variable
+            name="pastOrderView"
+            type="org.feup.cmov.acmeclient.ui.main.pastOrders.PastOrderView" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

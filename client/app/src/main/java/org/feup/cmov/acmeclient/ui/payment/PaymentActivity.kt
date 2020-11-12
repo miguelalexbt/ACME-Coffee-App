@@ -22,14 +22,18 @@ class PaymentActivity : AppCompatActivity() {
 
     private val viewModel: PaymentViewModel by viewModels()
 
-    private val broadcastReceiver: BroadcastReceiver = object: BroadcastReceiver() {
+    private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == NfcAdapter.ACTION_ADAPTER_STATE_CHANGED) {
                 val state = intent.getIntExtra(NfcAdapter.EXTRA_ADAPTER_STATE, NfcAdapter.STATE_OFF)
 
                 val status = when (state) {
-                    NfcAdapter.STATE_ON, NfcAdapter.STATE_TURNING_ON -> { true }
-                    NfcAdapter.STATE_OFF, NfcAdapter.STATE_TURNING_OFF -> { false }
+                    NfcAdapter.STATE_ON, NfcAdapter.STATE_TURNING_ON -> {
+                        true
+                    }
+                    NfcAdapter.STATE_OFF, NfcAdapter.STATE_TURNING_OFF -> {
+                        false
+                    }
                     else -> false
                 }
 

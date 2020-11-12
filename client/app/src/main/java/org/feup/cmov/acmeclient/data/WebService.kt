@@ -1,9 +1,9 @@
 package org.feup.cmov.acmeclient.data
 
 import org.feup.cmov.acmeclient.data.api.ApiResponse
-import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.api.SignUpRequest
 import org.feup.cmov.acmeclient.data.api.SignUpResponse
+import org.feup.cmov.acmeclient.data.model.Item
 import org.feup.cmov.acmeclient.data.model.PastOrder
 import org.feup.cmov.acmeclient.data.model.Receipt
 import org.feup.cmov.acmeclient.data.model.Voucher
@@ -12,7 +12,7 @@ import retrofit2.http.*
 interface WebService {
     // Sign up
     @POST("/signUp")
-    suspend fun signUp(@Body request: SignUpRequest) : ApiResponse<SignUpResponse>
+    suspend fun signUp(@Body request: SignUpRequest): ApiResponse<SignUpResponse>
 
     // Items
     @AuthenticatedRequest

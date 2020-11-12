@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.feup.cmov.acmeclient">
-    <uses-feature android:name="android.hardware.nfc" android:required="true"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.feup.cmov.acmeclient">
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.NFC" />
 
@@ -13,8 +18,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:name="android.nfc.disable_beam_default" android:value="true" />
-        <activity android:name=".ui.splashscreen.SplashScreenActivity"
+        <meta-data
+            android:name="android.nfc.disable_beam_default"
+            android:value="true" />
+
+        <activity
+            android:name=".ui.splashscreen.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +31,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.auth.AuthActivity" />
-        <activity android:name=".ui.main.MainActivity" android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.payment.PaymentActivity" />
     </application>
 

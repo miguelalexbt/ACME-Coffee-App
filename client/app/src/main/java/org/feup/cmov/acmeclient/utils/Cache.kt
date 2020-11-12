@@ -4,7 +4,9 @@ import androidx.datastore.preferences.createDataStore
 import androidx.datastore.preferences.edit
 import androidx.datastore.preferences.preferencesKey
 import com.google.gson.Gson
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import org.feup.cmov.acmeclient.MainApplication
 import org.feup.cmov.acmeclient.data.cache.CachedOrder
 import org.feup.cmov.acmeclient.data.cache.CachedUser
@@ -41,7 +43,8 @@ class Cache {
 
         suspend fun cacheUser(user: User?) {
             dataStore.edit {
-                it[USER] = if (user == null) "" else Gson().toJson(CachedUser(user.id, user.username))
+                it[USER] =
+                    if (user == null) "" else Gson().toJson(CachedUser(user.id, user.username))
             }
         }
 

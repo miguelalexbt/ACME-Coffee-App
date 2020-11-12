@@ -4,7 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <variable name="voucher" type="org.feup.cmov.acmeclient.ui.main.vouchers.VoucherView" />
+
+        <variable
+            name="voucher"
+            type="org.feup.cmov.acmeclient.ui.main.vouchers.VoucherView" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -57,8 +60,7 @@
                     app:strokeColor="@color/colorPrimary"
                     app:strokeWidth="1dp"
                     tools:text="Add"
-                    isGone="@{!voucher.canBeSelected &amp;&amp; !voucher.isSelected}"
-                    />
+                    isGone="@{!voucher.canBeSelected &amp;&amp; !voucher.isSelected}" />
 
                 <TextView
                     android:id="@+id/list_item_warning"
@@ -68,7 +70,7 @@
                     android:textAlignment="center"
                     android:gravity="center"
                     isGone="@{voucher.canBeSelected || voucher.isSelected}"
-                    android:visibility="visible"/>
+                    android:visibility="visible" />
 
                 <androidx.constraintlayout.helper.widget.Flow
                     android:layout_width="wrap_content"
@@ -98,36 +100,36 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-<!--            <androidx.constraintlayout.helper.widget.Flow-->
-<!--                android:id="@+id/list_item_flow"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginHorizontal="5dp"-->
-<!--                android:layout_marginTop="5dp"-->
-<!--                app:constraint_referenced_ids="list_item_name,list_item_price"-->
-<!--                app:flow_horizontalStyle="spread_inside"-->
-<!--                app:flow_maxElementsWrap="2"-->
-<!--                app:flow_wrapMode="chain"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/list_item_image" />-->
+            <!--            <androidx.constraintlayout.helper.widget.Flow-->
+            <!--                android:id="@+id/list_item_flow"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginHorizontal="5dp"-->
+            <!--                android:layout_marginTop="5dp"-->
+            <!--                app:constraint_referenced_ids="list_item_name,list_item_price"-->
+            <!--                app:flow_horizontalStyle="spread_inside"-->
+            <!--                app:flow_maxElementsWrap="2"-->
+            <!--                app:flow_wrapMode="chain"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toBottomOf="@id/list_item_image" />-->
 
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                android:id="@+id/list_item_add"-->
-<!--                style="?attr/materialButtonOutlinedStyle"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="5dp"-->
-<!--                android:text="@{isChosen ? @string/remove_item : @string/add_item}"-->
-<!--                app:icon="@{isChosen ? @drawable/ic_baseline_remove_24 : @drawable/ic_baseline_add_24}"-->
+            <!--            <com.google.android.material.button.MaterialButton-->
+            <!--                android:id="@+id/list_item_add"-->
+            <!--                style="?attr/materialButtonOutlinedStyle"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginBottom="5dp"-->
+            <!--                android:text="@{isChosen ? @string/remove_item : @string/add_item}"-->
+            <!--                app:icon="@{isChosen ? @drawable/ic_baseline_remove_24 : @drawable/ic_baseline_add_24}"-->
 
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/list_item_flow"-->
-<!--                app:strokeColor="@color/colorPrimary"-->
-<!--                app:strokeWidth="1dp"-->
-<!--                tools:text="ADD" />-->
+            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toBottomOf="@id/list_item_flow"-->
+            <!--                app:strokeColor="@color/colorPrimary"-->
+            <!--                app:strokeWidth="1dp"-->
+            <!--                tools:text="ADD" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

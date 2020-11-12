@@ -2,29 +2,45 @@ package org.feup.cmov.acmeclient.ui.main.checkout
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.zip
+import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.adapter.Content
 import org.feup.cmov.acmeclient.data.DataRepository
 import org.feup.cmov.acmeclient.data.Resource
 import org.feup.cmov.acmeclient.data.Status
+import org.feup.cmov.acmeclient.data.event.UiEvent
 import java.util.*
 
 class CheckoutViewModel @ViewModelInject constructor(
-//    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
+
+    private val _uiEvent = MutableLiveData<UiEvent>()
+    val uiEvent: LiveData<UiEvent> = _uiEvent
 
     val items: LiveData<Resource<List<Content<ItemView>>>> = dataRepository.getOrder()
         .combine(dataRepository.getItemsAsMap()) { order, items ->
             when (items.status) {
+                Status.LOADING -> {
+                    Resource.loading(null)
+                }
                 Status.SUCCESS -> {
                     Resource.success(order.items.map {
                         val item = items.data!![it.key] ?: error("no item key ${it.key}")
-                        val itemView = ItemView(item.name, item.type.capitalize(Locale.ENGLISH), item.price, it.value)
+                        val itemView = ItemView(
+                            item.name,
+                            item.type.capitalize(Locale.ENGLISH),
+                            item.price,
+                            it.value
+                        )
                         Content(item.id, itemView)
                     })
                 }
-                else -> items as Resource<List<Content<ItemView>>>
+                Status.ERROR -> {
+                    _uiEvent.value = UiEvent(error = R.string.error_unknown)
+                    Resource.error(items.message!!)
+                }
             }
         }
         .asLiveData()
@@ -32,6 +48,9 @@ class CheckoutViewModel @ViewModelInject constructor(
     val vouchers: LiveData<Resource<List<Content<VoucherView>>>> = dataRepository.getOrder()
         .combine(dataRepository.getVouchersAsMap()) { order, vouchers ->
             when (vouchers.status) {
+                Status.LOADING -> {
+                    Resource.loading(null)
+                }
                 Status.SUCCESS -> {
                     val orderVouchers = if (order.discountVoucher != null)
                         order.offerVouchers + order.discountVoucher
@@ -43,7 +62,10 @@ class CheckoutViewModel @ViewModelInject constructor(
                         Content(voucher.id, VoucherView(voucher.type))
                     })
                 }
-                else -> vouchers as Resource<List<Content<VoucherView>>>
+                Status.ERROR -> {
+                    _uiEvent.value = UiEvent(error = R.string.error_unknown)
+                    Resource.error(vouchers.message!!)
+                }
             }
         }
         .asLiveData()

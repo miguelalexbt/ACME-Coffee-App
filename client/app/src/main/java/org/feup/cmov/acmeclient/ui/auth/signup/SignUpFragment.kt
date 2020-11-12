@@ -34,18 +34,18 @@ class SignUpFragment : Fragment() {
             R.layout.dropdown_menu_popup_item,
             List(12) { (it + 1).toString() }
         )
-        .also {
-            binding.signUpCcMonth.setAdapter(it)
-        }
+            .also {
+                binding.signUpCcMonth.setAdapter(it)
+            }
 
         ArrayAdapter(
             requireContext(),
             R.layout.dropdown_menu_popup_item,
             List(5) { "20" + (20 + it).toString() }
         )
-        .also {
-            binding.signUpCcYear.setAdapter(it)
-        }
+            .also {
+                binding.signUpCcYear.setAdapter(it)
+            }
 
         subscribeUi()
 

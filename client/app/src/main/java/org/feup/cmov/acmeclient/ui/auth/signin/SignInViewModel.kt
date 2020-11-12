@@ -4,11 +4,11 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import org.feup.cmov.acmeclient.R
-import org.feup.cmov.acmeclient.data.*
+import org.feup.cmov.acmeclient.data.DataRepository
+import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.event.UiEvent
 
 class SignInViewModel @ViewModelInject constructor(
-//    @Assisted savedStateHandle: SavedStateHandle,
     private val dataRepository: DataRepository
 ) : ViewModel() {
 
@@ -34,7 +34,8 @@ class SignInViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val result = dataRepository.signIn(username, password)
             when (result.status) {
-                Status.LOADING -> { }
+                Status.LOADING -> {
+                }
                 Status.SUCCESS -> {
                     _uiEvent.value = UiEvent()
                 }

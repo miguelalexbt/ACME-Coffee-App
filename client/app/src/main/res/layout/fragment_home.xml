@@ -4,16 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="hasItems" type="Boolean" />
-        <variable name="cartPrice" type="Float" />
-        <variable name="cartItemsCount" type="Integer" />
-        <variable name="areFiltersActive" type="Boolean" />
+
+        <variable
+            name="hasItems"
+            type="Boolean" />
+
+        <variable
+            name="cartPrice"
+            type="Float" />
+
+        <variable
+            name="cartItemsCount"
+            type="Integer" />
+
+        <variable
+            name="areFiltersActive"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/home_constraint_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <SearchView
             android:id="@+id/search_box"
@@ -36,7 +48,7 @@
             android:tint="@{ areFiltersActive ? @color/cardview_light_background : @color/colorPrimary }"
             android:src="@drawable/ic_baseline_tune_24"
             tools:tint="@color/colorPrimary"
-            tools:backgroundTint="@color/colorLighterGray"/>
+            tools:backgroundTint="@color/colorLighterGray" />
 
         <ImageButton
             android:id="@+id/sign_out_button"
@@ -47,7 +59,7 @@
             android:tint="@color/colorPrimary"
             android:src="@drawable/ic_baseline_login_24"
             tools:tint="@color/colorPrimary"
-            tools:backgroundTint="@color/colorLighterGray"/>
+            tools:backgroundTint="@color/colorLighterGray" />
 
         <androidx.constraintlayout.helper.widget.Flow
             android:id="@+id/search_filter_flow"
@@ -140,7 +152,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 app:layout_constraintHorizontal_weight="0.4"
-                android:translationZ="1dp" >
+                android:translationZ="1dp">
 
                 <TextView
                     android:id="@+id/cart_items_count_view"

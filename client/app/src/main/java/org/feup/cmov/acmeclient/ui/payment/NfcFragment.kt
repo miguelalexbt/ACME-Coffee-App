@@ -19,7 +19,7 @@ import org.feup.cmov.acmeclient.databinding.FragmentNfcBinding
 
 @Suppress("DEPRECATION")
 @AndroidEntryPoint
-class NfcFragment: Fragment() {
+class NfcFragment : Fragment() {
 
     private lateinit var binding: FragmentNfcBinding
 

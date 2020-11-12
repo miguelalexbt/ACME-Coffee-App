@@ -7,24 +7,15 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.subscribe
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.adapter.GenericListAdapter
 import org.feup.cmov.acmeclient.data.Status
-import org.feup.cmov.acmeclient.data.model.PastOrder
-import org.feup.cmov.acmeclient.data.model.Receipt
 import org.feup.cmov.acmeclient.databinding.CheckoutListItemBinding
 import org.feup.cmov.acmeclient.databinding.CheckoutListVoucherBinding
 import org.feup.cmov.acmeclient.databinding.ReceiptDialogBinding
 import org.feup.cmov.acmeclient.ui.main.checkout.ItemView
 import org.feup.cmov.acmeclient.ui.main.checkout.VoucherView
-import org.feup.cmov.acmeclient.ui.main.home.HomeViewModel
 
 @AndroidEntryPoint
 class ReceiptDialogFragment(
@@ -111,7 +102,7 @@ class ReceiptDialogFragment(
             val receipt = it ?: return@observe
             if (receipt.status == Status.SUCCESS) {
                 binding.nif = receipt.data!!.nif
-                binding.ccNumberLastFour = receipt.data!!.ccNumber.takeLast(4)
+                binding.ccNumberLastFour = receipt.data.ccNumber.takeLast(4)
             }
         })
 

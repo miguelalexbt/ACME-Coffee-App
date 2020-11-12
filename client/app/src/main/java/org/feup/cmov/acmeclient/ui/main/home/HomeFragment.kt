@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -22,6 +23,7 @@ import kotlinx.coroutines.withContext
 import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.adapter.GenericListAdapter
 import org.feup.cmov.acmeclient.data.Status
+import org.feup.cmov.acmeclient.data.event.EventObserver
 import org.feup.cmov.acmeclient.databinding.FragmentHomeBinding
 import org.feup.cmov.acmeclient.databinding.HomeListItemBinding
 import org.feup.cmov.acmeclient.utils.WEB_SERVICE_URL
@@ -158,6 +160,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun subscribeUi(adapter: GenericListAdapter<ItemView, HomeListItemBinding>) {
+        viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
+            if (it.error != null) Toast.makeText(context, it.error, Toast.LENGTH_LONG).show()
+        })
+
         viewModel.refreshing.observe(viewLifecycleOwner, {
             val refreshing = it ?: return@observe
             binding.homeRefreshLayout.isRefreshing = refreshing
@@ -203,7 +209,6 @@ class HomeFragment : Fragment() {
 
                 return true
             }
-
         })
     }
 

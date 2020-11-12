@@ -1,16 +1,17 @@
 package org.feup.cmov.acmeclient.ui.main.vouchers
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import org.feup.cmov.acmeclient.adapter.GenericListAdapter
 import org.feup.cmov.acmeclient.data.Status
-import org.feup.cmov.acmeclient.data.model.Voucher
+import org.feup.cmov.acmeclient.data.event.EventObserver
 import org.feup.cmov.acmeclient.databinding.FragmentVouchersBinding
 import org.feup.cmov.acmeclient.databinding.VouchersListItemBinding
 
@@ -64,6 +65,10 @@ class VouchersFragment : Fragment() {
     }
 
     private fun subscribeUi(adapter: GenericListAdapter<VoucherView, VouchersListItemBinding>) {
+        viewModel.uiEvent.observe(viewLifecycleOwner, EventObserver {
+            if (it.error != null) Toast.makeText(context, it.error, Toast.LENGTH_LONG).show()
+        })
+
         viewModel.refreshing.observe(viewLifecycleOwner, {
             val refreshing = it ?: return@observe
             binding.vouchersRefreshLayout.isRefreshing = refreshing

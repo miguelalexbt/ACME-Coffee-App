@@ -4,7 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <variable name="item" type="org.feup.cmov.acmeclient.ui.main.home.ItemView" />
+
+        <variable
+            name="item"
+            type="org.feup.cmov.acmeclient.ui.main.home.ItemView" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -95,25 +98,25 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_image_card" />
 
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                android:id="@+id/list_item_add"-->
-<!--                style="?attr/materialButtonOutlinedStyle"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:width="110dp"-->
-<!--                android:backgroundTint="@{isChosen ? @color/colorPrimary : @color/cardview_light_background}"-->
-<!--                android:paddingStart="10dp"-->
-<!--                android:paddingEnd="10dp"-->
-<!--                android:text="@{isChosen ? @string/remove_item : @string/add_item}"-->
-<!--                android:textColor="@{isChosen ? @color/cardview_light_background : @color/colorPrimary}"-->
-<!--                app:icon="@{isChosen ? @drawable/ic_baseline_check_24 : @drawable/ic_baseline_add_24}"-->
-<!--                app:iconTint="@{isChosen ? @color/cardview_light_background : @color/colorPrimary}"-->
-<!--                app:strokeColor="@color/colorPrimary"-->
-<!--                app:strokeWidth="1dp"-->
-<!--                tools:icon="@drawable/ic_baseline_check_24"-->
-<!--                tools:layout_editor_absoluteX="5dp"-->
-<!--                tools:layout_editor_absoluteY="127dp"-->
-<!--                tools:text="ADDED" />-->
+            <!--            <com.google.android.material.button.MaterialButton-->
+            <!--                android:id="@+id/list_item_add"-->
+            <!--                style="?attr/materialButtonOutlinedStyle"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:width="110dp"-->
+            <!--                android:backgroundTint="@{isChosen ? @color/colorPrimary : @color/cardview_light_background}"-->
+            <!--                android:paddingStart="10dp"-->
+            <!--                android:paddingEnd="10dp"-->
+            <!--                android:text="@{isChosen ? @string/remove_item : @string/add_item}"-->
+            <!--                android:textColor="@{isChosen ? @color/cardview_light_background : @color/colorPrimary}"-->
+            <!--                app:icon="@{isChosen ? @drawable/ic_baseline_check_24 : @drawable/ic_baseline_add_24}"-->
+            <!--                app:iconTint="@{isChosen ? @color/cardview_light_background : @color/colorPrimary}"-->
+            <!--                app:strokeColor="@color/colorPrimary"-->
+            <!--                app:strokeWidth="1dp"-->
+            <!--                tools:icon="@drawable/ic_baseline_check_24"-->
+            <!--                tools:layout_editor_absoluteX="5dp"-->
+            <!--                tools:layout_editor_absoluteY="127dp"-->
+            <!--                tools:text="ADDED" />-->
 
             <!--            <com.google.android.material.button.MaterialButton-->
             <!--                android:id="@+id/list_item_favorite"-->
@@ -129,18 +132,18 @@
             <!--                tools:layout_editor_absoluteX="358dp"-->
             <!--                tools:layout_editor_absoluteY="132dp" />-->
 
-<!--            <androidx.constraintlayout.helper.widget.Flow-->
-<!--                android:id="@+id/list_item_button_flow"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginHorizontal="5dp"-->
-<!--                app:constraint_referenced_ids="list_item_add"-->
-<!--                app:flow_horizontalStyle="spread_inside"-->
-<!--                app:flow_maxElementsWrap="2"-->
-<!--                app:flow_wrapMode="chain"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/list_item_flow" />-->
+            <!--            <androidx.constraintlayout.helper.widget.Flow-->
+            <!--                android:id="@+id/list_item_button_flow"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginHorizontal="5dp"-->
+            <!--                app:constraint_referenced_ids="list_item_add"-->
+            <!--                app:flow_horizontalStyle="spread_inside"-->
+            <!--                app:flow_maxElementsWrap="2"-->
+            <!--                app:flow_wrapMode="chain"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toBottomOf="@id/list_item_flow" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

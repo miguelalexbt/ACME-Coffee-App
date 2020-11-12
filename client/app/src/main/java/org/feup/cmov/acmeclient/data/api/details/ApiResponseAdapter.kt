@@ -1,12 +1,12 @@
 package org.feup.cmov.acmeclient.data.api.details
 
 import org.feup.cmov.acmeclient.data.api.ApiResponse
-import retrofit2.*
+import retrofit2.Call
 import retrofit2.CallAdapter
 import java.lang.reflect.Type
 
 class ApiResponseAdapter<T : Any>(
-    private val responseType : Type
+    private val responseType: Type
 ) : CallAdapter<T, Call<ApiResponse<T>>> {
 
     override fun responseType(): Type = responseType

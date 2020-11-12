@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="isLoading" type="Boolean" />
+
+        <variable
+            name="isLoading"
+            type="Boolean" />
     </data>
 
     <FrameLayout
@@ -14,7 +17,7 @@
         <include
             android:id="@+id/signIn_loading"
             layout="@layout/partial_loading"
-            isGone="@{!isLoading}"/>
+            isGone="@{!isLoading}" />
 
         <ScrollView
             android:layout_width="match_parent"

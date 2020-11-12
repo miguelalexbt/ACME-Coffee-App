@@ -9,7 +9,7 @@
         android:id="@+id/homeFragment"
         android:name="org.feup.cmov.acmeclient.ui.main.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_checkoutFragment"
             app:destination="@id/checkoutFragment" />
@@ -26,7 +26,7 @@
         android:id="@+id/checkoutFragment"
         android:name="org.feup.cmov.acmeclient.ui.main.checkout.CheckoutFragment"
         android:label="fragment_checkout"
-        tools:layout="@layout/fragment_checkout" >
+        tools:layout="@layout/fragment_checkout">
         <action
             android:id="@+id/action_checkoutFragment_to_paymentActivity"
             app:destination="@id/paymentActivity" />
@@ -40,10 +40,10 @@
         android:id="@+id/pastOrdersFragment"
         android:name="org.feup.cmov.acmeclient.ui.main.pastOrders.PastOrdersFragment"
         android:label="PastOrdersFragment"
-        tools:layout="@layout/fragment_past_orders"/>
+        tools:layout="@layout/fragment_past_orders" />
     <activity
         android:id="@+id/authActivity"
         android:name="org.feup.cmov.acmeclient.ui.auth.AuthActivity"
         android:label="AuthActivity"
-        tools:layout="@layout/activity_auth"/>
+        tools:layout="@layout/activity_auth" />
 </navigation>

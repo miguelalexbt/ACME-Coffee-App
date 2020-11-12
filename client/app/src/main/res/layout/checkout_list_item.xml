@@ -4,7 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <variable name="item" type="org.feup.cmov.acmeclient.ui.main.checkout.ItemView" />
+
+        <variable
+            name="item"
+            type="org.feup.cmov.acmeclient.ui.main.checkout.ItemView" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,7 +58,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <View
             android:id="@+id/separator"

@@ -14,7 +14,7 @@ interface VoucherDao {
     fun insertAll(vouchers: List<Voucher>)
 
     @Query("SELECT * FROM voucher WHERE userId = :userId")
-    fun getAll(userId: String) : Flow<List<Voucher>>
+    fun getAll(userId: String): Flow<List<Voucher>>
 
     @Query("DELETE FROM voucher WHERE userId = :userId")
     fun deleteAll(userId: String)

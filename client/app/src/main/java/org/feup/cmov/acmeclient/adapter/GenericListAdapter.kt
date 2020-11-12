@@ -22,7 +22,7 @@ class GenericListAdapter<T, B : ViewDataBinding>(
         (holder as ItemViewHolder<T, B>).bind(getItem(position))
     }
 
-    class ItemViewHolder<T, B: ViewDataBinding>(
+    class ItemViewHolder<T, B : ViewDataBinding>(
         private val binding: B,
         private val onBind: ((binding: ViewDataBinding, content: Content<T>) -> Unit)?
     ) : RecyclerView.ViewHolder(binding.root) {
