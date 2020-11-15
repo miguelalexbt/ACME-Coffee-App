@@ -1,20 +1,24 @@
 package org.feup.cmov.acmeclient.ui.main.vouchers
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.action_bar.view.*
+import org.feup.cmov.acmeclient.R
 import org.feup.cmov.acmeclient.adapter.GenericListAdapter
 import org.feup.cmov.acmeclient.data.Status
 import org.feup.cmov.acmeclient.data.event.EventObserver
 import org.feup.cmov.acmeclient.databinding.FragmentVouchersBinding
 import org.feup.cmov.acmeclient.databinding.VouchersListItemBinding
-import org.feup.cmov.acmeclient.utils.WEB_SERVICE_URL
 
 @AndroidEntryPoint
 class VouchersFragment : Fragment() {
@@ -31,6 +35,13 @@ class VouchersFragment : Fragment() {
         binding = FragmentVouchersBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
 
+        val actionBar = (activity as AppCompatActivity).supportActionBar
+        val actionBarView = layoutInflater.inflate(R.layout.action_bar, null)
+        actionBarView.title.text = getString(R.string.vouchers_title)
+        actionBar?.setDisplayShowCustomEnabled(true)
+        actionBar?.customView = actionBarView
+        actionBar?.show()
+
         val adapter = GenericListAdapter<VoucherView, VouchersListItemBinding>(
             { adapterInflater, parent ->
                 VouchersListItemBinding.inflate(adapterInflater, parent, false)
@@ -40,14 +51,14 @@ class VouchersFragment : Fragment() {
                     voucher = voucherContent.content
 
                     val icon = if (voucherContent.content.type == 'o')
-                        org.feup.cmov.acmeclient.R.drawable.offercoffee
+                        R.drawable.offercoffee
                     else
-                        org.feup.cmov.acmeclient.R.drawable.discount
+                        R.drawable.discount
 
                     Picasso.get()
                         .load(icon)
-                        .placeholder(org.feup.cmov.acmeclient.R.drawable.logo)
-                        .error(org.feup.cmov.acmeclient.R.drawable.ic_baseline_image_not_supported_24)
+                        .placeholder(R.drawable.logo)
+                        .error(R.drawable.ic_baseline_image_not_supported_24)
                         .fit()
                         .centerCrop()
                         .into(listItemImage);

@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         setupNavigation()
 
-        supportActionBar?.hide()
+//        supportActionBar?.hide()
 //        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         // Ignore NFC
