@@ -10,6 +10,7 @@
 
         <item name="android:navigationBarColor">@color/colorNavBar</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Actionbar</item>
     </style>
 
     <style name="SwitchCompatTheme">
@@ -29,6 +30,10 @@
 
     <style name="Widget.App.Button.SelectedButton" parent="Widget.MaterialComponents.Button">
         <item name="iconPadding">0dp</item>
+    </style>
+
+    <style name="ThemeOverlay.Actionbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
+        <item name="android:textColorPrimary">#FFFFFF</item>
     </style>
 
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
