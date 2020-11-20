@@ -16,8 +16,9 @@ import org.feup.cmov.acmeterminal.adapter.GenericListAdapter
 import org.feup.cmov.acmeterminal.data.Resource
 import org.feup.cmov.acmeterminal.data.api.SubmitOrderResponse
 import org.feup.cmov.acmeterminal.databinding.ActivityOrderBinding
+import org.feup.cmov.acmeterminal.databinding.OrderListItemBinding
 import org.feup.cmov.acmeterminal.databinding.OrderListVoucherBinding
-
+import java.util.*
 
 @AndroidEntryPoint
 class OrderActivity : AppCompatActivity() {
@@ -37,14 +38,22 @@ class OrderActivity : AppCompatActivity() {
             type
         )
 
-        println(order)
+        val orderData = order.data!!
 
-        val o = order.data!!
-
-        supportActionBar?.title = "Order #${o.number}"
+        supportActionBar?.title = "Order #${orderData.number}"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val adapter = GenericListAdapter<VoucherView, OrderListVoucherBinding>(
+        val itemsAdapter = GenericListAdapter<ItemView, OrderListItemBinding>(
+            { adapterInflater, parent ->
+                OrderListItemBinding.inflate(adapterInflater, parent, false)
+            },
+            { binding, item ->
+                val itemBinding = binding as OrderListItemBinding
+                itemBinding.item = item.content
+            }
+        )
+
+        val vouchersAdapter = GenericListAdapter<VoucherView, OrderListVoucherBinding>(
             { adapterInflater, parent ->
                 OrderListVoucherBinding.inflate(adapterInflater, parent, false)
             },
@@ -54,14 +63,27 @@ class OrderActivity : AppCompatActivity() {
             }
         )
 
-        binding.orderVouchersRecyclerView.adapter = adapter
-        binding.total = o.total
+        binding.orderItemsRecyclerView.adapter = itemsAdapter
+        binding.orderVouchersRecyclerView.adapter = vouchersAdapter
+        binding.total = orderData.total
         binding.hasVouchers = order.data.vouchers.isNotEmpty()
         binding.dismiss.setOnClickListener {
             finish()
         }
 
-        adapter.submitList(o.vouchers.map {
+        itemsAdapter.submitList(orderData.items.map {
+            Content(
+                View.generateViewId().toString(),
+                ItemView(
+                    name = it.name,
+                    type = it.type.capitalize(Locale.ENGLISH),
+                    price = it.price,
+                    quantity = it.quantity
+                )
+            )
+        })
+
+        vouchersAdapter.submitList(orderData.vouchers.map {
             Content(
                 View.generateViewId().toString(),
                 VoucherView(it)

@@ -26,8 +26,8 @@ interface WebService {
 
     // Orders
     @AuthenticatedRequest
-    @GET("/orders/{userId}")
-    suspend fun getPastOrders(@Path("userId") userId: String): ApiResponse<List<PastOrder>>
+    @GET("/orders")
+    suspend fun getPastOrders(@Query("userId") userId: String): ApiResponse<List<PastOrder>>
 
     // Receipts
     @AuthenticatedRequest

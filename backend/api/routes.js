@@ -161,39 +161,6 @@ itemRouter.get('/', authenticateClientRequest, async (req, res) => {
 
 let voucherRouter = express.Router();
 
-voucherRouter.get('/populate', async (req, res) => {
-
-    const userId = '32015c92-8f69-4a99-a2bc-f64796ebfcdf';
-
-    await new Voucher({
-        _id: uuidv4(),
-        userId: userId,
-        type: 'o'
-    }).save();
-
-    await new Voucher({
-        _id: uuidv4(),
-        userId: userId,
-        type: 'o'
-    }).save();
-
-
-    await new Voucher({
-        _id: uuidv4(),
-        userId: userId,
-        type: 'd'
-    }).save();
-
-    await new Voucher({
-        _id: uuidv4(),
-        userId: userId,
-        type: 'd'
-    }).save();
-
-
-    res.sendStatus(200);
-});
-
 voucherRouter.get('/', authenticateClientRequest, async (req, res) => {
     const vouchers = await Voucher.find({
         userId: req.query.userId,
@@ -207,9 +174,9 @@ voucherRouter.get('/', authenticateClientRequest, async (req, res) => {
 
 let orderRouter = express.Router();
 
-orderRouter.get('/:userId', authenticateClientRequest, async (req, res) => {
+orderRouter.get('/', authenticateClientRequest, async (req, res) => {
     const orders = await Order.find({
-        userId: req.params.userId
+        userId: req.query.userId
     }).exec();
 
     res.json(orders);
@@ -238,9 +205,9 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
     // Check items validity
     let validItems = (await Item
         .where('_id').in(Object.keys(itemsOrder))
-        .select('_id type price'))
+        .select('_id type name price'))
         .map(item => 
-            ({ _id: item._id, type: item.type, price: item.price, quantity: itemsOrder[item.id] })    
+            ({ _id: item._id, type: item.type, name: item.name, price: item.price, quantity: itemsOrder[item.id] })    
         );
 
     if (Object.keys(itemsOrder).length !== validItems.length)  {
@@ -277,7 +244,7 @@ orderRouter.put('/', authenticateTerminalRequest, async (req, res) => {
 
     const newOrder = await createOrder(userId, validItems, validVouchers);
 
-    res.json({ number: newOrder.number, vouchers: newOrder.vouchersType, total: newOrder.total });
+    res.json({ number: newOrder.number, items: validItems, vouchers: newOrder.vouchersType, total: newOrder.total });
 });
 
 const createOrder = async (userId, items, vouchers) =>  {

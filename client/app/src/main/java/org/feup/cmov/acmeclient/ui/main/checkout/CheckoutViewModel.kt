@@ -83,7 +83,7 @@ class CheckoutViewModel @ViewModelInject constructor(
 
             // Ignore as many coffee items as coffee vouchers
             items = items.filter {
-                if (it.type != "coffee") return@filter true
+                if (it.type.toLowerCase() != "coffee") return@filter true
 
                 if (coffeeVouchers > 0) {
                     coffeeVouchers -= 1; false

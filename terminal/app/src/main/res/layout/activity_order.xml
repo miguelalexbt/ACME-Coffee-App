@@ -25,16 +25,39 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/order_vouchers"
+                    android:id="@+id/order_items"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Vouchers"
+                    android:text="Items"
                     android:textAlignment="center"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/order_items_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@+id/order_items"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:listitem="@layout/order_list_item" />
+
+                <TextView
+                    android:id="@+id/order_vouchers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Vouchers"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/order_items_recycler_view" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -88,6 +111,7 @@
                     app:flow_horizontalGap="10dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="35dp"
+                    app:adaptiveMarginTop="@{ hasVouchers ? @dimen/listNotEmpty : @dimen/listEmpty }"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/order_vouchers_recycler_view"
