@@ -184,6 +184,12 @@ orderRouter.get('/', authenticateClientRequest, async (req, res) => {
 
 orderRouter.get('/:orderId/receipt', authenticateClientRequest, async (req, res) => {
     const order = await Order.findByIdAndDelete(req.params.orderId).exec();
+
+    if (order === null) {
+        res.status(404).json({ error: 'order non existent' });
+        return
+    }
+
     const user = await User.findById(order.userId).exec();
 
     res.json({ nif: user.nif, ccNumber: user.ccNumber });
