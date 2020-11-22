@@ -183,7 +183,7 @@ orderRouter.get('/', authenticateClientRequest, async (req, res) => {
 });
 
 orderRouter.get('/:orderId/receipt', authenticateClientRequest, async (req, res) => {
-    const order = await Order.findById(req.params.orderId).exec();
+    const order = await Order.findByIdAndDelete(req.params.orderId).exec();
     const user = await User.findById(order.userId).exec();
 
     res.json({ nif: user.nif, ccNumber: user.ccNumber });
