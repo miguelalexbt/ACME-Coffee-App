@@ -15,41 +15,41 @@ Project developed for the course of [Mobile Computing](https://sigarra.up.pt/feu
 ## Client application
 ### Sign in / Sign up
 <p align="center">
-  <img src="https://i.imgur.com/wQTqeVe.png" width="250" />
-  <img src="https://i.imgur.com/lWtMxgb.png" width="250" /> 
-  <img src="https://i.imgur.com/7mOfRof.png" width="250" />
+  <img src="https://i.imgur.com/sMwRvag.png" width="200" /> 
+  <img src="https://i.imgur.com/xTRKWJg.png" width="200" />
+  <img src="https://i.imgur.com/EDsDdw6.png" width="200" />
 </p>
 
 ### Search and filter items
 <p align="center">
-  <img src="https://i.imgur.com/QkAMCn8.png" width="200" />
-  <img src="https://i.imgur.com/wC2JnHB.png" width="200" /> 
-  <img src="https://i.imgur.com/daJQWtn.png" width="200" />
-  <img src="https://i.imgur.com/xwdaDOB.png" width="200" />
+  <img src="https://i.imgur.com/1oxeszA.png" width="170" />
+  <img src="https://i.imgur.com/w6gtbe7.png" width="170" /> 
+  <img src="https://i.imgur.com/Y2Yhih1.png" width="170" />
+  <img src="https://i.imgur.com/DdCVjlQ.png" width="170" />
 </p>
 
 ### Checkout and payment
 <p align="center">
-  <img src="https://i.imgur.com/9i6wtgE.png" width="250" />
-  <img src="https://i.imgur.com/nKEePRj.png" width="250" /> 
-  <img src="https://i.imgur.com/z13gaMV.png" width="250" />
+  <img src="https://i.imgur.com/GLxETbp.png" width="200" />
+  <img src="https://i.imgur.com/47Em0IF.png" width="200" /> 
+  <img src="https://i.imgur.com/YkTbFnl.png" width="200" />
 </p>
 
 ### Vouchers and past orders
 <p align="center">
-  <img src="https://i.imgur.com/IHqxLRL.png" width="250" />
-  <img src="https://i.imgur.com/5dYUHXn.png" width="250" /> 
-  <img src="https://i.imgur.com/ZbqPEWj.png" width="250" />
+  <img src="https://i.imgur.com/EMDeO3m.png" width="200" />
+  <img src="https://i.imgur.com/1DjipSx.png" width="200" /> 
+  <img src="https://i.imgur.com/pbINzql.png" width="200" />
 </p>
 
 ## Terminal application
 
 ### Scan/read new orders
 <p align="center">
-  <img src="https://i.imgur.com/d3ANjia.png" width="200" />
-  <img src="https://i.imgur.com/mJnjakJ.png" width="200" />
-  <img src="https://i.imgur.com/it0vsfn.png" width="200" /> 
-  <img src="https://i.imgur.com/744DDN1.png" width="200" />
+  <img src="https://i.imgur.com/GwHYugL.png" width="170" />
+  <img src="https://i.imgur.com/uGrXTmw.png" width="170" />
+  <img src="https://i.imgur.com/qLyvW5d.png" width="170" /> 
+  <img src="https://i.imgur.com/KNqde8h.png" width="170" />
 </p>
 
 ## Developed by:
