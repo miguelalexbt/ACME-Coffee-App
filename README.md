@@ -15,9 +15,9 @@ Project developed for the course of [Mobile Computing](https://sigarra.up.pt/feu
 ## Client application
 ### Sign in / Sign up
 <p align="center">
-  <img src="https://i.imgur.com/xTRKWJg.png" width="200" />
-  <img src="https://i.imgur.com/sMwRvag.png" width="200" /> 
-  <img src="https://i.imgur.com/EDsDdw6.png" width="200" />
+  <img src="https://i.imgur.com/xTRKWJg.png" width="170" />
+  <img src="https://i.imgur.com/sMwRvag.png" width="170" /> 
+  <img src="https://i.imgur.com/EDsDdw6.png" width="170" />
 </p>
 
 ### Search and filter items
@@ -30,16 +30,16 @@ Project developed for the course of [Mobile Computing](https://sigarra.up.pt/feu
 
 ### Checkout and payment
 <p align="center">
-  <img src="https://i.imgur.com/GLxETbp.png" width="200" />
-  <img src="https://i.imgur.com/47Em0IF.png" width="200" /> 
-  <img src="https://i.imgur.com/YkTbFnl.png" width="200" />
+  <img src="https://i.imgur.com/GLxETbp.png" width="170" />
+  <img src="https://i.imgur.com/47Em0IF.png" width="170" /> 
+  <img src="https://i.imgur.com/YkTbFnl.png" width="170" />
 </p>
 
 ### Vouchers and past orders
 <p align="center">
-  <img src="https://i.imgur.com/EMDeO3m.png" width="200" />
-  <img src="https://i.imgur.com/1DjipSx.png" width="200" /> 
-  <img src="https://i.imgur.com/pbINzql.png" width="200" />
+  <img src="https://i.imgur.com/EMDeO3m.png" width="170" />
+  <img src="https://i.imgur.com/1DjipSx.png" width="170" /> 
+  <img src="https://i.imgur.com/pbINzql.png" width="170" />
 </p>
 
 ## Terminal application
