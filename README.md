@@ -15,8 +15,8 @@ Project developed for the course of [Mobile Computing](https://sigarra.up.pt/feu
 ## Client application
 ### Sign in / Sign up
 <p align="center">
-  <img src="https://i.imgur.com/sMwRvag.png" width="200" /> 
   <img src="https://i.imgur.com/xTRKWJg.png" width="200" />
+  <img src="https://i.imgur.com/sMwRvag.png" width="200" /> 
   <img src="https://i.imgur.com/EDsDdw6.png" width="200" />
 </p>
 
